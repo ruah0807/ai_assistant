@@ -1,38 +1,51 @@
-from init import client,ASSISTANT_ID
 import time
+import os
+from dotenv import load_dotenv
+from init import ass_id, client
+from ass import default_tools
+load_dotenv()
 
 
 
-def submit_message(assistant_id, thread, user_message):
+
+def submit_message(ass_id, thread, user_message, image_path=None):
+
+    content = [{'type': 'text', 'text': user_message}]
+
+    if image_path:
+        file = client.files.create(
+            file = open(image_path, 'rb'),
+            purpose='vision'    # 이미지 분석용도로 'vision'을 사용
+        )
+        content.append({
+            'type': 'image_file',
+            'image_file' : { 'file_id': file.id}
+        })
+        # 이미지가 있다면 도구를 사용하지 않도록 설정 (이미지 업로드 시 도구와함께 사용 불가)
+        tools_setting = []
+    else:
+        tools_setting = default_tools
+
     #사용자 입력 메시지를 스레드에 추가
     client.beta.threads.messages.create(
         thread_id= thread.id,
         role = "user",
-        content = user_message
+        content = content
     )
 
     #스레드에 메시지가 입력되었다면 실행 준비
     run= client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id=assistant_id
+        assistant_id=ass_id,
+        tools = tools_setting
     )
+    print(f'assistant_id : {ass_id}')
+    print(f'thread_id : {thread.id}')
+    print(f'run_id : {run.id}')
 
     return run
 
-def wait_on_run(run,thread):
-    start_time = time.time()    #시간 시작 기록
-    # run이 완료될대까지 기다림 : polling 하며 대기 (polling: 서버와 응답을 주고받음)
-    while run.status == 'queued' or run.status == 'in_progress':
-        run = client.beta.threads.runs.retrieve(
-            thread_id=thread.id,
-            run_id=run.id
-        )
-        time.sleep(0.5)
-        end_time = time.time()  # 끝난 시간 기록
-        duration = end_time - start_time # 응답시간 계산
-        print(f"응답까지의 시간 : {duration:.2f} 초")
-    return run, duration
-    
+
 
 def get_response(thread):
     # 스레드에서 메세지 목록가져오기
@@ -40,11 +53,16 @@ def get_response(thread):
 
 
 # 새로운 스레드 생성 및 메시지 제출 함수
-def create_thread_and_run(user_input):
+def create_thread_and_run(user_input, image_path=None):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
-    run = submit_message(ASSISTANT_ID, thread, user_input)
+    run = submit_message(ass_id, thread, user_input, image_path=image_path)
     return thread, run
+
+def send_message_in_same_thread(thread, user_message, image_path=None):
+    # 메시지 전송
+    run = submit_message(ass_id, thread, user_message, image_path=image_path)
+    return run
 
 
 
@@ -55,12 +73,18 @@ def print_message(response):
     print("-" * 60)
 
 #반복문에서 대기하는 함수
-def wait_on_run(run, thread):
+def wait_on_run(run, thread, timeout=120):
+    start_time = time.time()
     while run.status == 'queued' or run.status == 'in_progress':
+        # 상태를 출력하여 디버깅
+        print(f"현재 run 상태: {run.status}")
         run = client.beta.threads.runs.retrieve(
             thread_id=thread.id,
             run_id = run.id
         )
+        # 일정 시간이 지나면 타임아웃 발생
+        if time.time() - start_time > timeout:
+            raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
         time.sleep(0.5)
     return run
 
@@ -77,23 +101,25 @@ def check_run_step(thread_id, run_id):
 
 
 # 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
-# thread1, run1 = create_thread_and_run('상품 심사기준의 각 조항에 대해 문서를 기반으로 하여 간단하게 설명해줘')
-# thread2, run2 = create_thread_and_run('어떤기준이 가장 중요한가요?')
-thread3, run3 = create_thread_and_run('24 * 17 - 2 = ?')
+# thread1, run1 = create_thread_and_run("상표이름 '마인드셋'의 의견서를 제시해 주세요")
+thread, run = create_thread_and_run("내 상표의 식별력, 그리고 내 상표와 유사한 상표가 있는지 알고싶어요.")
+
+run= wait_on_run(run, thread)
+print_message(get_response(thread))
+
+run = send_message_in_same_thread(thread, "이게 나의 상표 입니다.", image_path='brand_img/starbings.png')
+
+run= wait_on_run(run, thread)
+print_message(get_response(thread))
 
 
+run = send_message_in_same_thread(thread, "의견서를 문서형식으로 제시해 주세요")
 
-# run1= wait_on_run(run1, thread1)
-# print_message(get_response(thread1))
+run= wait_on_run(run, thread)
+print_message(get_response(thread))
 
+# 세 번째 스레드를 마친 후 감사 인사 전송
+thread, run = submit_message(thread, '고마워요')  # run3이 완료된 후 메시지 전송
 
-# run2= wait_on_run(run2, thread2)
-# print_message(get_response(thread2))
-
-run3= wait_on_run(run3, thread3)
-print_message(get_response(thread3))
-
-# 세번째 스래드를 마치면 감사인사 전하고 종료
-run4 = submit_message(ASSISTANT_ID, thread3,'고마워요')
-run4 = wait_on_run(run4, thread3)
-print_message(get_response(thread3))
+run = wait_on_run(run, thread)  # run4 완료될 때까지 대기
+print_message(get_response(thread))
