@@ -1,11 +1,7 @@
 import time
-import os
-from dotenv import load_dotenv
 from init import ass_id, client
+from kipris_api import get_trademark_info
 # from ass import def ault_tools
-load_dotenv()
-
-
 
 
 def submit_message(ass_id, thread, user_message, image_path=None):
@@ -101,7 +97,42 @@ def check_run_step(thread_id, run_id):
     for step in run_steps:
         print(step)
 
-brand_name = '스타빙스' #<==입력을 받는다고 가정
+# 상표 이름
+brand_name = '마인드쉐어' #<==입력을 받는다고 가정
+# 분류 코드
+classification_code = 42
+
+result_data= get_trademark_info(classification_code, brand_name)
+
+
+# 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
+thread, run = create_thread_and_run(f"상표를 등록하려고 합니다.")
+
+run= wait_on_run(run, thread)
+print_message(get_response(thread))
+
+
+run = send_message_in_same_thread(
+    thread, 
+    f"""
+    상표를 등록하려고 합니다. 다음은 등록하려는 상표의 정보입니다. \n등록하려는 상표 네임 : MindShare\n분류코드: {classification_code}
+    특허청에서 비슷한 상표를 검색한 데이터입니다. 
+    이 중 drawingBase64를 참조해서 내가 업로드한 **이미지**(도형, 컬러)를 기반으로 유사도를 검토 해서 명확하게 각각의 유사도를 판단하고, 
+    의견서를 만들어주세요\n\n{result_data}""", 
+    image_path='brand_img/mindshare.png')# json데이터를 보낼것.
+
+
+run= wait_on_run(run, thread)
+print_message(get_response(thread))
+
+
+
+# 세 번째 스레드를 마친 후 감사 인사 전송
+# thread, run = submit_message(thread, '고마워요')  # run3이 완료된 후 메시지 전송
+
+# run = wait_on_run(run, thread)  # 완료될 때까지 대기
+# print_message(get_response(thread))
+
 
 
 
@@ -110,29 +141,3 @@ brand_name = '스타빙스' #<==입력을 받는다고 가정
 #검색 결과 XML 문자열을 run에 같이 넣을 것.
 #찾은 결과 바탕으로 유사한지 여부를 판단하도록 시킬 것.
 #bigdrawing의 이미지를 참조하라고 명확히 지시.
-
-# 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
-# thread1, run1 = create_thread_and_run("상표이름 '마인드셋'의 의견서를 제시해 주세요")
-thread, run = create_thread_and_run("내 상표의 식별력, 그리고 내 상표와 유사한 상표가 있는지 알고싶어요.")
-
-run= wait_on_run(run, thread)
-print_message(get_response(thread))
-
-run = send_message_in_same_thread(thread, "이걸 등록하려고 해요.", image_path='brand_img/starbings.png')#XML문자열을 같이 보낼 것.
-#run = send_message_in_same_thread(thread, "'updown'라는 상표를 등록하려고 해요.")
-
-run= wait_on_run(run, thread)
-print_message(get_response(thread))
-
-
-run = send_message_in_same_thread(thread, "나의 상표를 의견서로 상세히 작성해주실래요?",image_path='brand_img/starbings.png')
-
-run= wait_on_run(run, thread)
-print_message(get_response(thread))
-"""
-# 세 번째 스레드를 마친 후 감사 인사 전송ㅌ
-thread, run = submit_message(thread, '고마워요')  # run3이 완료된 후 메시지 전송
-
-run = wait_on_run(run, thread)  # run4 완료될 때까지 대기
-print_message(get_response(thread))
-"""

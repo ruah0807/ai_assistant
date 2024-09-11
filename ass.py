@@ -103,7 +103,7 @@ assistant = client.beta.assistants.update(
     assistant_id = ass_id,
     instructions = instructions,
     tools = default_tools,
-    model ='gpt-4o'
+    model ='gpt-4o-mini'
 )
 
 # print(client.beta.vector_stores.list())

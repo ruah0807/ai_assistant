@@ -2,8 +2,30 @@ import requests
 import xmltodict
 from init import kipris_api
 import json
+import requests
+import base64
 
-BASE_URL = 'http://plus.kipris.or.kr/kipo-api/kipi/trademarkInfoSearchService/getAdvancedSearch'
+
+# big Drawing 필드를 처리하고 base64로 변환
+def process_big_drawing(item):
+
+    big_drawing_url = item.get('drawing')
+
+    response = requests.get(big_drawing_url)
+    
+    # Ensure the request was successful
+    if response.status_code == 200:
+        # Encode the image content to base64
+        encoded_image = base64.b64encode(response.content)
+        
+        # Convert to a readable base64 string
+        base64_string = encoded_image.decode('utf-8')
+        item['drawingBase64'] = base64_string
+
+        return item['drawingBase64']
+    else:
+        return None
+
 
 
 #JSON 파일로 저장(자동 줄바꿈)
@@ -12,8 +34,13 @@ def save_to_json(data, filename='trademark_info.json'):
         json.dump(data, json_file, ensure_ascii=False, indent=4)
     print(f'DATA saved to {filename}')
 
+
+
 # KIPRIS API 호출
-def get_trademark_info(trademark_name):
+def get_trademark_info(classification, trademark_name):
+
+    BASE_URL = 'http://plus.kipris.or.kr/kipo-api/kipi/trademarkInfoSearchService/getAdvancedSearch'
+
     params = {
         'application': 'true',          # 현재 출원된 상표
         'registration': 'true',         # 현재 등록된 상표
@@ -36,9 +63,10 @@ def get_trademark_info(trademark_name):
         'invisible': 'false',           # 시각적으로 인식 불가능한 상표 중에서 검색
         'motion': 'false',              # 동작 상표 중에서 검색
         'visual': 'false',              # 시각적으로 인식 가능한 상표 중에서 검색
-        'ServiceKey': kipris_api,          # KIPRIS API 키
+        'ServiceKey': kipris_api,       # KIPRIS API 키
         'trademarkName': trademark_name,# 검색할 상표 이름
-        'trademark' : 'true'            # 이게 true여야 제대로 검색됩니다.
+        'classification' : classification, # 상품 분류 넘버
+        'trademark' : 'true'           # 이게 true여야 제대로 검색됩니다.
     }
 
     # api 요청 보내기
@@ -48,16 +76,33 @@ def get_trademark_info(trademark_name):
     if response.status_code == 200 :
         # XML 데이터를 JSON으로 변환
         data = xmltodict.parse(response.content)
+
+        # bigDrawing URL을 base64 로 변환
+        try:
+            print('1')
+            items = data['response']['body']['items']['item']
+            for item in items:
+                process_big_drawing(item)
+            print('2')
+
+        except Exception as e:
+            print(f"Error processing bigDrawing: {e}")
+        print('3')
+
         save_to_json(data)
+
         return data
     else:
         print(f"Error: {response.status_code}")
 
 
 
-# 테스트 
-trademark_name = '김밥천국'
-result = get_trademark_info(trademark_name)
+
+
+# # 테스트 
+# trademark_name = '마인드'
+# classification_code = 42
+# result = get_trademark_info(classification_code, trademark_name)
 
 # #결과 출력
 # if result:
