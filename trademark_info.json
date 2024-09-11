@@ -1,0 +1,48 @@
+{
+    "response": {
+        "header": {
+            "requestMsgID": null,
+            "responseTime": "2024-09-11 13:58:23.5823",
+            "responseMsgID": null,
+            "successYN": "Y",
+            "resultCode": "00",
+            "resultMsg": "NORMAL SERVICE."
+        },
+        "body": {
+            "items": {
+                "item": {
+                    "agentName": "김용인|백인경",
+                    "appReferenceNumber": null,
+                    "applicantName": "윤영숙",
+                    "applicationDate": "20170315",
+                    "applicationNumber": "4020170033383",
+                    "applicationStatus": "등록",
+                    "bigDrawing": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e29a5e93bcaa0e35e073b1e6c2fc0a2d532d65c7055be682c4bd2bf7857fba0e7ae4f5e673526ac2f62",
+                    "classificationCode": "43",
+                    "drawing": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ed43a0609e94d6e251697a9d72a91344ea1426f51e57de25f0efa56653e38505dce7ddbf3324f2c334951d98383e70a8266d32109b6e9aaf",
+                    "fullText": "Y",
+                    "indexNo": "1",
+                    "internationalRegisterDate": null,
+                    "internationalRegisterNumber": null,
+                    "priorityDate": null,
+                    "priorityNumber": null,
+                    "publicationDate": "20180102",
+                    "publicationNumber": "4020180000079",
+                    "regPrivilegeName": "윤영숙 YOON, Young Sook",
+                    "regReferenceNumber": null,
+                    "registrationDate": "20190924",
+                    "registrationNumber": "4015244270000",
+                    "registrationPublicDate": "20190930",
+                    "registrationPublicNumber": "4020190093396",
+                    "title": "김밥천국 FC FOOD CAFE",
+                    "viennaCode": "260418|270519|270903|270906"
+                }
+            }
+        },
+        "count": {
+            "numOfRows": "20",
+            "pageNo": "1",
+            "totalCount": "1"
+        }
+    }
+}
