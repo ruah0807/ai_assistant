@@ -1,6 +1,7 @@
 import time
 from init import ass_id, client
 from kipris_api import get_trademark_info
+from similar import generate_similar_barnd_names
 # from ass import def ault_tools
 
 
@@ -102,7 +103,10 @@ brand_name = '마인드쉐어' #<==입력을 받는다고 가정
 # 분류 코드
 classification_code = 42
 
-result_data= get_trademark_info(classification_code, brand_name)
+#비슷한 단어 찾기
+similarity_words = generate_similar_barnd_names(brand_name)
+# 분류코드와 비슷한단어로 상표 검색
+result_data= get_trademark_info(classification_code, similarity_words)
 
 
 # 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
