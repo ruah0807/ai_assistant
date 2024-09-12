@@ -136,8 +136,22 @@ def updated_search_results(seperated_words):
         process_drawing(item)
 
     save_to_json(all_results, f'update_combined_trademark_info.json')
+    
+    filtered_results =[]
+    for item in all_results:
+        filtered_item = {
+            '상표명' : item.get('title'),
+            '상품류' : item.get('classificationCode'),
+            '상태' : item.get('applicationStatus'),
+            '상표이미지' : item.get('bigDrawing'),
+            '출원/등록번호' : item.get('applicationNumber'),
+            '출원/등록일' : item.get('applicationDate'),
+            '출원인/등록권자' : item.get('applicantName'),
+            'drawingBase64': item.get('drawingBase64')
+        }
+        filtered_results.append([filtered_item])
 
-    return all_results
+    return filtered_results
     
 
 
