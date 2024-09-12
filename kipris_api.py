@@ -43,7 +43,7 @@ def save_to_json(data, filename='trademark_info.json'):
 
 
 # KIPRIS API 호출
-def get_trademark_info(classification, trademark_name):
+def get_trademark_info(trademark_name):
 
     BASE_URL = 'http://plus.kipris.or.kr/kipo-api/kipi/trademarkInfoSearchService/getAdvancedSearch'
 
@@ -71,10 +71,10 @@ def get_trademark_info(classification, trademark_name):
         'visual': 'false',              # 시각적으로 인식 가능한 상표 중에서 검색
         'ServiceKey': kipris_api,       # KIPRIS API 키
         'trademarkName': trademark_name,# 검색할 상표 이름
-        'classification' : classification, # 상품 분류 넘버
+        # 'classification' : classification, # 상품 분류 넘버
         'trademark' : 'true',           # 이게 true여야 제대로 검색됩니다.
         'pageNo' : 1,
-        'numOfRows' : 2
+        'numOfRows' : 5
         
     }
 
@@ -90,7 +90,8 @@ def get_trademark_info(classification, trademark_name):
         try:
             items = data['response']['body']['items']['item']
 
-            
+            count_items = len(items)
+            print(f'{trademark_name}의 데이터 개수 : {count_items}개')
 
             # 결과가 없으면 None을 반환하고 다음으로 넘어감
             if not items:
@@ -106,30 +107,55 @@ def get_trademark_info(classification, trademark_name):
         print(f"Error: {response.status_code}")
 
 
+
+
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
-def search_and_save_all_results(classification, trademark_names):
+def search_and_save_all_results(trademark_names):
 
     all_results = []
-
     for trademark_name in trademark_names:
         print(f'Searching for : {trademark_name}')
-        result = get_trademark_info(classification, trademark_name)
+        result = get_trademark_info(trademark_name)
 
         if result : 
             all_results.extend(result)
+
     save_to_json(all_results, f'combined_trademark_info.json')
+    return all_results
+
+
+
+
+def updated_search_results(seperated_words):
+
+    # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
+    all_results = search_and_save_all_results(seperated_words)
+
+    # 각 항목의 drawing을 base64로 변환
+    for item in all_results:
+        process_drawing(item)
+
+    save_to_json(all_results, f'update_combined_trademark_info.json')
+
+    return all_results
+    
+
+
 
 # 테스트 데이터
-seperated_words = [
-    "mindshare",
-    "마인드쉐어",
-    "mind",
-    "share",
-    "마인드",
-    "쉐어",
-    "인지공유",
-    "마음나눔"
-]
+# seperated_words = [
+#     "mindshare",
+#     "마인드쉐어",
+#     "mind",
+#     "share",
+#     "마인드",
+#     "쉐어",
+#     "인지공유",
+#     "마음나눔"
+# ]
 
-classification_code = 42
-search_and_save_all_results(classification_code, seperated_words)
+
+
+# all_result = updated_search_results(seperated_words)
+
+# print(all_result)

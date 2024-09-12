@@ -4,6 +4,7 @@ from init import api_key
 from datetime import datetime
 import time
 from dotenv import load_dotenv
+import json
 load_dotenv()
 
 openai.api_key = os.environ.get('OPENAI_API_KEY')
@@ -44,9 +45,6 @@ def generate_similar_barnd_names(brand_name):
     )
     end_time = time.time()
 
-    # API로 부터 받은 응답.
-    result = response.choices[0].message.content
-    
     now= datetime.now().isoformat()
     use_token_dict = {
         "프롬프트 토큰 수": response.usage.prompt_tokens,
@@ -56,13 +54,32 @@ def generate_similar_barnd_names(brand_name):
         "소요시간": end_time - start_time
     }
     print(use_token_dict)
+    
+    # API로 부터 받은 응답.
+    result_str = response.choices[0].message.content
+    # 응답 문자열이 비어있지 않은지 확인
+    if not result_str:
+        raise ValueError("OpenAI API 응답이 비어 있습니다.")
+
+    # JSON으로 변환 시도
+    try:
+        #json 문자열 정리
+        result = result_str.strip('```json').strip('```') 
+        result = json.loads(result)
+    except json.JSONDecodeError as e:
+        print(f"JSONDecodeError 발생: {e}")
+        print(f"OpenAI API 응답 내용: {result_str}")
+        raise  # JSON 파싱 오류 발생 시 예외 다시 던짐
 
     return result
 
 
 # 상표명을 입력받아 유사한 이름 생성
-# brand_name = 'mindshare'
-# similar_words = generate_similar_barnd_names(brand_name)
-
-# # 결과출력
-# print(similar_words)
+brand_name = '시민언론시선'
+try:
+    similar_words = generate_similar_barnd_names(brand_name)
+    print(similar_words)  # 결과 출력
+except ValueError as ve:
+    print(f"에러: {ve}")
+except Exception as e:
+    print(f"예기치 않은 에러 발생: {e}")
