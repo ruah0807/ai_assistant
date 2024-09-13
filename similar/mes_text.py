@@ -82,6 +82,7 @@ def print_message(response):
         print(f'[{res.role.upper()}]\n{res.content[0].text.value}\n')
     print("-" * 60)
 
+
 #반복문에서 대기하는 함수
 def wait_on_run(run, thread, timeout=120):
     start_time = time.time()
@@ -98,15 +99,16 @@ def wait_on_run(run, thread, timeout=120):
         time.sleep(0.5)
     return run
 
-def check_run_step(thread_id, run_id):
-    #실행된 모든 단계를 조회하여 도구 사용 여부 확인
-    run_steps = client.beta.threads.runs.steps.list(
-        thread_id=thread_id,
-        run_id=run_id,
-        order='asc'
-    )
-    for step in run_steps:
-        print(step)
+
+# def check_run_step(thread_id, run_id):
+#     #실행된 모든 단계를 조회하여 도구 사용 여부 확인
+#     run_steps = client.beta.threads.runs.steps.list(
+#         thread_id=thread_id,
+#         run_id=run_id,
+#         order='asc'
+#     )
+#     for step in run_steps:
+#         print(step)
 
 
 

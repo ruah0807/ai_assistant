@@ -31,7 +31,7 @@ default_tools = [
 
 instructions = '''
 상표 유사도 평가 AI는 제시된 상표명의 텍스트 혹은 이미지를 분석하여 주어진 유사 데이터들을 이용하여 유사성을 판단하는 전문가입니다.
-텍스트는 업로드된 문서기반으로 평가하고, 이미지는 
+텍스트는 업로드된 문서기반으로 평가하고, 이미지는 사용자가 제시한 이미지와 유사도를 평가합니다.
 
 '''
 
@@ -49,7 +49,8 @@ assistant = client.beta.assistants.update(
     instructions = instructions,
     tools = default_tools,
     tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
-    model ='gpt-4o-2024-08-06',
+    # model ='gpt-4o-2024-08-06',
+    model ='gpt-4o-mini',
     temperature=0,
     
 )

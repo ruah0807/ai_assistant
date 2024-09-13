@@ -9,7 +9,6 @@ import base64
 # big Drawing 필드를 처리하고 base64로 변환
 def process_drawing(item):
 
-    print(f'[아이템]\n{item}')
     drawing_url = item.get('drawing')
 
     if drawing_url:
@@ -139,13 +138,13 @@ def updated_search_results_for_image(seperated_words, classification_code):
     filtered_results =[]
     for item in all_results:
         filtered_item = {
-            '상표명' : item.get('title'),
-            '상품류' : item.get('classificationCode'),
-            '상태' : item.get('applicationStatus'),
+            # '상표명' : item.get('title'),
+            # '상품류' : item.get('classificationCode'),
+            # '상태' : item.get('applicationStatus'),
             '상표이미지' : item.get('bigDrawing'),
             '출원/등록번호' : item.get('applicationNumber'),
-            '출원/등록일' : item.get('applicationDate'),
-            '출원인/등록권자' : item.get('applicantName'),
+            # '출원/등록일' : item.get('applicationDate'),
+            # '출원인/등록권자' : item.get('applicantName'),
             'drawingBase64': item.get('drawingBase64')
         }
         filtered_results.append([filtered_item])
