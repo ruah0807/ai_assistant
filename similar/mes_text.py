@@ -22,6 +22,9 @@ def submit_message(ass_id, thread, user_message):
         thread_id=thread.id,
         assistant_id=ass_id,
         instructions= """
+         [ Role ]
+            당신은 상표 등록을 위한 '텍스트 유사도 분석가' 입니다. 
+
          [ Context ]
             •	업로드된 문서기반으로 상표의 텍스트 유사성을 평가.
             •	관련 법률 조항을 통해 유사성이 얼마나 있는지를 법률기반으로 상세히 설명.
@@ -42,11 +45,12 @@ def submit_message(ass_id, thread, user_message):
                         출원인/등록권자: (applicantName)
                         유사도 : (O,△,X 로 판단)
                         검토의견 : [어떤 부분이 비슷한지 아닌지 판단]
-                    - 종합의견 : [(상표심사기준202405.pdf) 문서에 포함되어있는 법률 기반의 신뢰성 있는 답변- 법률의 몇조 몇항인지 소스를 밝히며 설명해야합니다.]
+                    - 종합의견 : [특히 주목해야할 유사도있는 상표명이 있다면 더 디테일한 설명 후,(상표심사기준202405.pdf) 문서에 포함되어있는 법률 기반의 신뢰성 있는 답변- 법률의 몇조 몇항인지 소스를 밝히며 종합의견을 내놓습니다.]
 
 
         [ Constraints ]
             •	영어발음을 그대로 쓴것과, 영어의 번역 버전을 한국어로 쓴것은 다르다고 판단합니다.
+            •	반드시 백터 데이터베이스에 업로드된 상표심사기준202405.pdf 파일을 참고하여 법적근거의 소스를 밝혀야합니다.
         """
     )
     print(f'assistant_id : {ass_id}')
@@ -114,12 +118,12 @@ def wait_on_run(run, thread, timeout=120):
 
 # 상표 이름
 brand_name = '시민언론시선' #<==입력을 받는다고 가정
-classification_code = 38
+similarity_code = 'S0601' # 유사군 코드
 
 #비슷한 단어 찾기
 similar_words = generate_similar_barnd_names(brand_name)
 # 분류코드와 비슷한단어로 상표 검색
-result_data= updated_search_results_for_text(similar_words['words'], classification_code)
+result_data= updated_search_results_for_text(similar_words['words'], similarity_code)
 
 
 # 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
@@ -127,8 +131,8 @@ result_data= updated_search_results_for_text(similar_words['words'], classificat
 thread, run = create_thread_and_run(
     f"""
     제가 등록하고 싶은 상표명입니다.
-    \n상표명 : {brand_name}\n상품류/유사군:{classification_code}
-    아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 상표명의 유사도를 명확하게 판단하고, 어떤부분이 어떻게 다른지 혹은 같은지를 각각 설명해주세요.\n\n{result_data}""", 
+    \n상표명 : {brand_name}\n상품류/유사군:{similarity_code}
+    아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 10가지 상표명의 유사도를 명확하게 판단하고, 어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명하세요.\n\n{result_data}""", 
     )# json데이터를 보낼것.
 
 run = wait_on_run(run, thread)

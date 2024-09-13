@@ -43,7 +43,7 @@ def save_to_json(data, filename='trademark_info.json'):
 
 
 # KIPRIS API 호출
-def get_trademark_info(trademark_name, classification_code):
+def get_trademark_info(trademark_name, similarity_code):
 
     BASE_URL = 'http://plus.kipris.or.kr/kipo-api/kipi/trademarkInfoSearchService/getAdvancedSearch'
 
@@ -71,10 +71,10 @@ def get_trademark_info(trademark_name, classification_code):
         'visual': 'false',              # 시각적으로 인식 가능한 상표 중에서 검색
         'ServiceKey': kipris_api,       # KIPRIS API 키
         'trademarkName': trademark_name,# 검색할 상표 이름
-        'classification' : classification_code, # 상품 분류 넘버
         'trademark' : 'true',           # 이게 true여야 제대로 검색됩니다.
+        'similarityCode': similarity_code,
         'pageNo' : 1,
-        'numOfRows' : 5
+        'numOfRows' : 5,
         
     }
 
@@ -107,12 +107,12 @@ def get_trademark_info(trademark_name, classification_code):
 
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
-def search_and_save_all_results(trademark_names, classification_code):
+def search_and_save_all_results(trademark_names, similarity_code):
 
     all_results = []
     for trademark_name in trademark_names:
         print(f'Searching for : {trademark_name}')
-        result = get_trademark_info(trademark_name, classification_code)
+        result = get_trademark_info(trademark_name, similarity_code)
 
         if result : 
             all_results.extend(result)
@@ -124,10 +124,10 @@ def search_and_save_all_results(trademark_names, classification_code):
     
 
 
-def updated_search_results_for_image(seperated_words, classification_code):
+def updated_search_results_for_image(seperated_words, similarity_code):
 
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
-    all_results = search_and_save_all_results(seperated_words, classification_code)
+    all_results = search_and_save_all_results(seperated_words, similarity_code)
 
     # 각 항목의 drawing을 base64로 변환
     for item in all_results:
@@ -145,7 +145,7 @@ def updated_search_results_for_image(seperated_words, classification_code):
             '출원/등록번호' : item.get('applicationNumber'),
             # '출원/등록일' : item.get('applicationDate'),
             # '출원인/등록권자' : item.get('applicantName'),
-            'drawingBase64': item.get('drawingBase64')
+            # 'drawingBase64': item.get('drawingBase64')
         }
         filtered_results.append([filtered_item])
 
@@ -154,10 +154,10 @@ def updated_search_results_for_image(seperated_words, classification_code):
 
 
 
-def updated_search_results_for_text(seperated_words, classification_code):
+def updated_search_results_for_text(seperated_words, similarity_code):
 
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
-    all_results = search_and_save_all_results(seperated_words, classification_code)
+    all_results = search_and_save_all_results(seperated_words, similarity_code)
 
     filtered_results =[]
     for item in all_results:
