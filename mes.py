@@ -98,9 +98,9 @@ def check_run_step(thread_id, run_id):
         print(step)
 
 # 상표 이름
-brand_name = '유상우 정신건강의학과' #<==입력을 받는다고 가정
-brand_img_path = 'brand_img/[추천]유상우_정신건강의학과_44.png'
-classification_code = 44
+brand_name = 'homes house' #<==입력을 받는다고 가정
+brand_img_path = 'brand_img/[추천]홈즈하우스_35_36_37.png'
+classification_code = 35
 
 #비슷한 단어 찾기
 similar_words = generate_similar_barnd_names(brand_name)
@@ -119,8 +119,7 @@ run = send_message_in_same_thread(
     thread, 
     f"""
     상표를 등록하려고 합니다. 다음은 등록하려는 상표의 정보입니다. \n상표명 : {brand_name}\n상품류/유사군:{classification_code}
-    특허청에서 비슷한 상표를 검색한 데이터입니다. 
-    이 중 drawingBase64를 참조해서 내가 업로드한 **이미지**(도형, 컬러)를 기반으로 유사도를 검토 해서 가장 비슷하다고 생각하는 5가지의 상표 각각을 명확하게 유사도 판단하고, 어떤부분이 어떻게 다른지 혹은 같은지를 상세한 설명이 포함되어있는 상세한 의견서를 만들어주세요\n\n{result_data}""", 
+    특허청에서 비슷한 상표를 검색한 데이터입니다. 상표명 뿐아니라 도형+상표명을 각 기준으로 하여 내가 업로드한 drawingBase64를 참조해서 도형, 컬러를 기반으로 유사도를 검토 해서 가장 비슷하다고 생각하는 5가지의 상표 각각을 명확하게 유사도 판단하고, 어떤부분이 어떻게 다른지 혹은 같은지를 상세한 설명이 포함되어있는 의견서를 만들어주세요\n\n{result_data}""", 
     image_path=brand_img_path)# json데이터를 보낼것.
 
 

@@ -26,7 +26,7 @@ def generate_similar_barnd_names(brand_name):
     6. 결과는 JSON 형식으로 출력해줘. 검색어는 words 리스트 안에 고유한 단어들만 포함시켜줘. 검색한 단어와 그 번역본은 가장 첫 번째로 추가해줘(중복 글자 불가):
     {{
     "words": [
-        // 8가지를 넘지 않는다.
+        // 5가지를 넘지 않는다.
         // 그 외에 중복 없는 고유한 검색어들
         // 검색한 단어와 번역본이 첫 번째,
     ]
@@ -66,20 +66,22 @@ def generate_similar_barnd_names(brand_name):
         #json 문자열 정리
         result = result_str.strip('```json').strip('```') 
         result = json.loads(result)
+        print(result)
+        return result
+
     except json.JSONDecodeError as e:
         print(f"JSONDecodeError 발생: {e}")
         print(f"OpenAI API 응답 내용: {result_str}")
         raise  # JSON 파싱 오류 발생 시 예외 다시 던짐
 
-    return result
 
 
-# 상표명을 입력받아 유사한 이름 생성
-brand_name = '시민언론시선'
-try:
-    similar_words = generate_similar_barnd_names(brand_name)
-    print(similar_words)  # 결과 출력
-except ValueError as ve:
-    print(f"에러: {ve}")
-except Exception as e:
-    print(f"예기치 않은 에러 발생: {e}")
+# # 상표명을 입력받아 유사한 이름 생성
+# brand_name = '시민언론시선'
+# try:
+#     similar_words = generate_similar_barnd_names(brand_name)
+#     print(similar_words)  # 결과 출력
+# except ValueError as ve:
+#     print(f"에러: {ve}")
+# except Exception as e:
+#     print(f"예기치 않은 에러 발생: {e}")

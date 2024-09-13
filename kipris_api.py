@@ -9,6 +9,7 @@ import base64
 # big Drawing 필드를 처리하고 base64로 변환
 def process_drawing(item):
 
+    print(f'[아이템]\n{item}')
     drawing_url = item.get('drawing')
 
     if drawing_url:
@@ -90,18 +91,15 @@ def get_trademark_info(trademark_name, classification_code):
         try:
             items = data['response']['body']['items']['item']
 
-            count_items = len(items)
-            print(f'{trademark_name}의 데이터 개수 : {count_items}개')
+            if isinstance (items, dict):
+                items = [items]
 
-            # 결과가 없으면 None을 반환하고 다음으로 넘어감
-            if not items:
-                print(f"'{trademark_name}'에 대한 검색 결과가 없습니다.")
-                return None
+            print(f'{trademark_name}의 데이터 개수 : {len(items)}개')
             
-            return items # item 리스트 반환
+            return items[:5] # item 리스트 반환
 
         except Exception as e:
-            print(f"Error processing bigDrawing: {e}")
+            print(f"검색결과 없음: {e}")
             return None
     else:
         print(f"Error: {response.status_code}")
@@ -124,9 +122,10 @@ def search_and_save_all_results(trademark_names, classification_code):
     return all_results
 
 
+    
 
 
-def updated_search_results(seperated_words, classification_code):
+def updated_search_results_for_image(seperated_words, classification_code):
 
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
     all_results = search_and_save_all_results(seperated_words, classification_code)
@@ -151,8 +150,30 @@ def updated_search_results(seperated_words, classification_code):
         }
         filtered_results.append([filtered_item])
 
-    return filtered_results
-    
+    return filtered_results[:10]
+
+
+
+
+def updated_search_results_for_text(seperated_words, classification_code):
+
+    # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
+    all_results = search_and_save_all_results(seperated_words, classification_code)
+
+    filtered_results =[]
+    for item in all_results:
+        filtered_item = {
+            '상표명' : item.get('title'),
+            '상품류' : item.get('classificationCode'),
+            '상태' : item.get('applicationStatus'),
+            '상표이미지' : item.get('bigDrawing'),
+            '출원/등록번호' : item.get('applicationNumber'),
+            '출원/등록일' : item.get('applicationDate'),
+            '출원인/등록권자' : item.get('applicantName'),
+        }
+        filtered_results.append([filtered_item])
+
+    return filtered_results[:10]
 
 
 

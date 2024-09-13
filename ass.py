@@ -77,11 +77,11 @@ instructions = '''
                 출원/등록번호: (applicationNumber) 
                 출원/등록일 : (applicationDate)
                 출원인/등록권자: (applicantName)
-	        - (2) 검토의견: 위에 결과중 비슷하다고 판단한 상표의 유사성 평가.
+	        - (2) 검토의견: 위에 결과중 비슷하다고 판단한 상표 각각의 유사성을 평가.
 				상품류: (claasificationCode)
                 상표: (bigDrawing)
                 유사도 : (O,△,X 로 판단)
-                검토의견 : (유사도 판단이유)
+                검토의견 : (유사도 판단이유: 도형 / 텍스트로 분류)
 	    3.	식별력 판단: [상표심사기준]을 참고하여 식별력 여부 설명.(법적근거를 제시가능 500자 이내)
 	    4.	종합의견: 각각의 상표 유사성 판단을 종합한 상세한 의견 제공. (400자 이내)
 	5.	피드백 요청:
@@ -92,9 +92,7 @@ instructions = '''
 
 	•	상표심사기준에 따라 상표의 이미지 및 텍스트 분석.
 	•	식별력이 부족한 경우, 상표심사기준에 명시된 관련 조항 참조.
-	•	3번 식별력 및 4번 종합의견 부분은 신중하게 답변.
-	•	사용자가 이미지를 업로드할시에 의견서 작성 질문으로 유도할 것.
-	•	사용자가 이미지를 업로드할시에 답변으로 의견서를 작성하지 말것.
+	•	3번 식별력 및 4번 종합의견은 상세한 설명을 다시한번 풀어서 작성
 	•	사용자가 의견서 요청을 할경우에만 문서를 바탕으로하여 작성할것.
 
     
@@ -114,7 +112,7 @@ assistant = client.beta.assistants.update(
     assistant_id = ass_id,
     instructions = instructions,
     tools = default_tools,
-    model ='gpt-4o'
+    model ='gpt-4o-mini'
 )
 
 # print(client.beta.vector_stores.list())
