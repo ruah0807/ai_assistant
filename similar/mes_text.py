@@ -1,6 +1,6 @@
 import os, sys, time
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from ass_text import ass_id
+from ass_similar import ass_id
 from init import client
 from kipris_api import updated_search_results_for_text
 from similar import generate_similar_barnd_names
@@ -15,11 +15,39 @@ def submit_message(ass_id, thread, user_message):
         thread_id=thread.id,
         role="user",
         content=content
+
     )
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=ass_id,
+        instructions= """
+         [ Context ]
+            •	업로드된 문서기반으로 상표의 텍스트 유사성을 평가.
+            •	관련 법률 조항을 통해 유사성이 얼마나 있는지를 법률기반으로 상세히 설명.
+
+        [ dialog flow ]
+            1.	상표 입력 요청:
+                - 사용자가 상표의 텍스트를 입력합니다.
+            2.	상표 분석
+            3.	상표심사기준 적용:
+                - vectorstore에 업로드된 [상표심사기준202405.pdf]을 기준으로 각각 상표의 유사성을 평가하고 설명합니다.
+            각각의 상표 텍스트를 비교하여 얼마나 비슷한지를 아래와 같이 평가합니다.:
+                
+                    - 검토의견: 상표의 유사성을 각각 평가.
+                        상표명 : (title)
+                        상품류: (claasificationCode)
+                        상표이미지: (bigDrawing)
+                        출원/등록일 : (applicationDate)
+                        출원인/등록권자: (applicantName)
+                        유사도 : (O,△,X 로 판단)
+                        검토의견 : [어떤 부분이 비슷한지 아닌지 판단]
+                    - 종합의견 : [(상표심사기준202405.pdf) 문서에 포함되어있는 법률 기반의 신뢰성 있는 답변- 법률의 몇조 몇항인지 소스를 밝히며 설명해야합니다.]
+
+
+        [ Constraints ]
+            •	영어발음을 그대로 쓴것과, 영어의 번역 버전을 한국어로 쓴것은 다르다고 판단합니다.
+        """
     )
     print(f'assistant_id : {ass_id}')
     print(f'thread_id : {thread.id}')
@@ -55,24 +83,18 @@ def print_message(response):
     print("-" * 60)
 
 #반복문에서 대기하는 함수
-def wait_on_run(run, thread, timeout=300, retries=3):
+def wait_on_run(run, thread, timeout=120):
     start_time = time.time()
-    attempts = 0
-    while attempts < retries:
-        while run.status == 'queued' or run.status == 'in_progress':
-            print(f"현재 run 상태: {run.status}")
-            run = client.beta.threads.runs.retrieve(
-                thread_id=thread.id,
-                run_id=run.id
-            )
-            if time.time() - start_time > timeout:
-                attempts += 1
-                print(f"타임아웃 발생. {attempts}/{retries}회 재시도 중...")
-                if attempts >= retries:
-                    raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
-                else:
-                    time.sleep(1)  # 재시도 전 잠시 대기
-                    start_time = time.time()  # 타이머 재설정
+    while run.status == 'queued' or run.status == 'in_progress':
+        # 상태를 출력하여 디버깅
+        print(f"현재 run 상태: {run.status}")
+        run = client.beta.threads.runs.retrieve(
+            thread_id=thread.id,
+            run_id = run.id
+        )
+        # 일정 시간이 지나면 타임아웃 발생
+        if time.time() - start_time > timeout:
+            raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
         time.sleep(0.5)
     return run
 
@@ -87,16 +109,6 @@ def check_run_step(thread_id, run_id):
         print(step)
 
 
-def check_last_message(thread):
-    messages = get_response(thread)
-    last_message = messages[-1].content[0].text.value
-    # 답변이 완료되었는지 확인
-    if "고마워요" not in last_message:  # 기대한 답변을 기준으로 조건을 설정
-        print("답변이 완료되지 않았습니다. 다시 질문을 보냅니다.")
-        send_message_in_same_thread(thread, "마지막 질문에 답변해 주세요.")
-    else:
-        print("답변이 완료되었습니다.")
-
 
 # 상표 이름
 brand_name = '시민언론시선' #<==입력을 받는다고 가정
@@ -109,28 +121,17 @@ result_data= updated_search_results_for_text(similar_words['words'], classificat
 
 
 # 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
-thread, run = create_thread_and_run(f"상표를 등록하려고 합니다.")
 
-run= wait_on_run(run, thread)
-print_message(get_response(thread))
-
-
-run = send_message_in_same_thread(
-    thread, 
+thread, run = create_thread_and_run(
     f"""
     제가 등록하고 싶은 상표명입니다.
     \n상표명 : {brand_name}\n상품류/유사군:{classification_code}
-    아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 상표명(텍스트)를 각 기준으로 하여 제가 업로드한 상표명의 이름을 기반으로 유사도를 검토 해서 가장 비슷하다고 생각하는 5가지를 각각을 명확하게 판단하고, 어떤부분이 어떻게 다른지 혹은 같은지를 각각 설명하세요.\n\n{result_data}""", 
+    아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 상표명의 유사도를 명확하게 판단하고, 어떤부분이 어떻게 다른지 혹은 같은지를 각각 설명해주세요.\n\n{result_data}""", 
     )# json데이터를 보낼것.
 
-try:
-    run = wait_on_run(run, thread)
-    print_message(get_response(thread))
-except TimeoutError:
-    print("시간 내에 답변을 받지 못했습니다. 다시 시도합니다.")
-    run = send_message_in_same_thread(thread, "이전 질문에 대한 답변을 받지 못했습니다. 다시 한번 확인해 주세요.")
-    run = wait_on_run(run, thread)
-    print_message(get_response(thread))
+run = wait_on_run(run, thread)
+print_message(get_response(thread))
+
 
 
 # 세 번째 스레드를 마친 후 감사 인사 전송
