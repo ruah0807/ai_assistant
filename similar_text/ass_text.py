@@ -6,6 +6,7 @@ from init import client
 
 load_dotenv()
 
+# Assistant Name: 상표 TEXT 유사도 평가 Assistant
 ass_id = 'asst_IbYT7EatQkmSnremkg5RuiC0'
 
 

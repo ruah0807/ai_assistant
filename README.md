@@ -1,9 +1,8 @@
 # 초기 세팅
-conda create -n jupyter_test python=3.12
+conda create -n assistant python=3.12
 
-conda activate jupyter_test
+conda activate assistant
 
-pip install jupyter
 
 # 시작
 cd py-code && cd hw
@@ -14,4 +13,4 @@ conda activate jupyter_test
 jupyter notebook
 
 # 사용 pip module
-pip install load_dotenv sqlalchemy mysql mysql-connector-python pytz
+pip install jupyter load_dotenv openai 
