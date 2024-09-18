@@ -6,31 +6,6 @@ import requests
 import base64
 
 
-# big Drawing 필드를 처리하고 base64로 변환
-def process_drawing(item):
-
-    drawing_url = item.get('drawing')
-
-    if drawing_url:
-        response = requests.get(drawing_url)
-    
-        # Ensure the request was successful
-        if response.status_code == 200:
-            # Encode the image content to base64
-            encoded_image = base64.b64encode(response.content)
-        
-            # Convert to a readable base64 string
-            base64_string = encoded_image.decode('utf-8')
-            item['drawingBase64'] = base64_string
-
-            return item['drawingBase64']
-        else:
-            print(f"Drawing URL not found in item: {item}")
-            return None
-    else:
-        print(f"Invalid item format: {item}")
-        return None
-
 
 
 #JSON 파일로 저장(자동 줄바꿈)
@@ -129,9 +104,9 @@ def updated_search_results_for_image(seperated_words, similarity_code):
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
     all_results = search_and_save_all_results(seperated_words, similarity_code)
 
-    # 각 항목의 drawing을 base64로 변환
-    for item in all_results:
-        process_drawing(item)
+    # # 각 항목의 drawing을 base64로 변환
+    # for item in all_results:
+    #     process_drawing(item)
 
     save_to_json(all_results, f'update_combined_trademark_info.json')
     
@@ -191,3 +166,30 @@ def updated_search_results_for_text(seperated_words, similarity_code):
 
 # all_result = updated_search_results(seperated_words)
 # print(all_result)
+
+
+# big Drawing 필드를 처리하고 base64로 변환
+# def process_drawing(item):
+
+#     drawing_url = item.get('drawing')
+
+#     if drawing_url:
+#         response = requests.get(drawing_url)
+    
+#         # Ensure the request was successful
+#         if response.status_code == 200:
+#             # Encode the image content to base64
+#             encoded_image = base64.b64encode(response.content)
+        
+#             # Convert to a readable base64 string
+#             base64_string = encoded_image.decode('utf-8')
+#             item['drawingBase64'] = base64_string
+
+#             return item['drawingBase64']
+#         else:
+#             print(f"Drawing URL not found in item: {item}")
+#             return None
+#     else:
+#         print(f"Invalid item format: {item}")
+#         return None
+
