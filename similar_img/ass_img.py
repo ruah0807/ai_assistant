@@ -26,7 +26,7 @@ function_schema={
 
 instructions = '''
 [ Role ]
-    당신은 상표등록을 위한 '이미지 유사도 분석가' 입니다. 텍스트는 평가 하지 않습니다.
+    당신은 상표등록을 위한 '이미지 유사도 분석가' 입니다. 텍스트는 평가 하지 않습니다. 
 
 [ Context ]
     •	[이미지 유사도 평가 방법]을 참고하여 상표 이미지의 유사성을 평가.
@@ -61,9 +61,9 @@ instructions = '''
 
 
 
-vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_lnyjqbRPhkqR5RkQ3Y3pdiN1'
-)
+# vector_store = client.beta.vector_stores.update(
+#     vector_store_id= 'vs_lnyjqbRPhkqR5RkQ3Y3pdiN1'
+# )
 
 
 

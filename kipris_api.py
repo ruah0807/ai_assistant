@@ -1,9 +1,8 @@
-import requests
-import xmltodict
+import requests, os, xmltodict, json
 from init import kipris_api
-import json
-import requests
 import base64
+from io import BytesIO
+from PIL import Image
 
 
 # big Drawing 필드를 처리하고 base64로 변환
@@ -121,7 +120,35 @@ def search_and_save_all_results(trademark_names, similarity_code):
     return all_results
 
 
+# 이미지 url로부터 다운로드하고 파일로 저장하는 함수
+def download_image_with_application_number(image_url, application_number,save_dir="similar_img"):
+
+    # 이미지 url 내에서 이미지 다운로드
+    response = requests.get(image_url)
     
+    if response.status_code == 200 :
+        
+        img = Image.open(BytesIO(response.content))
+        
+        # 디렉토리 경로 설정 (상대 경로를 절대 경로로 변환)
+        save_dir = os.path.join(os.getcwd(), save_dir)
+        
+        # 디렉토리가 없으면 생성
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+            print(f"디렉토리 생성됨: {save_dir}")
+        
+        # 파일 경로 설정
+        image_filename = os.path.join(save_dir, f'출원번호_{application_number}.png')
+        
+        # 이미지 저장
+        img.save(image_filename)
+        print(f'이미지가 {image_filename}으로 저장되었습니다.')
+        return image_filename
+    else:
+        print(f"Error : {response.status_code} - 이미지를 다운로드 할 수 없습니다.")
+        return None
+
 
 
 def updated_search_results_for_image(seperated_words, similarity_code):
@@ -129,26 +156,39 @@ def updated_search_results_for_image(seperated_words, similarity_code):
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
     all_results = search_and_save_all_results(seperated_words, similarity_code)
 
-    # 각 항목의 drawing을 base64로 변환
-    for item in all_results:
-        process_drawing(item)
+    # # 각 항목의 drawing을 base64로 변환
+    # for item in all_results:
+    #     process_drawing(item)
 
-    save_to_json(all_results, f'update_combined_trademark_info.json')
+    # save_to_json(all_results, f'update_combined_trademark_info.json')
     
     filtered_results =[]
-    for item in all_results:
-        filtered_item = {
-            # '상표명' : item.get('title'),
-            # '상품류' : item.get('classificationCode'),
-            # '상태' : item.get('applicationStatus'),
-            '상표이미지' : item.get('bigDrawing'),
-            '출원/등록번호' : item.get('applicationNumber'),
-            # '출원/등록일' : item.get('applicationDate'),
-            # '출원인/등록권자' : item.get('applicantName'),
-            # 'drawingBase64': item.get('drawingBase64')
-        }
-        filtered_results.append([filtered_item])
 
+    for item in all_results:
+        big_drawing_url = item.get('bigDrawing')
+        application_number = item.get('applicationNumber')
+
+        image_path = None
+
+        if big_drawing_url and application_number:
+            #이미지 다운로드 처리
+            image_path = download_image_with_application_number(big_drawing_url, application_number)
+
+        if image_path :
+            filtered_item = {
+                'image_path': image_path,
+                'classification_code' : item.get('classificationCode'),
+                'image_url' : item.get('bigDrawing'),
+                'application_number' : item.get('applicationNumber'),
+                # '상표명' : item.get('title'),
+                # '상태' : item.get('applicationStatus'),
+                # '출원/등록일' : item.get('applicationDate'),
+                # '출원인/등록권자' : item.get('applicantName'),
+                # 'drawingBase64': item.get('drawingBase64')
+            }
+            filtered_results.append(filtered_item)
+
+    save_to_json(filtered_results,  f'filtered_item.json')
     return filtered_results[:10]
 
 
