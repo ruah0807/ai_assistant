@@ -45,14 +45,13 @@ def submit_message(ass_id, thread, user_message, image_path):
                 상표이미지: (image_url) - url\n
                 출원/등록번호 : (application_number)\n
                 상품류 : (classification_code)\n
+                비엔나 코드 : (vienna_code)\n
                 유사도 : (O - 유사, △ - 중간유사, X - 비유사 로 판단)\n
                 검토의견 : [해당 이미지는 어떤 외관을 가지고 있는지 설명 후 사용자가 등록하고자 하는 이미지와의 유사성을 비교합니다.]\n\n
             - 종합의견 : [제시한(이미지 유사도 평가 방법)에 따라 각 이미지들을 비교하며 유사성을 상세히 설명하세요]
         """
     )
-    print(f'assistant_id : {ass_id}')
-    print(f'thread_id : {thread.id}')
-    print(f'run_id : {run.id}')
+    print(f'assistant_id : {ass_id}, thread_id : {thread.id}, run_id : {run.id}')
 
     return run
 
@@ -71,14 +70,6 @@ def create_thread_and_run(user_input, image_path):
     return thread, run
 
 
-
-def send_message_in_same_thread(thread, user_message, image_path):
-    # 메시지 전송
-    run = submit_message(ass_id, thread, user_message, image_path)
-    return run
-
-
-
 # 메시지 출력용 함수
 def print_message(response):
     for res in response:
@@ -92,27 +83,23 @@ def print_message(response):
             # 이미지 파일일 경우
             elif content.type == 'image_file':
                 print(f"이미지 파일 ID: {content.image_file.file_id}\n")
-
         print("-" * 60)
 
 
-#반복문에서 대기하는 함수
+# 실행 완료까지 대기하는 함수
 def wait_on_run(run, thread, timeout=500):
     start_time = time.time()
     while run.status == 'queued' or run.status == 'in_progress':
         # 상태를 출력하여 디버깅
         print(f"현재 run 상태: {run.status}")
-        run = client.beta.threads.runs.retrieve(
-            thread_id=thread.id,
-            run_id = run.id
-        )
+        run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id = run.id)
         # 일정 시간이 지나면 타임아웃 발생
         if time.time() - start_time > timeout:
             raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
         time.sleep(0.5)
     return run
 
-all_responses = []
+
 
 # 메시지들을 Markdown 파일로 저장하는 함수
 def save_messages_to_md(responses, filename='assistant_response.md'):
@@ -131,17 +118,6 @@ def save_messages_to_md(responses, filename='assistant_response.md'):
     print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
 
 
-
-def collect_message(thread):
-    # 1. 메시지 받기
-    response = get_response(thread)
-    all_responses.extend(response)
-
-
-def process_and_save_all_messages():
-    # Markdown 파일로 저장
-    save_messages_to_md(all_responses)
-
 # 이미지 파일 삭제
 def delete_downloaded_images(downloaded_image_paths):
     for image in downloaded_image_paths:
@@ -155,15 +131,14 @@ def delete_downloaded_images(downloaded_image_paths):
 
 ######################## 유저 인풋 ##########################
 
-brand_name = '스타빙스'
-similarity_code = ''
-brand_image_path = ['/Users/ainomis_dev/Desktop/ainomis/ai_assistant/img/brand_img/starbings.png']
+brand_name = 'crople'
+similarity_code = 'S123301'
+brand_image_path = ['/Users/ainomis_dev/Desktop/ainomis/ai_assistant/img/brand_img/crople.png']
 # 유사이미지 검색 및 다운로드 처리
 download_image_paths = []
-
+all_responses = []
 
 ########################## 실행 ############################
-
 
 #비슷한 단어 찾기
 similar_words = generate_similar_barnd_names(brand_name)
@@ -172,31 +147,29 @@ result_data= updated_search_results_for_image(similar_words['words'], similarity
 
 
 # 등록 이미지와 유사 이미지를 비교하는 메시지 전송 (총 10번 반복)
-for idx, result in enumerate(result_data):
-    if idx >= 10:
-        break  # 10개의 메시지만 생성
+for idx, result in enumerate(result_data[:10]):
 
     # result_data는 이미지 정보와 경로를 포함하므로, 여기서 추출
     similar_image_path = result['image_path'] #유사 이미지 경로
     application_number = result['application_number'] # 출원번호
     classification_code = result['classification_code']
     image_url = result['image_url']
+    vienna_code = result['vienna_code']
 
     #다운로드 이미지 경로 저장
     download_image_paths.append(similar_image_path)
-
     image_pair = [brand_image_path[0], similar_image_path]  # 등록하려는 이미지와 유사 이미지 묶기
 
     # 메시지를 생성 및 전송
-    user_message = f"등록하고자 하는 이미지 '{brand_name}'와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다. \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 이미지URL: {image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
+    user_message = f"등록하고자 하는 이미지 '{brand_name}'와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다. \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
     thread, run = create_thread_and_run(user_message, image_pair)
 
     # 기다리는 로직 추가
     run = wait_on_run(run, thread)
-    print_message(get_response(thread))
-
-    collect_message(thread)
+    response = client.beta.threads.messages.list(thread_id=thread.id)
+    print_message(response)
+    all_responses.extend(response)
 
     delete_downloaded_images(download_image_paths)
 
-process_and_save_all_messages()
+save_messages_to_md(all_responses)

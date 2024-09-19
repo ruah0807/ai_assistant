@@ -5,33 +5,6 @@ from io import BytesIO
 from PIL import Image
 
 
-# big Drawing 필드를 처리하고 base64로 변환
-def process_drawing(item):
-
-    drawing_url = item.get('drawing')
-
-    if drawing_url:
-        response = requests.get(drawing_url)
-    
-        # Ensure the request was successful
-        if response.status_code == 200:
-            # Encode the image content to base64
-            encoded_image = base64.b64encode(response.content)
-        
-            # Convert to a readable base64 string
-            base64_string = encoded_image.decode('utf-8')
-            item['drawingBase64'] = base64_string
-
-            return item['drawingBase64']
-        else:
-            print(f"Drawing URL not found in item: {item}")
-            return None
-    else:
-        print(f"Invalid item format: {item}")
-        return None
-
-
-
 #JSON 파일로 저장(자동 줄바꿈)
 def save_to_json(data, filename='trademark_info.json'):
 
@@ -73,7 +46,7 @@ def get_trademark_info(trademark_name, similarity_code):
         'trademark' : 'true',           # 이게 true여야 제대로 검색됩니다.
         'similarityCode': similarity_code,
         'pageNo' : 1,
-        'numOfRows' : 5,
+        'numOfRows' : 20,
         
     }
 
@@ -94,7 +67,7 @@ def get_trademark_info(trademark_name, similarity_code):
 
             print(f'{trademark_name}의 데이터 개수 : {len(items)}개')
             
-            return items[:5] # item 리스트 반환
+            return items[:20] # item 리스트 반환
 
         except Exception as e:
             print(f"검색결과 없음: {e}")
@@ -167,28 +140,30 @@ def updated_search_results_for_image(seperated_words, similarity_code):
     for item in all_results:
         big_drawing_url = item.get('bigDrawing')
         application_number = item.get('applicationNumber')
+        vienna_code = item.get('viennaCode') 
 
         image_path = None
 
-        if big_drawing_url and application_number:
-            #이미지 다운로드 처리
-            image_path = download_image_with_application_number(big_drawing_url, application_number)
+        if vienna_code:
+            if big_drawing_url and application_number:
+                #이미지 다운로드 처리
+                image_path = download_image_with_application_number(big_drawing_url, application_number)
 
-        if image_path :
-            filtered_item = {
-                'image_path': image_path,
-                'classification_code' : item.get('classificationCode'),
-                'image_url' : item.get('bigDrawing'),
-                'application_number' : item.get('applicationNumber'),
-                'viennaCode': item.get('viennaCode')
-                # '상표명' : item.get('title'),
-                # '상태' : item.get('applicationStatus'),
-                # '출원/등록일' : item.get('applicationDate'),
-                # '출원인/등록권자' : item.get('applicantName'),
-            }
-            filtered_results.append(filtered_item)
+            if image_path :
+                filtered_item = {
+                    'image_path': image_path,
+                    'classification_code' : item.get('classificationCode'),
+                    'image_url' : item.get('bigDrawing'),
+                    'application_number' : item.get('applicationNumber'),
+                    'vienna_code': item.get('viennaCode')
+                    # '상표명' : item.get('title'),
+                    # '상태' : item.get('applicationStatus'),
+                    # '출원/등록일' : item.get('applicationDate'),
+                    # '출원인/등록권자' : item.get('applicantName'),
+                }
+                filtered_results.append(filtered_item)
 
-    save_to_json(filtered_results,  f'filtered_item.json')
+    save_to_json(filtered_results, f'filtered_item.json')
     return filtered_results[:10]
 
 
@@ -231,3 +206,30 @@ def updated_search_results_for_text(seperated_words, similarity_code):
 
 # all_result = updated_search_results(seperated_words)
 # print(all_result)
+
+
+######### big Drawing 필드를 처리하고 base64로 변환 ############
+# def process_drawing(item):
+
+#     drawing_url = item.get('drawing')
+
+#     if drawing_url:
+#         response = requests.get(drawing_url)
+    
+#         # Ensure the request was successful
+#         if response.status_code == 200:
+#             # Encode the image content to base64
+#             encoded_image = base64.b64encode(response.content)
+        
+#             # Convert to a readable base64 string
+#             base64_string = encoded_image.decode('utf-8')
+#             item['drawingBase64'] = base64_string
+
+#             return item['drawingBase64']
+#         else:
+#             print(f"Drawing URL not found in item: {item}")
+#             return None
+#     else:
+#         print(f"Invalid item format: {item}")
+#         return None
+
