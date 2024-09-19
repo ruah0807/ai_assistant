@@ -13,40 +13,25 @@ def submit_message(ass_id, thread, user_message, image_path):
     print(f"Received image_path: {image_path}")  # 여기서 image_path 값 확인
     
     # 메시지 전송
-    client.beta.threads.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content=content
-    )
+    client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
     
     # 이미지 파일 전송 처리
     MAX_CONTENT_LENGTH = 10  # 한 번에 전송할 수 있는 최대 content 개수
     for i in range(0, len(image_path), MAX_CONTENT_LENGTH - 1):
-        batch = image_path[i:i + MAX_CONTENT_LENGTH - 1]  # 최대 9개의 이미지로 나눔
+        batch = image_path[i:i + MAX_CONTENT_LENGTH - 1]  # 최대 10개의 이미지로 나눔
         content = []
 
         for image in batch:
             print(f"Opening image file: {image}")  # 각 이미지 경로를 출력하여 확인
             try:
                 with open(image, 'rb') as image_file:
-                    file = client.files.create(
-                        file=image_file,
-                        purpose='vision'  # 이미지 분석을 위한 용도
-                    )
-                    content.append({
-                        'type': 'image_file',
-                        'image_file': {'file_id': file.id}
-                    })
+                    file = client.files.create(file=image_file, purpose='vision') # 이미지 분석을 위한 용도
+                    content.append({'type': 'image_file', 'image_file': {'file_id': file.id}})
             except FileNotFoundError as e:
                 print(f"Error: 파일을 찾을 수 없습니다. 경로: {image}. 에러: {str(e)}")
 
-
         # 이미지 파일 전송
-        client.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=content
-        )
+        client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
     
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
@@ -145,6 +130,8 @@ def save_messages_to_md(responses, filename='assistant_response.md'):
                 f.write("\n\n---\n\n")
     print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
 
+
+
 def collect_message(thread):
     # 1. 메시지 받기
     response = get_response(thread)
@@ -168,18 +155,15 @@ def delete_downloaded_images(downloaded_image_paths):
 
 ######################## 유저 인풋 ##########################
 
-brand_name = '온보더즈' #<==입력을 받는다고 가정
-similarity_code = 'S0101'
-brand_image_path = ['/Users/ainomis_dev/Desktop/ainomis/ai_assistant/img/brand_img/[추천]온보더즈.png']
-searched_image_paths = []
-
-
+brand_name = '스타빙스'
+similarity_code = ''
+brand_image_path = ['/Users/ainomis_dev/Desktop/ainomis/ai_assistant/img/brand_img/starbings.png']
+# 유사이미지 검색 및 다운로드 처리
+download_image_paths = []
 
 
 ########################## 실행 ############################
 
-# 유사이미지 검색 및 다운로드 처리
-download_image_paths = []
 
 #비슷한 단어 찾기
 similar_words = generate_similar_barnd_names(brand_name)

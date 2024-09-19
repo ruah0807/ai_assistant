@@ -180,6 +180,7 @@ def updated_search_results_for_image(seperated_words, similarity_code):
                 'classification_code' : item.get('classificationCode'),
                 'image_url' : item.get('bigDrawing'),
                 'application_number' : item.get('applicationNumber'),
+                'viennaCode': item.get('viennaCode')
                 # '상표명' : item.get('title'),
                 # '상태' : item.get('applicationStatus'),
                 # '출원/등록일' : item.get('applicationDate'),
