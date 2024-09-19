@@ -30,9 +30,33 @@
         "application_number": "4020230199720"
     },
     {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020220221767.png",
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230087137.png",
         "classification_code": "35",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2942dee2feafab2a0999bde31e7cccea79c453e38743750c5c444395e784c0193e877a294b306cc6de",
-        "application_number": "4020220221767"
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4bf96ea4436334db03d606d5f6281aab9b07d747f1e359e2aec83a201b6716e445",
+        "application_number": "4020230087137"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020210263809.png",
+        "classification_code": "09|35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2940f80548c1358af3fd4f4dd96ccda0451acb7720e8425886487978fd416365ddcbb987b0cf64ba7f",
+        "application_number": "4020210263809"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_5620080020701.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4eae3bd0d2e1a0a7d6bc8673927af878cbb9020a55447dbe06648998f07b07dfb958c1b617825b451ed",
+        "application_number": "5620080020701"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020220171204.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2942dee2feafab2a0985addada9af627b549b8293885dc95f5c37165106fb0f43cb8756167d45b0e0c",
+        "application_number": "4020220171204"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230130577.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b98a1f2fd6549159c49d7fd67fc099ed496f59ee71df6798eff3ace2477c1cc08",
+        "application_number": "4020230130577"
     }
 ]

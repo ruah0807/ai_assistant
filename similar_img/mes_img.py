@@ -54,14 +54,14 @@ def submit_message(ass_id, thread, user_message, image_path):
         tools=[],
         instructions= """
          응답 형식:
-            - 대상 상표 : 
-                (사용자가 업로드한 상표 이미지 묘사)
-            - 검토의견: 상표의 유사성을 각각 평가.
-                상표이미지: (image_url) - url
-                출원/등록번호 : (application_number)
-                상품류 : (classification_code)
-                유사도 : (O,△,X 로 판단)
-                검토의견 : [해당 이미지는 어떤 외관을 가지고 있는지 설명 후 사용자가 등록하고자 하는 이미지와의 유사성을 비교합니다.]
+            - 대상 상표 : \n
+                (사용자가 업로드한 상표 이미지 묘사)\n\n
+            - 검토의견: 대상 상표와 비교한 유사상표의 유사성을 평가.\n
+                상표이미지: (image_url) - url\n
+                출원/등록번호 : (application_number)\n
+                상품류 : (classification_code)\n
+                유사도 : (O - 유사, △ - 중간유사, X - 비유사 로 판단)\n
+                검토의견 : [해당 이미지는 어떤 외관을 가지고 있는지 설명 후 사용자가 등록하고자 하는 이미지와의 유사성을 비교합니다.]\n\n
             - 종합의견 : [제시한(이미지 유사도 평가 방법)에 따라 각 이미지들을 비교하며 유사성을 상세히 설명하세요]
         """
     )
@@ -127,6 +127,33 @@ def wait_on_run(run, thread, timeout=500):
         time.sleep(0.5)
     return run
 
+all_responses = []
+
+# 메시지들을 Markdown 파일로 저장하는 함수
+def save_messages_to_md(responses, filename='assistant_response.md'):
+    """
+    responses : get_response 함수로부터 받은 메시지 리스트
+    filename : 저장할 md 파일명
+    """
+    with open(filename, 'w', encoding='utf-8') as f:
+        for res in responses:
+            # assistant의 응답만을 저장
+            if res.role == 'assistant':
+                for content in res.content:
+                    if content.type == 'text':
+                        f.write(f"{content.text.value}\n")
+                f.write("\n\n---\n\n")
+    print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
+
+def collect_message(thread):
+    # 1. 메시지 받기
+    response = get_response(thread)
+    all_responses.extend(response)
+
+
+def process_and_save_all_messages():
+    # Markdown 파일로 저장
+    save_messages_to_md(all_responses)
 
 # 이미지 파일 삭제
 def delete_downloaded_images(downloaded_image_paths):
@@ -136,6 +163,7 @@ def delete_downloaded_images(downloaded_image_paths):
             print(f"로컬에 저장된 이미지가 삭제되었습니다. : {image}")
         except OSError as e :
             print(f"이미지 삭제 실패 : {image}. 에러:{e}")
+    
 
 
 ######################## 유저 인풋 ##########################
@@ -183,5 +211,8 @@ for idx, result in enumerate(result_data):
     run = wait_on_run(run, thread)
     print_message(get_response(thread))
 
+    collect_message(thread)
+
     delete_downloaded_images(download_image_paths)
 
+process_and_save_all_messages()

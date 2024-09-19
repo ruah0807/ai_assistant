@@ -184,7 +184,6 @@ def updated_search_results_for_image(seperated_words, similarity_code):
                 # '상태' : item.get('applicationStatus'),
                 # '출원/등록일' : item.get('applicationDate'),
                 # '출원인/등록권자' : item.get('applicantName'),
-                # 'drawingBase64': item.get('drawingBase64')
             }
             filtered_results.append(filtered_item)
 
