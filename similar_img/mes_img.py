@@ -57,8 +57,9 @@ def submit_message(ass_id, thread, user_message, image_path):
             - 대상 상표 : 
                 (사용자가 업로드한 상표 이미지 묘사)
             - 검토의견: 상표의 유사성을 각각 평가.
-                상표이미지: (bigDrawing) - url
-                출원/등록번호 : (applicationNumber)
+                상표이미지: (image_url) - url
+                출원/등록번호 : (application_number)
+                상품류 : (classification_code)
                 유사도 : (O,△,X 로 판단)
                 검토의견 : [해당 이미지는 어떤 외관을 가지고 있는지 설명 후 사용자가 등록하고자 하는 이미지와의 유사성을 비교합니다.]
             - 종합의견 : [제시한(이미지 유사도 평가 방법)에 따라 각 이미지들을 비교하며 유사성을 상세히 설명하세요]
