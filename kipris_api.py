@@ -1,8 +1,7 @@
 import requests, os, xmltodict, json
 from init import kipris_api
 import base64
-from io import BytesIO
-from PIL import Image
+from download_img import download_image_with_application_number
 
 
 #JSON 파일로 저장(자동 줄바꿈)
@@ -62,10 +61,10 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
     if response.status_code == 200 :
         # XML 데이터를 JSON으로 변환
         data = xmltodict.parse(response.content)
-        # API 응답을 파일로 저장하여 디버깅
-        with open('api_response_debug.json', 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-        print("API 응답이 성공적으로 저장되었습니다: api_response_debug.json")
+        # # API 응답을 파일로 저장하여 디버깅
+        # with open('api_response_debug.json', 'w', encoding='utf-8') as f:
+        #     json.dump(data, f, ensure_ascii=False, indent=4)
+        # print("API 응답이 성공적으로 저장되었습니다: api_response_debug.json")
         # 응답 구조 확인
         try:
             items = data['response']['body']['items']['item']
@@ -103,47 +102,14 @@ def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
     return all_results
 
 
-# 이미지 url로부터 다운로드하고 파일로 저장하는 함수
-def download_image_with_application_number(image_url, application_number,save_dir="similar_img"):
-
-    # 이미지 url 내에서 이미지 다운로드
-    response = requests.get(image_url)
-    
-    if response.status_code == 200 :
-        
-        img = Image.open(BytesIO(response.content))
-        
-        # 디렉토리 경로 설정 (상대 경로를 절대 경로로 변환)
-        save_dir = os.path.join(os.getcwd(), save_dir)
-        
-        # 디렉토리가 없으면 생성
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
-            print(f"디렉토리 생성됨: {save_dir}")
-        
-        # 파일 경로 설정
-        image_filename = os.path.join(save_dir, f'출원번호_{application_number}.png')
-        
-        # 이미지 저장
-        img.save(image_filename)
-        print(f'이미지가 {image_filename}으로 저장되었습니다.')
-        return image_filename
-    else:
-        print(f"Error : {response.status_code} - 이미지를 다운로드 할 수 없습니다.")
-        return None
 
 
 
 def updated_search_results_for_image(seperated_words, similarity_code=None, vienna_code=None):
 
-    print(f"검색어: {seperated_words}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
     all_results = search_and_save_all_results(seperated_words, similarity_code, vienna_code)
 
-    print(all_results)
-    if not all_results:
-        print("검색 결과가 없습니다.")
-        return []
     # # 각 항목의 drawing을 base64로 변환
     # for item in all_results:
     #     process_drawing(item)
@@ -169,7 +135,7 @@ def updated_search_results_for_image(seperated_words, similarity_code=None, vien
                 filtered_item = {
                     'image_path': image_path,
                     'classification_code' : item.get('classificationCode'),
-                    'image_url' : item.get('bigDrawing'),
+                    'similar_image_url' : item.get('bigDrawing'),
                     'application_number' : item.get('applicationNumber'),
                     'vienna_code': item.get('viennaCode')
                     # '상표명' : item.get('title'),

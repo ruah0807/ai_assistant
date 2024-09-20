@@ -52,13 +52,10 @@ assistant = client.beta.assistants.update(
     tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
     model ='gpt-4o',
     temperature=0,
-    
 )
 
 assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
 print(f"[현재 어시스턴트 정보]\n{assistant_info}")
-
-
 
 
 
@@ -110,11 +107,11 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-## 벡터스토어 리스트 검색 ###
-vector_store_list = client.beta.vector_stores.list()
+# ## 벡터스토어 리스트 검색 ###
+# vector_store_list = client.beta.vector_stores.list()
 
-for vectorstore in vector_store_list:
-    print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
+# for vectorstore in vector_store_list:
+#     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
 
 
