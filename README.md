@@ -13,4 +13,4 @@ conda activate jupyter_test
 jupyter notebook
 
 # 사용 pip module
-pip install jupyter load_dotenv openai 
+pip install load_dotenv sqlalchemy mysql mysql-connector-python pytz

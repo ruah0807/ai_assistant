@@ -1,4 +1,7 @@
 .env
 상표식별/
-img/similar_img/
-.conda/
+similar_img/similar_img/
+similar_img_with_tools/similar_img/
+similar_img_with_tools/downloaded_images/
+img/brand_img
+
