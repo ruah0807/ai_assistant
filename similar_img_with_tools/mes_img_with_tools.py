@@ -1,17 +1,14 @@
 import os, sys, time, requests
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from ass_img import ass_id
+from ass_img_with_tools import ass_id, vector_store
 from init import client
 from kipris_api import updated_search_results_for_image
 from similar import generate_similar_barnd_names
 
 
-def submit_message(ass_id, thread, user_message, image_path):
+def submit_message_with_image(ass_id, thread, user_message, image_path):
     content = [{'type': 'text', 'text': user_message}]
 
-    # 디버깅용: image_path를 출력하여 확인
-    print(f"Received image_path: {image_path}")  # 여기서 image_path 값 확인
-    
     # 메시지 전송
     client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
     
@@ -30,29 +27,49 @@ def submit_message(ass_id, thread, user_message, image_path):
             except FileNotFoundError as e:
                 print(f"Error: 파일을 찾을 수 없습니다. 경로: {image}. 에러: {str(e)}")
 
-        # 이미지 파일 전송
-        client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
+        if content:
+            # 이미지 파일 전송
+            client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
+        else:
+            print(f"Error : 이미지 파일 전송 실패 . batch: {batch}")
     
+    print(f"이미지 업로드 완료 . thread_id : {thread.id}")
+
+    
+
+def run_with_tools(ass_id, thread):
+
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=ass_id,
-        tools=[],
+        tools=  [{'type': 'file_search'}],
         instructions= """
-         응답 형식:
-            - 대상 상표 : \n
-                (사용자가 업로드한 상표 이미지 묘사)\n\n
-            - 검토의견: 대상 상표와 비교한 유사상표의 유사성을 평가.\n
-                상표이미지: (image_url) - url\n
-                출원/등록번호 : (application_number)\n
-                상품류 : (classification_code)\n
-                비엔나 코드 : (vienna_code)\n
-                유사도 : (O - 유사, △ - 중간유사, X - 비유사 로 판단)\n
-                검토의견 : [해당 이미지는 어떤 외관을 가지고 있는지 설명 후 사용자가 등록하고자 하는 이미지와의 유사성을 비교합니다.]\n\n
-            - 종합의견 : [제시한(이미지 유사도 평가 방법)에 따라 각 이미지들을 비교하며 유사성을 상세히 설명하세요]
+        
+        [ 이미지 유사도 평가 방법 ]
+        이미지 유사도 평가 방법에 대한 정보는 다음과 같은 기준을 적용할 수 있습니다:
+        반드시 [상표심사기준202405.pdf]문서를 참고하여 상표 [유사여부보고서형식(별책).pdf]형식으로 대답하세요(출처를 밝혀야합니다)
+
+        
+        다음과 같은 형식으로 작성해주세요 :
+
+        이 사건 등록 상표 : (등록하고자하는 상표)
+        선등록상표 : (image_url)
+        
+        [최종 검토의견]
+        상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
+
+        외관 비교:
+            상표의 디자인, 색상, 글자체, 도안 등을 기반으로 두 상표가 시각적으로 얼마나 유사한지 분석해주세요. 특히 상표의 글자 모양, 배치, 색상과 같은 시각적 요소를 중심으로 구체적으로 설명해주세요.
+
+        관념 비교:
+            상표가 전달하는 의미나 개념을 비교해주세요. 상표가 특정한 의미가 있는지, 아니면 **조어(임의로 만든 단어)**인지를 명확히 분석하고, 의미적 차이를 설명해주세요.
+
+        호칭 비교:
+            두 상표가 발음될 때 음절별로 어떻게 발음되는지 비교해주세요. 각 상표의 발음법, 첫 음절과 마지막 음절의 차이점을 분석하고, 발음 시 느껴지는 청각적 유사성 또는 차이를 명확히 설명해주세요.
+
+        최종의견 :
         """
     )
-    print(f'assistant_id : {ass_id}, thread_id : {thread.id}, run_id : {run.id}')
-
     return run
 
 
@@ -66,7 +83,10 @@ def get_response(thread):
 def create_thread_and_run(user_input, image_path):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
-    run = submit_message(ass_id, thread, user_input, image_path)
+    submit_message_with_image(ass_id, thread, user_input, image_path)
+
+    run = run_with_tools(ass_id, thread)
+    
     return thread, run
 
 
@@ -131,10 +151,10 @@ def delete_downloaded_images(downloaded_image_paths):
 
 ######################## 유저 인풋 ##########################
 
-brand_name = '온보더즈'
-similarity_code = 'S123101'
-vienna_code = ''
-brand_image_path = ['/Users/ainomis_dev/Desktop/ainomis/ai_assistant/img/brand_img/[추천]온보더즈.png']
+brand_name = ''
+similarity_code = 'S121002|S121001|S110101'
+vienna_code = '260301'
+brand_image_path = ['/Users/ainomis_dev/Desktop/ainomis/ai_assistant/img/brand_img/crople.png']
 # 유사이미지 검색 및 다운로드 처리
 download_image_paths = []
 all_responses = []
@@ -148,10 +168,11 @@ if brand_name:
 else:
     # brand_name이 없으면 기본 빈 리스트로 설정
     search_words = []
-    
+
 print(f"검색어: {search_words}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
 # 분류코드와 비엔나 코드를 기반으로 상표 검색
 result_data = updated_search_results_for_image(search_words, similarity_code, vienna_code)
+
 
 # 등록 이미지와 유사 이미지를 비교하는 메시지 전송 (총 10번 반복)
 for idx, result in enumerate(result_data):

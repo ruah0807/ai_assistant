@@ -15,7 +15,7 @@ def save_to_json(data, filename='trademark_info.json'):
 
 
 # KIPRIS API 호출
-def get_trademark_info(trademark_name, similarity_code):
+def get_trademark_info(trademark_name, similarity_code, vienna_code):
 
     BASE_URL = 'http://plus.kipris.or.kr/kipo-api/kipi/trademarkInfoSearchService/getAdvancedSearch'
 
@@ -42,13 +42,18 @@ def get_trademark_info(trademark_name, similarity_code):
         'motion': 'false',              # 동작 상표 중에서 검색
         'visual': 'false',              # 시각적으로 인식 가능한 상표 중에서 검색
         'ServiceKey': kipris_api,       # KIPRIS API 키
-        'trademarkName': trademark_name,# 검색할 상표 이름
         'trademark' : 'true',           # 이게 true여야 제대로 검색됩니다.
-        'similarityCode': similarity_code,
         'pageNo' : 1,
-        'numOfRows' : 20,
+        'numOfRows': 10,
         
     }
+    if trademark_name:
+        params['trademarkName'] = trademark_name
+    if similarity_code:
+        params['similarityCode'] = similarity_code
+    if vienna_code:
+        params['viennaCode'] = vienna_code
+
 
     # api 요청 보내기
     response = requests.get(BASE_URL, params=params)
@@ -57,37 +62,42 @@ def get_trademark_info(trademark_name, similarity_code):
     if response.status_code == 200 :
         # XML 데이터를 JSON으로 변환
         data = xmltodict.parse(response.content)
-
-        # bigDrawing URL을 base64 로 변환
+        # API 응답을 파일로 저장하여 디버깅
+        with open('api_response_debug.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print("API 응답이 성공적으로 저장되었습니다: api_response_debug.json")
+        # 응답 구조 확인
         try:
             items = data['response']['body']['items']['item']
-
-            if isinstance (items, dict):
-                items = [items]
-
-            print(f'{trademark_name}의 데이터 개수 : {len(items)}개')
-            
-            return items[:20] # item 리스트 반환
-
+            if isinstance(items, dict):
+                items = [items]  # 단일 항목을 리스트로 변환
+            return items
         except Exception as e:
-            print(f"검색결과 없음: {e}")
-            return None
+            print(f"API 응답에서 'item'을 찾을 수 없습니다: {e}")
+            return []
     else:
-        print(f"Error: {response.status_code}")
+        print(f"Error: {response.status_code} - API 요청 실패")
+        return []
 
 
 
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
-def search_and_save_all_results(trademark_names, similarity_code):
+def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
 
-    all_results = []
-    for trademark_name in trademark_names:
-        print(f'Searching for : {trademark_name}')
-        result = get_trademark_info(trademark_name, similarity_code)
+    
+    
+    if not trademark_names:
+        all_results = get_trademark_info(None, similarity_code, vienna_code)
+    else:
+        all_results = []
 
-        if result : 
-            all_results.extend(result)
+        for trademark_name in trademark_names:
+            print(f'Searching for : {trademark_name}')
+            result = get_trademark_info(trademark_name, similarity_code, vienna_code)
+
+            if result : 
+                all_results.extend(result)
 
     save_to_json(all_results, f'combined_trademark_info.json')
     return all_results
@@ -124,11 +134,16 @@ def download_image_with_application_number(image_url, application_number,save_di
 
 
 
-def updated_search_results_for_image(seperated_words, similarity_code):
+def updated_search_results_for_image(seperated_words, similarity_code=None, vienna_code=None):
 
+    print(f"검색어: {seperated_words}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
-    all_results = search_and_save_all_results(seperated_words, similarity_code)
+    all_results = search_and_save_all_results(seperated_words, similarity_code, vienna_code)
 
+    print(all_results)
+    if not all_results:
+        print("검색 결과가 없습니다.")
+        return []
     # # 각 항목의 drawing을 base64로 변환
     # for item in all_results:
     #     process_drawing(item)
@@ -144,6 +159,7 @@ def updated_search_results_for_image(seperated_words, similarity_code):
 
         image_path = None
 
+        ### 비엔나 코드가 있다면 이미지를 다운로드하고, filtered_item.json 저장###
         if vienna_code:
             if big_drawing_url and application_number:
                 #이미지 다운로드 처리
@@ -169,10 +185,10 @@ def updated_search_results_for_image(seperated_words, similarity_code):
 
 
 
-def updated_search_results_for_text(seperated_words, similarity_code):
+def updated_search_results_for_text(seperated_words, similarity_code=None):
 
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
-    all_results = search_and_save_all_results(seperated_words, similarity_code)
+    all_results = search_and_save_all_results(seperated_words, similarity_code, None)
 
     filtered_results =[]
     for item in all_results:

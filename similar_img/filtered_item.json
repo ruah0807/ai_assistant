@@ -1,51 +1,86 @@
 [
     {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020210141733.png",
-        "classification_code": "09|38|42",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2940f80548c1358af3424d4cd19167c6fc4da5fd5b28d8ab26a340e12b6c781451c57022f65205c802",
-        "application_number": "4020210141733",
-        "vienna_code": "241521|260416|261112|261122"
-    },
-    {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020210194873.png",
-        "classification_code": "09|38|42",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2940f80548c1358af3205e51886b329d4e998bc5f38cce0eafa03d792ef0c9fb347bc5ca9d75ab092e",
-        "application_number": "4020210194873",
-        "vienna_code": "150925|160325|170517|260105|260404|260410|260416"
-    },
-    {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020210099511.png",
-        "classification_code": "16|42",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2940f80548c1358af33c60e43c9c3cb2f6930e01fda273ad3c473b06560782cbab3f11803acb9d73f2",
-        "application_number": "4020210099511",
-        "vienna_code": "020323|020503|020523|020901|040503|260414"
-    },
-    {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020190032967.png",
-        "classification_code": "09|42",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e293e70a322c3ead7b663342dab1283d906241ea0ea812a8cef57b180f696d249e7de6f24d7c6c37678",
-        "application_number": "4020190032967",
-        "vienna_code": "260418"
-    },
-    {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020200085184.png",
-        "classification_code": "42",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e29df616987ef7331e9db4c518760db9627d4abd8b60905d409fc1676e304970269686bc8007bb1b0bc",
-        "application_number": "4020200085184",
-        "vienna_code": "260323|260501"
-    },
-    {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020200085179.png",
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020190006977.png",
         "classification_code": "35",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e29df616987ef7331e9db4c518760db96273d61fb19a7c9bb54da31a81efb13001440933610fae07b87",
-        "application_number": "4020200085179",
-        "vienna_code": "260323|260501"
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e293e70a322c3ead7b615ae4bcd23950718eb8b3fc14196d814d81f97b01349cc659d87a7bab6018faf",
+        "application_number": "4020190006977",
+        "vienna_code": "050520|050521"
     },
     {
-        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020180133664.png",
-        "classification_code": "42",
-        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e293228145e2e03ea14ae70123a3354dd178e26a4f0672fe876dfa8ed92c3f0f2d7d8cc12cb50566081",
-        "application_number": "4020180133664",
-        "vienna_code": "261103|261108|270508|270905"
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230199720.png",
+        "classification_code": "29|35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4ba477e7a21fbd59234b70ea1316d5a4596618bf81a54d9aa9ee49de0fa22a8d36",
+        "application_number": "4020230199720",
+        "vienna_code": "010109|010713|050313|050315|260406|260413|260418|270312"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230043002.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b1b0e089ac710df54a9b99a4542d6082b4fbd76e0d9fafeaa360e99993cb6f1db",
+        "application_number": "4020230043002",
+        "vienna_code": "110325|240309|260416|260418"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230200831.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b9313ccf39bfe6a020e825807598c468df98a50edba4fb6b090b03cedfc76bd77",
+        "application_number": "4020230200831",
+        "vienna_code": "090722|241501|260103|260212|260226|260701|261110|261122"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020190005145.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e293e70a322c3ead7b6255df639d3db72d0deaf10497d8f6cf296bf903e8010f5309edadcae71d97bc3",
+        "application_number": "4020190005145",
+        "vienna_code": "261111|261509|270508|270519|270719|270902"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230060100.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4be272a710f1fb2767d31060ca674bf378fa016fa28a54e25785bffd81d0fcd09b",
+        "application_number": "4020230060100",
+        "vienna_code": "261108|261125|270112|270125|270503|270508|270511|270911"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230073693.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b79288cf01183e8c97e10c4f3923c2aa876e771075aaf7b0293a79c697476f39b",
+        "application_number": "4020230073693",
+        "vienna_code": "261125|270522|270908|270910|270923"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230073751.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b79288cf01183e8c9348b26e9b42b27115eedc9ee63cf0102abb114827704c216",
+        "application_number": "4020230073751",
+        "vienna_code": "261125|270522|270908|270910|270923"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230093898.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b80dd3eb698019549d337ea5e3feeffcafbb3bfddc4eb1b2f67b5f373234f6af9",
+        "application_number": "4020230093898",
+        "vienna_code": "241708|260516|261111"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230213825.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4bcc6841f7f57733d804cdf6d8406ec1e5fc949e5e2439770d055ffa09a6dd909b",
+        "application_number": "4020230213825",
+        "vienna_code": "241502|241507|261112|270906"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020240094085.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e29a04489ad4cba26e541d062aa53b510a7b2450e689ddccedb4122d44516cd05d127232b0ba5241369",
+        "application_number": "4020240094085",
+        "vienna_code": "011515|030106|030108|030114|030721|031701|040502|060104"
+    },
+    {
+        "image_path": "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/similar_img/similar_img/출원번호_4020230042482.png",
+        "classification_code": "35",
+        "image_url": "http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b422b7bc85552861cf92f545cfdf699edd62097f89785863954e11d3f92552c2a",
+        "application_number": "4020230042482",
+        "vienna_code": "260404|260409|270508|270922"
     }
 ]
