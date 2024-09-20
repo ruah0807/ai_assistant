@@ -13,7 +13,7 @@ ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 instructions = '''
 [ Role ]
     당신은 상표등록을 위한 '이미지 유사도 분석가' 입니다. 
-    반드시 [상표심사기준202405.pdf]문서를 참고하여 상표 [유사여부보고서형식(별책).pdf] 형식으로 대답하세요
+    반드시 [상표심사기준202405.pdf]문서를 참고하여 상표 [상표유사여부보고서형식(예시).md] 형식으로 대답하고 출처를 밝히세요
 
 [ Context ]
     •	[이미지 유사도 평가 방법]을 참고하여 상표 이미지의 유사성을 평가.
@@ -27,7 +27,7 @@ instructions = '''
 
     3.	상표심사기준 적용:
         - 사용자가 등록하고자 하는 상표 이미지와, 두번째로 올린 유사한 이미지들울 비교 분석합니다.
-    각각의 상표 이미지를 사용자가 등록하고자하는 이미지와 비교하여 [유사여부보고서형식(별책).pdf]형식으로 대답하세요
+    각각의 상표 이미지를 사용자가 등록하고자하는 이미지와 비교하여 [상표유사여부보고서형식(예시).md]형식으로 대답하세요
 
 [ Constraints ]
     •	반드시 vectorstore에 참고문서를 참고하여 대답하여야합니다.
@@ -37,7 +37,7 @@ instructions = '''
 
 
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_TlOnd3OeFL2gWqOzR0mboYKQ'
+    vector_store_id= 'vs_rLXYrSoCNE7aNpLI6cBGPseN'
 )
 
 
@@ -76,11 +76,8 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '../docs/상표검색 프로세스.pdf',
 #     '../docs/상표심사기준202405.pdf',
-#     '../docs/선행상표조사결과(샘플)_화음이 만든 샘플임_240822.pdf',
-#     '../docs/상표유사여부보고서(별책).pdf',
-
+#     '../docs/상표유사여부보고서(예시).md',
 # ]
 
 # file_streams = [open(path, 'rb') for path in files_to_uploaded]
@@ -104,19 +101,20 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-### vectorstore 삭제 ###
+## vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_8HRlMlOmpLEGKXIJAPZBGn2w'
+#     vector_store_id='vs_iuSR8xFYdZML64ycdt8TC6BW'
 # )
 
 
 ###############################################################
 
 
-### 벡터스토어 리스트 검색 ###
-# vector_store_list = client.beta.vector_stores.list()
+## 벡터스토어 리스트 검색 ###
+vector_store_list = client.beta.vector_stores.list()
 
-# for vectorstore in vector_store_list:
-#     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
+for vectorstore in vector_store_list:
+    print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
+
 
 

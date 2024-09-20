@@ -1,5 +1,4 @@
-[비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4be84f863b590040eaec5d8cd7c0a1a8490e9fd5f147c6d2ca7a33719988a2ce94
+![비교대상 url](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4be84f863b590040eaec5d8cd7c0a1a8490e9fd5f147c6d2ca7a33719988a2ce94)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 다음과 같이 설명드립니다.
@@ -18,8 +17,7 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 
 ---
 
-[비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b81242a631b22d8119a914ac031e88da065beb6938bdb3bff6f9899b0c67eb839
+![비교대상 url](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b81242a631b22d8119a914ac031e88da065beb6938bdb3bff6f9899b0c67eb839)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 다음과 같이 설명드립니다.
@@ -38,8 +36,7 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 
 ---
 
-[비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b5607ee4b7c52a1884f6b8d264a17f9747b301c6045a08275f82d3552eab6a47c
+![비교대상 url](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b5607ee4b7c52a1884f6b8d264a17f9747b301c6045a08275f82d3552eab6a47c)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 다음과 같이 설명드립니다.
@@ -60,8 +57,7 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 
 ---
 
-[비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b81242a631b22d8110e16ab3c2f4412d163ba13c71ed5c5314dd23f169bb049b3
+![비교대상 url](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b81242a631b22d8110e16ab3c2f4412d163ba13c71ed5c5314dd23f169bb049b3)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
@@ -81,7 +77,8 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 ---
 
 [비교대상 url]
-[출원번호:4020240114537, 분류코드:41, 비엔나코드: 200103|260201|260301|260709|270505, 이미지URL](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e29a04489ad4cba26e52b57888fb525ac98e8d2fe36e603d7bc5bc4017667746c35be3c5022ad1933ea)
+
+![출원번호:4020240114537, 분류코드:41, 비엔나코드: 200103|260201|260301|260709|270505, 이미지URL](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e29a04489ad4cba26e52b57888fb525ac98e8d2fe36e603d7bc5bc4017667746c35be3c5022ad1933ea)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
@@ -113,8 +110,7 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 
 ---
 
-[비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e293228145e2e03ea148fee8b5cf9213012bcb2de92ce9279367dfc152576bdda9d52a6ee50472fd8ac
+![비교대상 url](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e293228145e2e03ea148fee8b5cf9213012bcb2de92ce9279367dfc152576bdda9d52a6ee50472fd8ac)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
@@ -146,8 +142,7 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 
 ---
 
-[비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2942dee2feafab2a09f1d5fc06daf5194bc46d8a72e246a27c9955b3e39ed69531c7181664dbfdb6b3
+![비교대상 url](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2942dee2feafab2a09f1d5fc06daf5194bc46d8a72e246a27c9955b3e39ed69531c7181664dbfdb6b3)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
@@ -169,7 +164,8 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 ---
 
 [비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2942dee2feafab2a09f1d5fc06daf5194bc46d8a72e246a27c154d74b184af3dcec80c709d35448b2b
+
+![image](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2942dee2feafab2a09f1d5fc06daf5194bc46d8a72e246a27c154d74b184af3dcec80c709d35448b2b)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
@@ -191,7 +187,8 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 ---
 
 [비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b835b7fbdb421ee29dc5a21ddad5ffe86f4c57237c97cf4c1cc5e4204ce64f868
+
+![img](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4b835b7fbdb421ee29dc5a21ddad5ffe86f4c57237c97cf4c1cc5e4204ce64f868)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
@@ -211,7 +208,8 @@ http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef0
 ---
 
 [비교대상 url]
-http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4bee7e3673544bff9fb66ff8503e6b16cfd080272bbb9c8c983db88de4963287cb
+
+![img](http://plus.kipris.or.kr/kiprisplusws/fileToss.jsp?arg=ad7a17eeeef6e4ea4b5e22ef00dd3e2991ba5d9d09407d4bee7e3673544bff9fb66ff8503e6b16cfd080272bbb9c8c983db88de4963287cb)
 
 [최종 검토의견]
 상표의 유사 여부에 대한 최종 검토의견을 다음과 같이 설명드립니다.
