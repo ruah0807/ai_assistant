@@ -1,11 +1,11 @@
 import os, sys, time, requests
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from brand_similarity.ass import ass_id
 from init import client
 from kipris_api import updated_search_results_for_image
 from similar import generate_similar_barnd_names
 from save_file import download_image_from_url
 
+ass_id = 'asst_mD9MAguey0mzXs0wKEJmG4lV'
 
 def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
@@ -16,16 +16,15 @@ def submit_message_with_image(thread, user_message, image_path, image_url):
     # 이미지 파일 전송 처리
     content = []
 
-    for local_image_path, original_image_url in zip(image_path, image_url):
-        print(f"Opening image file: {local_image_path}")  # 각 이미지 경로를 출력하여 확인
-        try:
-            with open(local_image_path, 'rb') as image_file:
-                file = client.files.create(file=image_file, purpose='vision')  # 이미지 분석을 위한 용도
-                # 이미지 파일과 함께 라벨을 텍스트로 추가
-                content.append({'type': 'image_file', 'image_file': {'file_id': file.id}})
-                content.append({'type': 'text', 'text': f'등록하려는 상표 URL: {original_image_url}'})  # 원본 이미지 URL 라벨링
-        except FileNotFoundError as e:
-            print(f"Error: 파일을 찾을 수 없습니다. 경로: {local_image_path}. 에러: {str(e)}")
+    print(f"Opening image file: {image_path}")  # 각 이미지 경로를 출력하여 확인
+    try:
+        with open(image_path, 'rb') as image_file:
+            file = client.files.create(file=image_file, purpose='vision')  # 이미지 분석을 위한 용도
+            # 이미지 파일과 함께 라벨을 텍스트로 추가
+            content.append({'type': 'image_file', 'image_file': {'file_id': file.id}})
+            content.append({'type': 'text', 'text': f'등록하려는 상표 URL: {image_url}'})  # 원본 이미지 URL 라벨링
+    except FileNotFoundError as e:
+        print(f"Error: 파일을 찾을 수 없습니다. 경로: {image_path}. 에러: {str(e)}")
 
     if content:
         # 이미지 파일 전송
@@ -46,10 +45,9 @@ def run_with_tools(ass_id, thread):
         instructions= """
         
         [ 상표 식별력 평가 방법 ]
-        이미지 식별력 평가 방법에 대한 정보는 다음과 같은 기준을 적용할 수 있습니다:
-        반드시 [상표심사기준202405.pdf]문서를 참고하여 법률 자문을 주세요(페이지 출처를 밝혀야합니다)
-        
-        다음과 같은 형식으로 작성해주세요 :
+        - [상표심사기준202405.pdf]문서를 참고하여 법률 자문을 주세요(반드시 페이지 출처를 밝혀야합니다)
+        - 서술형으로 작성하여야합니다.
+        - 다음과 같은 형식으로 작성해주세요 :
 
         ### 대상 상표: 
         ![이미지](original_image_url)
@@ -140,59 +138,27 @@ def delete_downloaded_images(downloaded_image_paths):
     
 
 
-######################## 유저 인풋 ##########################
+# ######################## 유저 인풋 ##########################
 
-brand_name = ''
-similarity_code = ''
-vienna_code = ''
-brand_image_url = 'https://kipris.s3.ap-northeast-2.amazonaws.com/crople.png'
-# 유사이미지 검색 및 다운로드 처리
-all_responses = []
+# brand_name = 'crople'
+# brand_image_url = 'https://kipris.s3.ap-northeast-2.amazonaws.com/crople.png'
 
-########################## 실행 ############################
-
-#대상상표의 이미지 다운로드 및 경로 담기
-brand_image_path = download_image_from_url(brand_image_url)
+# #대상상표의 이미지 다운로드 및 경로 담기
+# brand_image_path = download_image_from_url(brand_image_url)
 
 
-# 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
-thread, run = create_thread_and_run(f"""
-    업로드한 상표 이미지의 식별력을 평가해주세요.
-    """, 
-    image_path=brand_image_path)
+# ########################## 실행 ############################
 
-run= wait_on_run(run, thread)
-print_message(get_response(thread))
+# # 스래드 생성
+# thread, run = create_thread_and_run(
+#     f"""
+#     업로드한 이미지 상표 '{brand_name}'의 상표 식별력을 평가해주세요.
+#     """, 
+#     image_path=brand_image_path, 
+#     image_url= brand_image_url
+#     )
+
+# run= wait_on_run(run, thread)
+# print_message(get_response(thread))
 
 
-
-# # 등록 이미지와 유사 이미지를 비교하는 메시지 전송
-# for idx, result in enumerate(result_data):
-
-#     # result_data는 이미지 정보와 경로를 포함하므로, 여기서 추출
-#     similar_image_path = result['image_path'] #유사 이미지 경로
-#     similar_image_url = result['similar_image_url']
-#     application_number = result['application_number'] # 출원번호
-#     classification_code = result['classification_code']
-#     vienna_code = result['vienna_code']
-
-#     #다운로드 이미지 경로 저장
-#     download_image_paths.append(similar_image_path)
-
-#     image_pair = [brand_image_path, similar_image_path]  # 등록하려는 이미지와 유사 이미지 묶기
-#     image_url_pair = [brand_image_url, similar_image_url]  # 원본 이미지 URL과 유사 이미지 URL
-    
-    
-#     # 메시지를 생성 및 전송
-#     user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
-#     thread, run = create_thread_and_run(user_message, image_pair, image_url_pair)
-
-#     # 기다리는 로직 추가
-#     run = wait_on_run(run, thread)
-#     response = client.beta.threads.messages.list(thread_id=thread.id)
-#     print_message(response)
-#     all_responses.extend(response)
-
-#     delete_downloaded_images(download_image_paths)
-
-# save_messages_to_md(all_responses)
