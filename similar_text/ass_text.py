@@ -38,7 +38,7 @@ instructions = '''
 
 
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_TlOnd3OeFL2gWqOzR0mboYKQ'
+    vector_store_id= 'vs_rLXYrSoCNE7aNpLI6cBGPseN'
 )
 
 

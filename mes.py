@@ -1,6 +1,6 @@
 import time
 from init import ass_id, client
-from kipris_api import updated_search_results
+from kipris_api import updated_search_results_for_text
 from similar import generate_similar_barnd_names
 
 
@@ -31,7 +31,7 @@ def submit_message(ass_id, thread, user_message, image_path=None):
         run = client.beta.threads.runs.create(
             thread_id=thread.id,
             assistant_id= ass_id,
-            tools=[]
+            tools=[{'type': 'file_search'}],
         )
     else:
         run = client.beta.threads.runs.create(
@@ -105,7 +105,7 @@ classification_code = 35
 #비슷한 단어 찾기
 similar_words = generate_similar_barnd_names(brand_name)
 # 분류코드와 비슷한단어로 상표 검색
-result_data= updated_search_results(similar_words['words'], classification_code)
+result_data= updated_search_results_for_text(similar_words['words'], classification_code)
 
 
 # 동시에 여러 요청을 처리하기 위해 스래드를 생성합니다.
@@ -119,7 +119,7 @@ run = send_message_in_same_thread(
     thread, 
     f"""
     상표를 등록하려고 합니다. 다음은 등록하려는 상표의 정보입니다. \n상표명 : {brand_name}\n상품류/유사군:{classification_code}
-    특허청에서 비슷한 상표를 검색한 데이터입니다. 상표명 뿐아니라 도형+상표명을 각 기준으로 하여 내가 업로드한 drawingBase64를 참조해서 도형, 컬러를 기반으로 유사도를 검토 해서 가장 비슷하다고 생각하는 5가지의 상표 각각을 명확하게 유사도 판단하고, 어떤부분이 어떻게 다른지 혹은 같은지를 상세한 설명이 포함되어있는 의견서를 만들어주세요\n\n{result_data}""", 
+    특허청에서 비슷한 상표를 검색한 데이터입니다. 상표명 뿐아니라 도형+상표명을 각 기준으로 하여 내가 업로드한 사진을 참조해서 식별력을 평가하세요\n\n""", 
     image_path=brand_img_path)# json데이터를 보낼것.
 
 

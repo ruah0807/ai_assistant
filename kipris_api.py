@@ -1,41 +1,8 @@
 import requests, os, xmltodict, json
 from init import kipris_api
 import base64
+from save_file import download_image_with_application_number, save_to_json
 
-
-# big Drawing 필드를 처리하고 base64로 변환
-def process_drawing(item):
-
-    drawing_url = item.get('drawing')
-
-    if drawing_url:
-        response = requests.get(drawing_url)
-    
-        # Ensure the request was successful
-        if response.status_code == 200:
-            # Encode the image content to base64
-            encoded_image = base64.b64encode(response.content)
-        
-            # Convert to a readable base64 string
-            base64_string = encoded_image.decode('utf-8')
-            item['drawingBase64'] = base64_string
-
-            return item['drawingBase64']
-        else:
-            print(f"Drawing URL not found in item: {item}")
-            return None
-    else:
-        print(f"Invalid item format: {item}")
-        return None
-
-
-
-#JSON 파일로 저장(자동 줄바꿈)
-def save_to_json(data, filename='trademark_info.json'):
-
-    with open(filename, 'w', encoding ='utf-8') as json_file:
-        json.dump(data, json_file, ensure_ascii=False, indent=4)
-    print(f'DATA saved to {filename}')
 
 
 
@@ -78,20 +45,17 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
         params['similarityCode'] = similarity_code
     if vienna_code:
         params['viennaCode'] = vienna_code
-
+        
 
     # api 요청 보내기
     response = requests.get(BASE_URL, params=params)
-
+    
     #응답이 성공적인지 확인
     if response.status_code == 200 :
+ 
         # XML 데이터를 JSON으로 변환
         data = xmltodict.parse(response.content)
-        # # API 응답을 파일로 저장하여 디버깅
-        # with open('api_response_debug.json', 'w', encoding='utf-8') as f:
-        #     json.dump(data, f, ensure_ascii=False, indent=4)
-        # print("API 응답이 성공적으로 저장되었습니다: api_response_debug.json")
-        # 응답 구조 확인
+        
         try:
             items = data['response']['body']['items']['item']
             if isinstance(items, dict):
@@ -110,8 +74,8 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
 def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
 
-    
-    
+    print(f"검색어: {trademark_names}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
+
     if not trademark_names:
         all_results = get_trademark_info(None, similarity_code, vienna_code)
     else:
@@ -199,7 +163,7 @@ def updated_search_results_for_text(seperated_words, similarity_code=None):
 
 
 
-# 테스트 데이터
+# # 테스트 데이터
 # seperated_words = [
 #     "mindshare",
 #     "마인드쉐어",
@@ -212,5 +176,32 @@ def updated_search_results_for_text(seperated_words, similarity_code=None):
 # ]
 
 
-# all_result = updated_search_results(seperated_words)
+# all_result = updated_search_results_for_text(seperated_words)
 # print(all_result)
+
+
+
+# # big Drawing 필드를 처리하고 base64로 변환
+# def process_drawing(item):
+
+#     drawing_url = item.get('drawing')
+
+#     if drawing_url:
+#         response = requests.get(drawing_url)
+    
+#         # Ensure the request was successful
+#         if response.status_code == 200:
+#             # Encode the image content to base64
+#             encoded_image = base64.b64encode(response.content)
+        
+#             # Convert to a readable base64 string
+#             base64_string = encoded_image.decode('utf-8')
+#             item['drawingBase64'] = base64_string
+
+#             return item['drawingBase64']
+#         else:
+#             print(f"Drawing URL not found in item: {item}")
+#             return None
+#     else:
+#         print(f"Invalid item format: {item}")
+#         return None

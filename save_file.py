@@ -2,6 +2,7 @@ import requests
 from PIL import Image
 from io import BytesIO
 import os
+import json
 
 def download_image_from_url(image_url, save_dir='downloaded_images'):
     """
@@ -62,3 +63,19 @@ def download_image_with_application_number(image_url, application_number,save_di
     else:
         print(f"Error : {response.status_code} - 이미지를 다운로드 할 수 없습니다.")
         return None
+    
+
+
+#JSON 파일로 저장(자동 줄바꿈)
+def save_to_json(data, filename='trademark_info.json', folder_name= 'output_folder'):
+    # 폴더가 없으면 생성
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name, exist_ok=True)
+        
+    # 폴더 경로와 파일명을 결합하여 파일 저장 경로 설정
+    file_path = os.path.join(folder_name, filename)
+        
+    with open(file_path, 'w', encoding ='utf-8') as json_file:
+        json.dump(data, json_file, ensure_ascii=False, indent=4)
+    print(f'DATA saved to {file_path}')
+
