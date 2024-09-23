@@ -1,10 +1,10 @@
 import os, sys, time
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from ass_text import ass_id
 from init import client
 from kipris_api import updated_search_results_for_text
 from similar import generate_similar_barnd_names
 
+ass_id = 'asst_IbYT7EatQkmSnremkg5RuiC0'
 
 def submit_message(ass_id, thread, user_message):
 

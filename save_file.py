@@ -131,7 +131,7 @@ def save_messages_to_md(responses, filename='assistant_response.md'):
 
 
 # 이미지 url로부터 다운로드하고 파일로 저장하는 함수
-def download_image_with_application_number(image_url, application_number,save_dir="similar_img"):
+def download_image_with_application_number(image_url, application_number,save_dir="img/downloaded_images"):
 
     # 이미지 url 내에서 이미지 다운로드
     response = requests.get(image_url)

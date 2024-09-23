@@ -36,5 +36,3 @@ def wait_on_run(run, thread, timeout=500):
             raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
         time.sleep(1)
     return run
-
-

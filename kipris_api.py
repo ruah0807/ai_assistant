@@ -47,13 +47,15 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
         
     # api 요청 보내기
     response = requests.get(BASE_URL, params=params)
+    print(f"KIPRIS API KEY : {kipris_api}")
+    print(f"response : {response.status_code}")
+
     
     #응답이 성공적인지 확인
     if response.status_code == 200 :
  
         # XML 데이터를 JSON으로 변환
         data = xmltodict.parse(response.content)
-        
         try:
             items = data['response']['body']['items']['item']
             if isinstance(items, dict):
@@ -71,9 +73,8 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
 def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
-
     print(f"검색어: {trademark_names}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
-
+    
     if not trademark_names:
         all_results = get_trademark_info(None, similarity_code, vienna_code)
     else:
@@ -133,7 +134,7 @@ def updated_search_results_for_image(seperated_words, similarity_code=None, vien
                 }
                 filtered_results.append(filtered_item)
 
-    save_to_json(filtered_results, f'filtered_item.json')
+    save_to_json(filtered_results, f'item_labeling.json')
     return filtered_results[:10]
 
 

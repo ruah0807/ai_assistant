@@ -9,7 +9,7 @@ import kipris_api, similar, save_file, init, common
 
 app = FastAPI()
 
-class DisCernmentEvaluation(BaseModel):
+class DiscernmentEvaluation(BaseModel):
     brand_name: str 
     brand_image_url: str
 
@@ -21,7 +21,7 @@ class SimilarityEvaluation(BaseModel):
     
     
 @app.post('/discernment', description="식별력 평가")
-async def discernment_trademark(request: DisCernmentEvaluation):
+async def discernment_trademark(request: DiscernmentEvaluation):
     brand_name = request.brand_name
     brand_image_url = request.brand_image_url
     
@@ -71,14 +71,15 @@ async def similarity_trademark(request: SimilarityEvaluation):
             # brand_name이 없으면 기본 빈 리스트로 설정
             print("상표이름 비어있음")
             search_words = []
-        
+
         #상표 검색 수행
         result_data = kipris_api.updated_search_results_for_image(search_words, request.similarity_code, request.vienna_code)
 
         all_responses = []
         download_image_paths = []
 
-        for idx, result in enumerate(result_data):
+        max_messages = 2
+        for idx, result in enumerate(result_data[:max_messages]):
             similar_image_path = result['image_path'] #유사 이미지 경로
             similar_image_url = result['similar_image_url']
             application_number = result['application_number'] # 출원번호
@@ -91,15 +92,16 @@ async def similarity_trademark(request: SimilarityEvaluation):
             image_pair = [brand_image_path, similar_image_path]
             image_url_pair = [request.brand_image_url, similar_image_url]
 
-            user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
+            user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {request.brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
             thread, run = similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
 
             #실행 완료 대기
             run = common.wait_on_run(run, thread)
-            response = get_response(thread)
-            all_responses.append(response)
+            response = init.client.beta.threads.messages.list(thread_id=thread.id)
+            messages = common.print_message(response)
+            all_responses.append(messages)
 
-        save_file.save_messages_to_md(all_responses, filename='assistant_response.md')
+        # save_file.save_messages_to_md(all_responses, filename='assistant_response.md')
 
         save_file.delete_downloaded_images(download_image_paths)
 

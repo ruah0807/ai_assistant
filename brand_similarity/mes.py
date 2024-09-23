@@ -101,7 +101,7 @@ def delete_downloaded_images(downloaded_image_paths):
     
 
 
-# ######################## 유저 인풋 ##########################
+######################## 유저 인풋 ##########################
 
 # brand_name = ''
 # similarity_code = 'S121002|S121001|S110101'
