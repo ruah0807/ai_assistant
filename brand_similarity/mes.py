@@ -1,10 +1,6 @@
 import os, sys, time, requests
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
-from kipris_api import updated_search_results_for_image
-from similar import generate_similar_barnd_names
-from save_file import download_image, save_messages_to_md
-import common
 
 ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 
@@ -44,8 +40,6 @@ def run_with_tools(ass_id, thread):
         이미지 유사도 평가 방법에 대한 정보는 다음과 같은 기준을 적용할 수 있습니다:
         반드시 [상표심사기준202405.pdf]문서를 참고하여 [상표유사여부보고서형식(예시).md]형식으로 대답하세요(출처를 밝혀야합니다)
         상표의 유사 여부에 대한 최종 검토의견을 1000자 이내로 설명하세요.
-
-
         
         다음과 같은 형식으로 작성해주세요 :
 

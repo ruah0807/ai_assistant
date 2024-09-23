@@ -65,9 +65,9 @@ instructions = '''
 
 
 
-# vector_store = client.beta.vector_stores.update(
-#     vector_store_id= 'vs_lnyjqbRPhkqR5RkQ3Y3pdiN1'
-# )
+vector_store = client.beta.vector_stores.update(
+    vector_store_id= 'vs_rLXYrSoCNE7aNpLI6cBGPseN'
+)
 
 
 
@@ -76,7 +76,8 @@ assistant = client.beta.assistants.update(
     assistant_id= ass_id,
     name= '상표 IMAGE 유사도 평가 Assistant',
     instructions = instructions,
-    # model ='gpt-4o-2024-08-06',
+    tools =  [{'type': 'file_search'}],
+    tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
     model ='gpt-4o',
     temperature=0,
     

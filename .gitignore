@@ -2,8 +2,9 @@
 docs/
 img/
 similar_img/similar_img/
-
+__pycache__/
 brand_similarity/output_folder
+brand_similarity/__pycache__/
 brand_similarity/downloaded_images
 brand_similarity/similar_img
 brand_discernment/downloaded_images
