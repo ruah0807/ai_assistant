@@ -3,7 +3,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 from kipris_api import updated_search_results_for_image
 from similar import generate_similar_barnd_names
-from save_file import download_image_from_url
+from save_file import download_image
 
 ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 
@@ -87,52 +87,6 @@ def create_thread_and_run(user_input, image_path, image_url):
     return thread, run
 
 
-# 메시지 출력용 함수
-def print_message(response):
-    for res in response:
-        print(f'[{res.role.upper()}]')
-
-        # res.content 안의 각 항목을 처리
-        for content in res.content:
-            # 텍스트일 경우
-            if content.type == 'text':
-                print(f"{content.text.value}\n")
-            # 이미지 파일일 경우
-            elif content.type == 'image_file':
-                print(f"식별력 평가 대상 이미지 파일 ID: {content.image_file.file_id}\n")
-        print("-" * 60)
-
-
-# 실행 완료까지 대기하는 함수
-def wait_on_run(run, thread, timeout=500):
-    start_time = time.time()
-    while run.status == 'queued' or run.status == 'in_progress':
-        # 상태를 출력하여 디버깅
-        print(f"현재 run 상태: {run.status}")
-        run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id = run.id)
-        # 일정 시간이 지나면 타임아웃 발생
-        if time.time() - start_time > timeout:
-            raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
-        time.sleep(0.5)
-    return run
-
-
-
-# 메시지들을 Markdown 파일로 저장하는 함수
-def save_messages_to_md(responses, filename='assistant_response.md'):
-    """
-    responses : get_response 함수로부터 받은 메시지 리스트
-    filename : 저장할 md 파일명
-    """
-    with open(filename, 'w', encoding='utf-8') as f:
-        for res in responses:
-            # assistant의 응답만을 저장
-            if res.role == 'assistant':
-                for content in res.content:
-                    if content.type == 'text':
-                        f.write(f"{content.text.value}")
-                f.write("\n\n---\n\n")
-    print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
 
 
 # 이미지 파일 삭제
@@ -158,7 +112,7 @@ all_responses = []
 
 ########################## 실행 ############################
 
-brand_image_path = download_image_from_url(brand_image_url)
+brand_image_path = download_image(brand_image_url)
 
 if brand_name:
     # 비슷한 단어 찾기

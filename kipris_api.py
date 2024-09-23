@@ -1,7 +1,7 @@
 import requests, os, xmltodict, json
 from init import kipris_api
 import base64
-from save_file import download_image_with_application_number, save_to_json
+from save_file import download_image, save_to_json
 
 
 
@@ -119,7 +119,7 @@ def updated_search_results_for_image(seperated_words, similarity_code=None, vien
         if vienna_code:
             if big_drawing_url and application_number:
                 #이미지 다운로드 처리
-                image_path = download_image_with_application_number(big_drawing_url, application_number)
+                image_path = download_image(big_drawing_url, application_number)
 
             if image_path :
                 filtered_item = {
