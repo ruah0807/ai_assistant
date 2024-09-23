@@ -60,7 +60,7 @@ def get_response(thread):
 
 
 # 새로운 스레드 생성 및 메시지 제출 함수
-def create_thread_and_run(user_input, image_path, image_url):
+def discernment_create_thread_and_run(user_input, image_path, image_url):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
     submit_message_with_image(thread, user_input, image_path, image_url)

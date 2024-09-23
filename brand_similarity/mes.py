@@ -3,7 +3,8 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 from kipris_api import updated_search_results_for_image
 from similar import generate_similar_barnd_names
-from save_file import download_image
+from save_file import download_image, save_messages_to_md
+import common
 
 ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 
@@ -77,7 +78,7 @@ def get_response(thread):
 
 
 # 새로운 스레드 생성 및 메시지 제출 함수
-def create_thread_and_run(user_input, image_path, image_url):
+def similarity_create_thread_and_run(user_input, image_path, image_url):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
     submit_message_with_image(thread, user_input, image_path, image_url)
@@ -100,60 +101,60 @@ def delete_downloaded_images(downloaded_image_paths):
     
 
 
-######################## 유저 인풋 ##########################
+# ######################## 유저 인풋 ##########################
 
-brand_name = ''
-similarity_code = 'S121002|S121001|S110101'
-vienna_code = '260301'
-brand_image_url = 'https://kipris.s3.ap-northeast-2.amazonaws.com/crople.png'
-# 유사이미지 검색 및 다운로드 처리
-download_image_paths = []
-all_responses = []
+# brand_name = ''
+# similarity_code = 'S121002|S121001|S110101'
+# vienna_code = '260301'
+# brand_image_url = 'https://kipris.s3.ap-northeast-2.amazonaws.com/crople.png'
+# # 유사이미지 검색 및 다운로드 처리
+# download_image_paths = []
+# all_responses = []
 
-########################## 실행 ############################
+# ########################## 실행 ############################
 
-brand_image_path = download_image(brand_image_url)
+# brand_image_path = download_image(brand_image_url)
 
-if brand_name:
-    # 비슷한 단어 찾기
-    similar_words = generate_similar_barnd_names(brand_name)
-    search_words = similar_words['words']
-else:
-    # brand_name이 없으면 기본 빈 리스트로 설정
-    search_words = []
+# if brand_name:
+#     # 비슷한 단어 찾기
+#     similar_words = generate_similar_barnd_names(brand_name)
+#     search_words = similar_words['words']
+# else:
+#     # brand_name이 없으면 기본 빈 리스트로 설정
+#     search_words = []
 
-print(f"검색어: {search_words}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
-# 분류코드와 비엔나 코드를 기반으로 상표 검색
-result_data = updated_search_results_for_image(search_words, similarity_code, vienna_code)
+# print(f"검색어: {search_words}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
+# # 분류코드와 비엔나 코드를 기반으로 상표 검색
+# result_data = updated_search_results_for_image(search_words, similarity_code, vienna_code)
 
 
-# 등록 이미지와 유사 이미지를 비교하는 메시지 전송
-for idx, result in enumerate(result_data):
+# # 등록 이미지와 유사 이미지를 비교하는 메시지 전송
+# for idx, result in enumerate(result_data):
 
-    # result_data는 이미지 정보와 경로를 포함하므로, 여기서 추출
-    similar_image_path = result['image_path'] #유사 이미지 경로
-    similar_image_url = result['similar_image_url']
-    application_number = result['application_number'] # 출원번호
-    classification_code = result['classification_code']
-    vienna_code = result['vienna_code']
+#     # result_data는 이미지 정보와 경로를 포함하므로, 여기서 추출
+#     similar_image_path = result['image_path'] #유사 이미지 경로
+#     similar_image_url = result['similar_image_url']
+#     application_number = result['application_number'] # 출원번호
+#     classification_code = result['classification_code']
+#     vienna_code = result['vienna_code']
 
-    #다운로드 이미지 경로 저장
-    download_image_paths.append(similar_image_path)
+#     #다운로드 이미지 경로 저장
+#     download_image_paths.append(similar_image_path)
 
-    image_pair = [brand_image_path, similar_image_path]  # 등록하려는 이미지와 유사 이미지 묶기
-    image_url_pair = [brand_image_url, similar_image_url]  # 원본 이미지 URL과 유사 이미지 URL
+#     image_pair = [brand_image_path, similar_image_path]  # 등록하려는 이미지와 유사 이미지 묶기
+#     image_url_pair = [brand_image_url, similar_image_url]  # 원본 이미지 URL과 유사 이미지 URL
     
     
-    # 메시지를 생성 및 전송
-    user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
-    thread, run = create_thread_and_run(user_message, image_pair, image_url_pair)
+#     # 메시지를 생성 및 전송
+#     user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
+#     thread, run = similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
 
-    # 기다리는 로직 추가
-    run = wait_on_run(run, thread)
-    response = client.beta.threads.messages.list(thread_id=thread.id)
-    print_message(response)
-    all_responses.extend(response)
+#     # 기다리는 로직 추가
+#     run = common.wait_on_run(run, thread)
+#     response = client.beta.threads.messages.list(thread_id=thread.id)
+#     common.print_message(response)
+#     all_responses.extend(response)
 
-    delete_downloaded_images(download_image_paths)
+#     delete_downloaded_images(download_image_paths)
 
-save_messages_to_md(all_responses)
+# save_messages_to_md(all_responses)
