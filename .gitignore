@@ -1,9 +1,8 @@
 .env
-상표식별/
+docs/
+img/
 similar_img/similar_img/
-similar_img_with_tools/similar_img/
-similar_img_with_tools/downloaded_images/
-img/brand_img
+
 brand_similarity/output_folder
 brand_similarity/downloaded_images
 brand_similarity/similar_img
