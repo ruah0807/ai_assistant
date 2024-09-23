@@ -10,12 +10,6 @@ ass_id = 'asst_mD9MAguey0mzXs0wKEJmG4lV'
 def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
 
-    # 메시지 전송
-    client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
-    
-    # 이미지 파일 전송 처리
-    content = []
-
     print(f"Opening image file: {image_path}")  # 각 이미지 경로를 출력하여 확인
     try:
         with open(image_path, 'rb') as image_file:
@@ -81,18 +75,24 @@ def create_thread_and_run(user_input, image_path, image_url):
 
 # 메시지 출력용 함수
 def print_message(response):
+    messages = []
     for res in response:
+        message_data = {"role": res.role.upper(), "content":[]}
         print(f'[{res.role.upper()}]')
 
         # res.content 안의 각 항목을 처리
         for content in res.content:
             # 텍스트일 경우
             if content.type == 'text':
+                message_data['content'].append({"type":"text", "value":content.text.value})
                 print(f"{content.text.value}\n")
             # 이미지 파일일 경우
             elif content.type == 'image_file':
                 print(f"식별력 평가 대상 이미지 파일 ID: {content.image_file.file_id}\n")
+        messages.append(message_data)
         print("-" * 60)
+
+        return messages
 
 
 # 실행 완료까지 대기하는 함수

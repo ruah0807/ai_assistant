@@ -1,20 +1,14 @@
 import os, sys, time, requests
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from brand_similarity.ass import ass_id
 from init import client
 from kipris_api import updated_search_results_for_image
 from similar import generate_similar_barnd_names
 from save_file import download_image_from_url
 
+ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 
 def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
-
-    # 메시지 전송
-    client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
-    
-    # 이미지 파일 전송 처리
-    content = []
 
     for local_image_path, original_image_url in zip(image_path, image_url):
         print(f"Opening image file: {local_image_path}")  # 각 이미지 경로를 출력하여 확인
