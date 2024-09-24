@@ -35,7 +35,7 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
         'ServiceKey': kipris_api,       # KIPRIS API 키
         'trademark' : 'true',           # 이게 true여야 제대로 검색됩니다.
         'pageNo' : 1,
-        'numOfRows': 10,
+        'numOfRows': 5,
         
     }
     if trademark_name:
