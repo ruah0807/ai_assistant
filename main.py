@@ -112,7 +112,7 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_f
         
         print(brand_image_path)
 
-        #유사성 코드 및 비엔나 코드 설정
+        #유사성 코드
         search_words = []
         if request.brand_name:
             # 비슷한 단어 찾기
