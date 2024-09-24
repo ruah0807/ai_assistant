@@ -20,6 +20,7 @@ class SimilarityEvaluation(BaseModel):
     brand_image_url: str
     similarity_code: str = ''
     vienna_code: str = ''
+    max_messages: int = 2
 
 class SimilarityTextEvaluation(BaseModel):
     brand_name : str
@@ -60,7 +61,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
 
 ########################################################################################################################################
 #공통 함수 처리
-async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_format: str, max_messages: int):
+async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_format: str):
     try:
          #브랜드 이미지 다운로드
         brand_image_path = save_file.download_image(request.brand_image_url)
@@ -85,7 +86,7 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_f
         all_responses = []
         download_image_paths = []
 
-        for idx, result in enumerate(result_data[:max_messages]):
+        for idx, result in enumerate(result_data[:request.max_messages]):
             similar_image_path = result['image_path'] #유사 이미지 경로
             similar_image_url = result['similar_image_url']
             application_number = result['application_number'] # 출원번호
@@ -125,12 +126,12 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_f
 
 @app.post("/similarity_report", name="상표유사여부보고서 형식의 유사도 평가 with KIPRIS",)
 async def similarity_trademark(request: SimilarityEvaluation):
-    return await process_similarity_evaluation(request, opinion_format="상표유사보고서", max_messages=1)
+    return await process_similarity_evaluation(request, opinion_format="상표유사보고서")
     
 
 @app.post("/similarity_img_opinion", name="의견서 형식의 이미지 유사도 평가 without 문서 검색",)
 async def similarity_trademark_1(request: SimilarityEvaluation):
-    return await process_similarity_evaluation(request, opinion_format="의견서형식 with 이미지", max_messages=1)
+    return await process_similarity_evaluation(request, opinion_format="의견서형식 with 이미지")
     
 
 @app.post("/similarity_text_opinion", name="의견서 형식의 테스트 유사도 평가 with 문서참고")
