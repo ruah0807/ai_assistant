@@ -1,9 +1,11 @@
 .env
 docs/
 img/
-__pycache__/
+__pycache__/*
 brand_similarity/output_folder
 brand_similarity/__pycache__/
 brand_similarity/downloaded_images
 brand_similarity/similar_img
 brand_discernment/downloaded_images
+brand_discernment/__pycache__/
+*/__pycache__/*
