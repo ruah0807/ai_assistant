@@ -1,8 +1,6 @@
 .env
-docs/
-img/
+docs
+img
+downloaded_images
+output_folder
 __pycache__
-brand_similarity/output_folder
-brand_similarity/downloaded_images
-brand_similarity/similar_img
-brand_discernment/downloaded_images

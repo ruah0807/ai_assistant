@@ -31,7 +31,7 @@ def submit_message(ass_id, thread, user_message):
                 - 검토의견: 
                     상표명 : (title)
                     상품류: (claasificationCode)
-                    상표이미지: (bigDrawing)
+                    상표이미지: ![](bigDrawing)
                     출원/등록일 : (applicationDate)
                     출원인/등록권자: (applicantName)
                     유사도 : (O - 유사, △ - 중간유사, X - 비유사 로 판단)

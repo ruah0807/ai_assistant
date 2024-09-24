@@ -34,12 +34,16 @@ def run_with_tools(ass_id, thread):
         assistant_id=ass_id,
         tools= [],
         instructions= """
-         응답 형식:
-            - 대상 상표 : 
+            모든 텍스틀간의 검토가 끝난 후 
+            반드시 문서를 참고하여 출처와 함께 종합의견을 내세요. 
 
+            응답 형식 :     
+            < 이미지 유사도 의견서 >    
+            - 대상 상표 : 
+                ![](original_image_url)
                 (사용자가 업로드한 상표 이미지 묘사)
             - 검토의견: 
-                상표이미지: (image_url) - url
+                상표이미지: ![](similar_image_url)
                 출원/등록번호 : (application_number)
                 상품류 : (classification_code)
                 비엔나 코드 : (vienna_code)
