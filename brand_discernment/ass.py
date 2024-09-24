@@ -60,9 +60,11 @@ assistant = client.beta.assistants.update(
     temperature=0,
 )
 
+assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # print(client.beta.vector_stores.list())
-print(client.beta.assistants.list())
+# print(client.beta.assistants.list())
 
 
 

@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional
@@ -57,12 +57,54 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     return {"messages": messages}
 
 
+@app.post("/similarity_report", name="상표유사여부보고서 형식의 유사도 평가 with KIPRIS",)
+async def similarity_trademark(request: SimilarityEvaluation):
+
+    return await process_similarity_evaluation(request, opinion_format="상표유사보고서")
+    
+
+@app.post("/similarity_img_opinion", name="의견서 형식의 이미지 유사도 평가 without 문서 검색",)
+async def similarity_trademark_1(request: SimilarityEvaluation):
+    return await process_similarity_evaluation(request, opinion_format="의견서형식 with 이미지")
+    
+
+@app.post("/similarity_text_opinion", name="의견서 형식의 테스트 유사도 평가 with 문서참고")
+async def similar_text(request: SimilarityTextEvaluation):
+    try:
+        #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
+        similar_words = similar.generate_similar_barnd_names(request.brand_name)
+
+        #상표 검색 수행
+        result_data = kipris_api.updated_search_results_for_text(similar_words['words'], request.similarity_code)
+
+        #메시지를 전송하기 위한 스레드 생성
+        thread, run = mes_text.create_thread_and_run(
+            f"""
+            제가 등록하고 싶은 상표명입니다.
+            \n상표명 : {request.brand_name}\n상품류/유사군:{request.similarity_code}
+            아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 10가지 상표명의 유사도를 명확하게 판단하고, 
+            어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명하세요.\n\n{result_data}""",
+        )
+        run = common.wait_on_run(run, thread)
+        response = common.get_response(thread)
+        messages = common.print_message(response)
+
+        return {"message": messages}
+
+    except Exception as e :
+        raise HTTPException(status_code=500, detail = f"서버오류 발생: {str(e)}")
+    
+
+
+
+
 
 
 ########################################################################################################################################
 #공통 함수 처리
 async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_format: str):
     try:
+        start_time = time.time()
          #브랜드 이미지 다운로드
         brand_image_path = save_file.download_image(request.brand_image_url)
         if not brand_image_path:
@@ -114,6 +156,10 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_f
             all_responses.append(messages)
 
         # save_file.save_messages_to_md(all_responses, filename='assistant_response.md')
+        end_time = time.time()
+        total_duration = end_time - start_time
+        # 결과 출력
+        print(f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초")
 
         save_file.delete_downloaded_images(download_image_paths)
 
@@ -123,45 +169,6 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_f
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
 
 ########################################################################################################################################
-
-@app.post("/similarity_report", name="상표유사여부보고서 형식의 유사도 평가 with KIPRIS",)
-async def similarity_trademark(request: SimilarityEvaluation):
-    return await process_similarity_evaluation(request, opinion_format="상표유사보고서")
-    
-
-@app.post("/similarity_img_opinion", name="의견서 형식의 이미지 유사도 평가 without 문서 검색",)
-async def similarity_trademark_1(request: SimilarityEvaluation):
-    return await process_similarity_evaluation(request, opinion_format="의견서형식 with 이미지")
-    
-
-@app.post("/similarity_text_opinion", name="의견서 형식의 테스트 유사도 평가 with 문서참고")
-async def similar_text(request: SimilarityTextEvaluation):
-    try:
-        #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
-        similar_words = similar.generate_similar_barnd_names(request.brand_name)
-
-        #상표 검색 수행
-        result_data = kipris_api.updated_search_results_for_text(similar_words['words'], request.similarity_code)
-
-        #메시지를 전송하기 위한 스레드 생성
-        thread, run = mes_text.create_thread_and_run(
-            f"""
-            제가 등록하고 싶은 상표명입니다.
-            \n상표명 : {request.brand_name}\n상품류/유사군:{request.similarity_code}
-            아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 10가지 상표명의 유사도를 명확하게 판단하고, 
-            어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명하세요.\n\n{result_data}""",
-        )
-        run = common.wait_on_run(run, thread)
-        response = common.get_response(thread)
-        messages = common.print_message(response)
-
-        return {"message": messages}
-
-    except Exception as e :
-        raise HTTPException(status_code=500, detail = f"서버오류 발생: {str(e)}")
-    
-
-
 
 
 

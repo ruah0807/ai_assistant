@@ -1,4 +1,4 @@
-import requests, os, xmltodict, json
+import requests, os, xmltodict, json, concurrent.futures
 from init import kipris_api
 import base64
 from save_file import download_image, save_to_json,download_image_with_application_number
@@ -47,9 +47,6 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
         
     # api 요청 보내기
     response = requests.get(BASE_URL, params=params)
-    print(f"KIPRIS API KEY : {kipris_api}")
-    print(f"response : {response.status_code}")
-
     
     #응답이 성공적인지 확인
     if response.status_code == 200 :
@@ -60,32 +57,41 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
             items = data['response']['body']['items']['item']
             if isinstance(items, dict):
                 items = [items]  # 단일 항목을 리스트로 변환
+            print(f"KIPRIS 검색명 [{trademark_name}] : {len(items)}개가 검색되었습니다.")
             return items
         except Exception as e:
-            print(f"API 응답에서 'item'을 찾을 수 없습니다: {e}")
+            print(f"API 응답에서 [{trademark_name}] 검색 결과를 찾을 수 없습니다: {e}")
             return []
     else:
-        print(f"Error: {response.status_code} - API 요청 실패")
-        return []
+        print(f"Error: {response.status_code} - {response.reason}")
+        return None
 
+
+# 병렬 처리를 위한 함수
+def search_trademark(trademark_name, similarity_code, vienna_code):
+    return get_trademark_info(trademark_name, similarity_code, vienna_code)
 
 
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
 def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
     print(f"검색어: {trademark_names}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
+    print(f"KIPRIS API KEY : {kipris_api}")
     
     if not trademark_names:
         all_results = get_trademark_info(None, similarity_code, vienna_code)
     else:
         all_results = []
 
-        for trademark_name in trademark_names:
-            print(f'Searching for : {trademark_name}')
-            result = get_trademark_info(trademark_name, similarity_code, vienna_code)
+        # ThreadPoolExecutor를 사용하여 병렬 처리
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            #각 상표명에 대해 비동기로 검색 요청을 보냄
+            futures = [executor.submit(search_trademark, name, similarity_code, vienna_code) for name in trademark_names]
 
-            if result : 
-                all_results.extend(result)
+            for future in concurrent.futures.as_completed(futures):
+                result = future.result()
+                if result:
+                    all_results.extend(result)
 
     save_to_json(all_results, f'combined_trademark_info.json')
     return all_results
@@ -98,12 +104,6 @@ def updated_search_results_for_image(seperated_words, similarity_code=None, vien
 
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
     all_results = search_and_save_all_results(seperated_words, similarity_code, vienna_code)
-
-    # # 각 항목의 drawing을 base64로 변환
-    # for item in all_results:
-    #     process_drawing(item)
-
-    # save_to_json(all_results, f'update_combined_trademark_info.json')
     
     filtered_results =[]
 
