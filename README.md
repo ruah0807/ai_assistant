@@ -5,4 +5,4 @@ conda activate assistant
 
 
 # 사용 pip module
-pip install load_dotenv openai fastapi uvicorn requsts xmltodict Image
+pip install load_dotenv openai fastapi uvicorn requsts xmltodict Image aiofiles

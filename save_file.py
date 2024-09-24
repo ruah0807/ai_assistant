@@ -1,4 +1,4 @@
-import requests
+import requests, aiofiles, aiohttp
 from PIL import Image
 from io import BytesIO
 import os
@@ -131,31 +131,28 @@ def save_messages_to_md(responses, filename='assistant_response.md'):
 
 
 # 이미지 url로부터 다운로드하고 파일로 저장하는 함수
-def download_image_with_application_number(image_url, application_number,save_dir="img/downloaded_images"):
+async def download_image_with_application_number(image_url, application_number,save_dir="img/downloaded_images"):
 
-    # 이미지 url 내에서 이미지 다운로드
-    response = requests.get(image_url)
-    
-    if response.status_code == 200 :
-        
-        img = Image.open(BytesIO(response.content))
-        
-        # 디렉토리 경로 설정 (상대 경로를 절대 경로로 변환)
-        save_dir = os.path.join(os.getcwd(), save_dir)
-        
-        # 디렉토리가 없으면 생성
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
-            print(f"디렉토리 생성됨: {save_dir}")
-        
-        # 파일 경로 설정
-        image_filename = os.path.join(save_dir, f'출원번호_{application_number}.png')
-        
-        # 이미지 저장
-        img.save(image_filename)
-        print(f'이미지가 {image_filename}으로 저장되었습니다.')
-        return image_filename
-    else:
-        print(f"Error : {response.status_code} - 이미지를 다운로드 할 수 없습니다.")
-        return None
-    
+     # 디렉토리 경로 설정 (상대 경로를 절대 경로로 변환)
+    save_dir = os.path.join(os.getcwd(), save_dir)
+
+    # 디렉토리가 없으면 생성
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+        print(f"디렉토리 생성됨: {save_dir}")
+
+    # 파일 경로 설정
+    image_filename = os.path.join(save_dir, f'출원번호_{application_number}.png')
+
+    # 비동기 HTTP 요청을 통해 이미지 다운로드
+    async with aiohttp.ClientSession() as session:
+        async with session.get(image_url) as response:
+            if response.status == 200:
+                img_data = await response.read()
+                img = Image.open(BytesIO(img_data))
+                img.save(image_filename)
+                print(f'이미지가 {image_filename}으로 저장되었습니다.')
+                return image_filename
+            else:
+                print(f"Error : {response.status} - 이미지를 다운로드 할 수 없습니다.")
+                return None

@@ -4,7 +4,7 @@ from init import client
 
 ass_id = 'asst_FY8Yfek8H3CrJKSLX2OyWFB1'
 
-def submit_message_with_image(thread, user_message, image_path, image_url):
+async def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
 
     for local_image_path, original_image_url in zip(image_path, image_url):
@@ -27,7 +27,7 @@ def submit_message_with_image(thread, user_message, image_path, image_url):
     print(f"이미지 업로드 완료 . thread_id : {thread.id}")
     
     
-def run_with_tools(ass_id, thread):
+async def run_with_tools(ass_id, thread):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
@@ -57,50 +57,14 @@ def run_with_tools(ass_id, thread):
     return run
 
 
-
-def get_response(thread):
-    # 스레드에서 메세지 목록가져오기
-    return client.beta.threads.messages.list(thread_id=thread.id, order='asc')
-
-
 # 새로운 스레드 생성 및 메시지 제출 함수
-def create_thread_and_run(user_input, image_path, image_url):
+async def create_thread_and_run(user_input, image_path, image_url):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
-    submit_message_with_image(thread, user_input, image_path, image_url)
-    run = run_with_tools(ass_id, thread)
+    await submit_message_with_image(thread, user_input, image_path, image_url)
+    run = await run_with_tools(ass_id, thread)
     
     return thread, run
-
-
-# 메시지 출력용 함수
-def print_message(response):
-    for res in response:
-        print(f'[{res.role.upper()}]')
-
-        # res.content 안의 각 항목을 처리
-        for content in res.content:
-            # 텍스트일 경우
-            if content.type == 'text':
-                print(f"{content.text.value}\n")
-            # 이미지 파일일 경우
-            elif content.type == 'image_file':
-                print(f"이미지 파일 ID: {content.image_file.file_id}\n")
-        print("-" * 60)
-
-
-# 실행 완료까지 대기하는 함수
-def wait_on_run(run, thread, timeout=500):
-    start_time = time.time()
-    while run.status == 'queued' or run.status == 'in_progress':
-        # 상태를 출력하여 디버깅
-        print(f"현재 run 상태: {run.status}")
-        run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id = run.id)
-        # 일정 시간이 지나면 타임아웃 발생
-        if time.time() - start_time > timeout:
-            raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
-        time.sleep(0.5)
-    return run
 
 
 
@@ -120,16 +84,6 @@ def save_messages_to_md(responses, filename='assistant_response.md'):
                 f.write("\n\n---\n\n")
     print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
 
-
-# 이미지 파일 삭제
-def delete_downloaded_images(downloaded_image_paths):
-    for image in downloaded_image_paths:
-        try:
-            os.remove(image)
-            print(f"로컬에 저장된 이미지가 삭제되었습니다. : {image}")
-        except OSError as e :
-            print(f"이미지 삭제 실패 : {image}. 에러:{e}")
-    
 
 
 # ######################## 유저 인풋 ##########################

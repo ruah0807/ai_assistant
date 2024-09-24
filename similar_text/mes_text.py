@@ -7,7 +7,7 @@ from similar import generate_similar_barnd_names
 # Assistant Name: 상표 TEXT 유사도 평가 Assistant
 ass_id = 'asst_IbYT7EatQkmSnremkg5RuiC0'
 
-def submit_message(ass_id, thread, user_message):
+async def submit_message(ass_id, thread, user_message):
 
     content = [{'type': 'text', 'text': user_message}]
 
@@ -47,44 +47,19 @@ def submit_message(ass_id, thread, user_message):
 
 
 
-
-
 # 새로운 스레드 생성 및 메시지 제출 함수
-def create_thread_and_run(user_input):
+async def create_thread_and_run(user_input):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
-    run = submit_message(ass_id, thread, user_input)
+    run = await submit_message(ass_id, thread, user_input)
     return thread, run
 
-def send_message_in_same_thread(thread, user_message):
-    # 메시지 전송
-    run = submit_message(ass_id, thread, user_message)
-    return run
 
 
-
-# 메시지 출력용 함수
-def print_message(response):
-    for res in response:
-        print(f'[{res.role.upper()}]\n{res.content[0].text.value}\n')
-    print("-" * 60)
-
-
-#반복문에서 대기하는 함수
-def wait_on_run(run, thread, timeout=120):
-    start_time = time.time()
-    while run.status == 'queued' or run.status == 'in_progress':
-        # 상태를 출력하여 디버깅
-        print(f"현재 run 상태: {run.status}")
-        run = client.beta.threads.runs.retrieve(
-            thread_id=thread.id,
-            run_id = run.id
-        )
-        # 일정 시간이 지나면 타임아웃 발생
-        if time.time() - start_time > timeout:
-            raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
-        time.sleep(0.5)
-    return run
+# def send_message_in_same_thread(thread, user_message):
+#     # 메시지 전송
+#     run = submit_message(ass_id, thread, user_message)
+#     return run
 
 
 # # 상표 이름

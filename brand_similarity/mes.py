@@ -1,17 +1,17 @@
-import os, sys, time, requests
+import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
 ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 
-def submit_message_with_image(thread, user_message, image_path, image_url):
+async def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
 
     for local_image_path, original_image_url in zip(image_path, image_url):
         print(f"Opening image file: {local_image_path}")  # 각 이미지 경로를 출력하여 확인
         try:
             with open(local_image_path, 'rb') as image_file:
-                file = client.files.create(file=image_file, purpose='vision')  # 이미지 분석을 위한 용도
+                file =  client.files.create(file=image_file, purpose='vision') # 이미지 분석을 위한 용도
                 # 이미지 파일과 함께 라벨을 텍스트로 추가
                 content.append({'type': 'image_file', 'image_file': {'file_id': file.id}})
                 content.append({'type': 'text', 'text': f'등록하려는 상표 URL: {original_image_url}'})  # 원본 이미지 URL 라벨링
@@ -28,14 +28,13 @@ def submit_message_with_image(thread, user_message, image_path, image_url):
 
     
 
-def run_with_tools(ass_id, thread):
+async def run_with_tools(ass_id, thread):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=ass_id,
         tools=  [{'type': 'file_search'}],
         instructions= """
-        
         < 상표 유사여부 보고서 >
         유사도 평가 방법에 대한 정보는 다음과 같은 기준을 적용할 수 있습니다:
         반드시 [상표심사기준202405.pdf]문서를 참고하여 [상표유사여부보고서형식(예시).md]형식으로 대답하세요(출처를 밝혀야합니다)
@@ -58,7 +57,6 @@ def run_with_tools(ass_id, thread):
             두 상표가 발음될 때 음절별로 어떻게 발음되는지 비교해주세요. 각 상표의 발음법, 첫 음절과 마지막 음절의 차이점을 분석하고, 발음 시 느껴지는 청각적 유사성 또는 차이를 명확히 설명해주세요.
         **최종의견** :
             (상표심사기준을 참고한 출처포함 종합의견 작성)
-
         ---
         """
     )
@@ -66,33 +64,17 @@ def run_with_tools(ass_id, thread):
 
 
 
-def get_response(thread):
-    # 스레드에서 메세지 목록가져오기
-    return client.beta.threads.messages.list(thread_id=thread.id, order='asc')
-
-
 # 새로운 스레드 생성 및 메시지 제출 함수
-def similarity_create_thread_and_run(user_input, image_path, image_url):
+async def similarity_create_thread_and_run(user_input, image_path, image_url):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
-    submit_message_with_image(thread, user_input, image_path, image_url)
+    await submit_message_with_image(thread, user_input, image_path, image_url)
 
-    run = run_with_tools(ass_id, thread)
+    run = await run_with_tools(ass_id, thread)
     
     return thread, run
 
 
-
-
-# 이미지 파일 삭제
-def delete_downloaded_images(downloaded_image_paths):
-    for image in downloaded_image_paths:
-        try:
-            os.remove(image)
-            print(f"로컬에 저장된 이미지가 삭제되었습니다. : {image}")
-        except OSError as e :
-            print(f"이미지 삭제 실패 : {image}. 에러:{e}")
-    
 
 
 ######################## 유저 인풋 ##########################

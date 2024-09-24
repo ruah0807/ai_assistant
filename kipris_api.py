@@ -1,4 +1,4 @@
-import requests, os, xmltodict, json, concurrent.futures
+import requests, os, xmltodict, json, concurrent.futures, asyncio
 from init import kipris_api
 import base64
 from save_file import download_image, save_to_json,download_image_with_application_number
@@ -74,7 +74,7 @@ def search_trademark(trademark_name, similarity_code, vienna_code):
 
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
-def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
+async def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
     print(f"검색어: {trademark_names}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
     print(f"KIPRIS API KEY : {kipris_api}")
     
@@ -100,43 +100,44 @@ def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
 
 
 
-def updated_search_results_for_image(seperated_words, similarity_code=None, vienna_code=None):
+async def updated_search_results_for_image(seperated_words, similarity_code=None, vienna_code=None):
 
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
-    all_results = search_and_save_all_results(seperated_words, similarity_code, vienna_code)
+    all_results = await search_and_save_all_results(seperated_words, similarity_code, vienna_code)
     
     filtered_results =[]
+    tasks = []
 
     for item in all_results:
         big_drawing_url = item.get('bigDrawing')
         application_number = item.get('applicationNumber')
         vienna_code = item.get('viennaCode') 
 
-        image_path = None
+        if big_drawing_url and application_number:
+            #이미지 다운로드 처리
+            task = download_image_with_application_number(big_drawing_url, application_number)
+            tasks.append((task, item))
 
-        ### 비엔나 코드가 있다면 이미지를 다운로드하고, filtered_item.json 저장###
-        if vienna_code:
-            if big_drawing_url and application_number:
-                #이미지 다운로드 처리
-                image_path = download_image_with_application_number(big_drawing_url, application_number)
+    results = await asyncio.gather(*[task for task, _ in tasks])
 
-            if image_path :
-                filtered_item = {
-                    'image_path': image_path,
-                    'classification_code' : item.get('classificationCode'),
-                    'similar_image_url' : item.get('bigDrawing'),
-                    'application_number' : item.get('applicationNumber'),
-                    'vienna_code': item.get('viennaCode')
-                    # '상표명' : item.get('title'),
-                    # '상태' : item.get('applicationStatus'),
-                    # '출원/등록일' : item.get('applicationDate'),
-                    # '출원인/등록권자' : item.get('applicantName'),
-                }
-                filtered_results.append(filtered_item)
+    # 다운로드된 이미지 경로를 필터링하여 결과 생성
+    for (result, (task, item)) in zip(results, tasks):
+        if result :
+            filtered_item = {
+                'image_path': result,
+                'classification_code' : item.get('classificationCode'),
+                'similar_image_url' : item.get('bigDrawing'),
+                'application_number' : item.get('applicationNumber'),
+                'vienna_code': item.get('viennaCode')
+                # '상표명' : item.get('title'),
+                # '상태' : item.get('applicationStatus'),
+                # '출원/등록일' : item.get('applicationDate'),
+                # '출원인/등록권자' : item.get('applicantName'),
+            }
+            filtered_results.append(filtered_item)
 
     save_to_json(filtered_results, f'item_labeling.json')
-    return filtered_results[:10]
-
+    return filtered_results
 
 
 
@@ -158,7 +159,7 @@ def updated_search_results_for_text(seperated_words, similarity_code=None):
         }
         filtered_results.append([filtered_item])
 
-    return filtered_results[:10]
+    return filtered_results
 
 
 

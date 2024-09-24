@@ -1,4 +1,4 @@
-import os, sys, time, requests
+import os, sys, time, requests, asyncio
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
@@ -25,16 +25,16 @@ def print_message(response):
 
 
 # 실행 완료까지 대기하는 함수
-def wait_on_run(run, thread, timeout=500):
+async def wait_on_run(run, thread, timeout=500):
     start_time = time.time()
     while run.status == 'queued' or run.status == 'in_progress':
         # 상태를 출력하여 디버깅
         print(f"현재 run 상태: {run.status}")
-        run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id = run.id)
+        run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
         # 일정 시간이 지나면 타임아웃 발생
         if time.time() - start_time > timeout:
             raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
-        time.sleep(1)
+        await asyncio.sleep(1)
     return run
 
 
