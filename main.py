@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from typing import Optional
 from brand_discernment.mes import discernment_create_thread_and_run
 from brand_similarity.mes import similarity_create_thread_and_run
-from similar_img.mes_img import create_thread_and_run
+from similar_img import mes_img
+from similar_text import mes_text
 import kipris_api, similar, save_file, init, common
 
 
@@ -19,6 +20,10 @@ class SimilarityEvaluation(BaseModel):
     brand_image_url: str
     similarity_code: str = ''
     vienna_code: str = ''
+
+class SimilarityTextEvaluation(BaseModel):
+    brand_name : str
+    similarity_code : str
     
     
 @app.post('/discernment', name="식별력 평가")
@@ -87,7 +92,7 @@ async def similarity_trademark(request: SimilarityEvaluation):
             classification_code = result['classification_code']
             vienna_code = result['vienna_code']
 
-            #이미지 다운로드 경로 저장
+            #이미지 다운로드 경로 저장~
             download_image_paths.append(similar_image_path)
 
             image_pair = [brand_image_path, similar_image_path]
@@ -98,7 +103,7 @@ async def similarity_trademark(request: SimilarityEvaluation):
 
             #실행 완료 대기
             run = common.wait_on_run(run, thread)
-            response = init.client.beta.threads.messages.list(thread_id=thread.id)
+            response = common.get_response(thread)
             messages = common.print_message(response)
             all_responses.append(messages)
 
@@ -112,7 +117,7 @@ async def similarity_trademark(request: SimilarityEvaluation):
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
     
 
-@app.post("/similarity_opinion", name="의견서 형식의 이미지 유사도 평가 without 문서 검색",)
+@app.post("/similarity_img_opinion", name="의견서 형식의 이미지 유사도 평가 without 문서 검색",)
 async def similarity_trademark_1(request: SimilarityEvaluation):
     try:
         #브랜드 이미지 다운로드
@@ -154,11 +159,11 @@ async def similarity_trademark_1(request: SimilarityEvaluation):
             image_url_pair = [request.brand_image_url, similar_image_url]
 
             user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {request.brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
-            thread, run = create_thread_and_run(user_message, image_pair, image_url_pair)
+            thread, run = mes_img.create_thread_and_run(user_message, image_pair, image_url_pair)
 
             #실행 완료 대기
             run = common.wait_on_run(run, thread)
-            response = init.client.beta.threads.messages.list(thread_id=thread.id)
+            response = common.get_response(thread)
             messages = common.print_message(response)
             all_responses.append(messages)
 
@@ -171,3 +176,29 @@ async def similarity_trademark_1(request: SimilarityEvaluation):
     except Exception as e :
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
     
+
+@app.post("/similarity_text_opinion", name="의견서 형식의 테스트 유사도 평가 with 문서참고")
+async def similar_text(request: SimilarityTextEvaluation):
+    try:
+        #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
+        similar_words = similar.generate_similar_barnd_names(request.brand_name)
+
+        #상표 검색 수행
+        result_data = kipris_api.updated_search_results_for_text(similar_words['words'], request.similarity_code)
+
+        #메시지를 전송하기 위한 스레드 생성
+        thread, run = mes_text.create_thread_and_run(
+            f"""
+            제가 등록하고 싶은 상표명입니다.
+            \n상표명 : {request.brand_name}\n상품류/유사군:{request.similarity_code}
+            아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 10가지 상표명의 유사도를 명확하게 판단하고, 
+            어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명하세요.\n\n{result_data}""",
+        )
+        run = common.wait_on_run(run, thread)
+        response = common.get_response(thread)
+        messages = common.print_message(response)
+
+        return {"message": messages}
+
+    except Exception as e :
+        raise HTTPException(status_code=500, detail = f"서버오류 발생: {str(e)}")

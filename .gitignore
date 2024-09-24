@@ -1,7 +1,6 @@
 .env
 docs/
 img/
-similar_img/similar_img/
 __pycache__/
 brand_similarity/output_folder
 brand_similarity/__pycache__/

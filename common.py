@@ -36,3 +36,8 @@ def wait_on_run(run, thread, timeout=500):
             raise TimeoutError("Run이 지정된 시간 안에 완료되지 않았습니다.")
         time.sleep(1)
     return run
+
+
+# 스레드에서 메세지 목록가져오기
+def get_response(thread):
+    return client.beta.threads.messages.list(thread_id=thread.id)
