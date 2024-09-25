@@ -68,24 +68,6 @@ async def create_thread_and_run(user_input, image_path, image_url):
 
 
 
-# 메시지들을 Markdown 파일로 저장하는 함수
-def save_messages_to_md(responses, filename='assistant_response.md'):
-    """
-    responses : get_response 함수로부터 받은 메시지 리스트
-    filename : 저장할 md 파일명
-    """
-    with open(filename, 'w', encoding='utf-8') as f:
-        for res in responses:
-            # assistant의 응답만을 저장
-            if res.role == 'assistant':
-                for content in res.content:
-                    if content.type == 'text':
-                        f.write(f"{content.text.value}")
-                f.write("\n\n---\n\n")
-    print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
-
-
-
 # ######################## 유저 인풋 ##########################
 
 # brand_name = '온보더즈'

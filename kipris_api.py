@@ -67,12 +67,6 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
         return None
 
 
-# 병렬 처리를 위한 함수
-def search_trademark(trademark_name, similarity_code, vienna_code, num_of_rows):
-    return get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows)
-
-
-
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
 async def search_and_save_all_results(trademark_names, similarity_code, vienna_code, num_of_rows = 5):
     print(f"검색어: {trademark_names}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
@@ -86,7 +80,7 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
         # ThreadPoolExecutor를 사용하여 병렬 처리
         with concurrent.futures.ThreadPoolExecutor() as executor:
             #각 상표명에 대해 비동기로 검색 요청을 보냄
-            futures = [executor.submit(search_trademark, name, similarity_code, vienna_code, num_of_rows) for name in trademark_names]
+            futures = [executor.submit(get_trademark_info, name, similarity_code, vienna_code, num_of_rows) for name in trademark_names]
 
             for future in concurrent.futures.as_completed(futures):
                 result = future.result()
@@ -107,7 +101,6 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
     save_to_json(filtered_results, f'item_labeling.json')
 
     return filtered_results
-
 
 
 
