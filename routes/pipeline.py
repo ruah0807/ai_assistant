@@ -102,7 +102,7 @@ async def similar_text(request: SimilarityTextEvaluation):
 
 
 
-########################################################################################################################################
+#####################################################################################
 #공통 함수 처리
 async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_format: str):
     try:
@@ -184,7 +184,7 @@ async def handle_single_result(result, idx, request, opinion_format, brand_image
     except Exception as e:
         print(f"Error handling result {idx}: {str(e)}")
 
-########################################################################################################################################
+#####################################################################################
 
 
 

@@ -6,7 +6,7 @@ from save_file import download_image, save_to_json,download_image_with_applicati
 
 
 # KIPRIS API 호출
-def get_trademark_info(trademark_name, similarity_code, vienna_code):
+def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows=5):
 
     BASE_URL = 'http://plus.kipris.or.kr/kipo-api/kipi/trademarkInfoSearchService/getAdvancedSearch'
 
@@ -35,7 +35,7 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
         'ServiceKey': kipris_api,       # KIPRIS API 키
         'trademark' : 'true',           # 이게 true여야 제대로 검색됩니다.
         'pageNo' : 1,
-        'numOfRows': 5,
+        'numOfRows': num_of_rows,
         
     }
     if trademark_name:
@@ -68,75 +68,74 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code):
 
 
 # 병렬 처리를 위한 함수
-def search_trademark(trademark_name, similarity_code, vienna_code):
-    return get_trademark_info(trademark_name, similarity_code, vienna_code)
+def search_trademark(trademark_name, similarity_code, vienna_code, num_of_rows):
+    return get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows)
 
 
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
-async def search_and_save_all_results(trademark_names, similarity_code, vienna_code):
+async def search_and_save_all_results(trademark_names, similarity_code, vienna_code, num_of_rows = 5):
     print(f"검색어: {trademark_names}, 유사성 코드: {similarity_code}, 비엔나 코드: {vienna_code}")
     print(f"KIPRIS API KEY : {kipris_api}")
     
     if not trademark_names:
-        all_results = get_trademark_info(None, similarity_code, vienna_code)
+        all_results = get_trademark_info(None, similarity_code, vienna_code, num_of_rows)
     else:
         all_results = []
 
         # ThreadPoolExecutor를 사용하여 병렬 처리
         with concurrent.futures.ThreadPoolExecutor() as executor:
             #각 상표명에 대해 비동기로 검색 요청을 보냄
-            futures = [executor.submit(search_trademark, name, similarity_code, vienna_code) for name in trademark_names]
+            futures = [executor.submit(search_trademark, name, similarity_code, vienna_code, num_of_rows) for name in trademark_names]
 
             for future in concurrent.futures.as_completed(futures):
                 result = future.result()
                 if result:
                     all_results.extend(result)
+    
+    filtered_results = []
+    for item in all_results:
+        filtered_item = {
+            'title': item.get('title'),
+            'classification_code' : item.get('classificationCode'),
+            'similar_image_url' : item.get('bigDrawing'),
+            'application_number' : item.get('applicationNumber'),
+            'vienna_code': item.get('viennaCode')
+        }
+        filtered_results.append(filtered_item)
+    print(f"필터된 리스트 수: {len(filtered_results)}")
+    save_to_json(filtered_results, f'item_labeling.json')
 
-    save_to_json(all_results, f'combined_trademark_info.json')
-    return all_results
-
+    return filtered_results
 
 
 
 
 async def updated_search_results_for_image(seperated_words, similarity_code=None, vienna_code=None):
-
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
-    all_results = await search_and_save_all_results(seperated_words, similarity_code, vienna_code)
+    filtered_results = await search_and_save_all_results(seperated_words, similarity_code, vienna_code)
     
-    filtered_results =[]
     tasks = []
 
-    for item in all_results:
-        big_drawing_url = item.get('bigDrawing')
-        application_number = item.get('applicationNumber')
-        vienna_code = item.get('viennaCode') 
+    for item in filtered_results:
+        similar_image_url = item.get('similar_image_url')
+        application_number = item.get('application_number')  # 'applicationNumber' 대신 'application_number' 사용 확인
 
-        if big_drawing_url and application_number:
-            #이미지 다운로드 처리
-            task = download_image_with_application_number(big_drawing_url, application_number)
+        if similar_image_url and application_number:
+            # 이미지 다운로드 처리
+            task = download_image_with_application_number(similar_image_url, application_number)
             tasks.append((task, item))
+        else:
+            print(f"Skipping item due to missing data - similar_image_url: {similar_image_url}, application_number: {application_number}")
 
     results = await asyncio.gather(*[task for task, _ in tasks])
 
     # 다운로드된 이미지 경로를 필터링하여 결과 생성
-    for (result, (task, item)) in zip(results, tasks):
-        if result :
-            filtered_item = {
-                'image_path': result,
-                'classification_code' : item.get('classificationCode'),
-                'similar_image_url' : item.get('bigDrawing'),
-                'application_number' : item.get('applicationNumber'),
-                'vienna_code': item.get('viennaCode')
-                # '상표명' : item.get('title'),
-                # '상태' : item.get('applicationStatus'),
-                # '출원/등록일' : item.get('applicationDate'),
-                # '출원인/등록권자' : item.get('applicantName'),
-            }
-            filtered_results.append(filtered_item)
-
+    for (result, (_, item)) in zip(results, tasks):
+        if result:
+            item['image_path'] = result  # 이미지 경로 추가
     save_to_json(filtered_results, f'item_labeling.json')
+
     return filtered_results
 
 

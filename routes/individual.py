@@ -18,6 +18,7 @@ class SearchKipris(BaseModel):
     similar_words : List[str] = [""]
     similarity_code: str = ""
     vienna_code: str = ""
+    num_of_rows: int = 5
 
 @router.post("/similar-words", name="비슷한 상표명 찾기")
 async def get_similar_words(brand_name: str, brand_image_url: str):
@@ -39,6 +40,6 @@ async def search_kipris(request: SearchKipris):
         raise HTTPException(status_code=400, detail="검색할 단어 목록을 입력하세요")
     
     # KIPRIS 검색 수행
-    result_data = await kipris_api.updated_search_results_for_image(request.similar_words, request.similarity_code, request.vienna_code)
+    result_data = await kipris_api.search_and_save_all_results(request.similar_words, request.similarity_code, request.vienna_code, request.num_of_rows)
 
     return {"result_data" : result_data}
