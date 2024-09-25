@@ -1,15 +1,15 @@
 from fastapi import FastAPI
-from routes.pipeline import router
 
 
 app = FastAPI()
 
 routers = []
 
-from routes import pipeline
+from routes import pipeline, individual
 
 #라우터 추가
 app.include_router(pipeline.router)
+app.include_router(individual.router)
 
 @app.get("/")
 async def main():

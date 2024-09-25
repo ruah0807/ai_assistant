@@ -1,4 +1,4 @@
-import os, sys, time
+import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 from kipris_api import updated_search_results_for_text
