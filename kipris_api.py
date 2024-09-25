@@ -141,10 +141,10 @@ async def updated_search_results_for_image(seperated_words, similarity_code=None
 
 
 
-def updated_search_results_for_text(seperated_words, similarity_code=None):
+async def updated_search_results_for_text(seperated_words, similarity_code=None):
 
     # 1. 모든 검색 결과를 하나의 리스트에 저장하고 반환
-    all_results = search_and_save_all_results(seperated_words, similarity_code, None)
+    all_results = await search_and_save_all_results(seperated_words, similarity_code, None)
 
     filtered_results =[]
     for item in all_results:
