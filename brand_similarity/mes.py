@@ -28,7 +28,6 @@ async def submit_message_with_image(thread, user_message, image_path, image_url)
         client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
     else:
         print(f"Error : 이미지 파일 전송 실패 ")
-
     print(f"이미지 업로드 완료 . thread_id : {thread.id}")
 
 

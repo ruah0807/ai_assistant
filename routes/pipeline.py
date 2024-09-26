@@ -5,17 +5,13 @@ from brand_discernment.mes import discernment_create_thread_and_run
 from brand_similarity.mes import similarity_create_thread_and_run
 from similar_img import mes_img
 from similar_text import mes_text
-import kipris_api, similar, save_file, init, common
+import kipris_api, similar, save_file, common
 
 
 router = APIRouter(
     prefix="/pipeline",
-    tags=["식별력 & 유사도 파이프라인"]
+    tags=["All Pipeline"]
 )
-
-class DiscernmentEvaluation(BaseModel):
-    brand_name: str 
-    brand_image_url: str
 
 class SimilarityEvaluation(BaseModel):
     brand_name: str = ''
@@ -27,36 +23,6 @@ class SimilarityEvaluation(BaseModel):
 class SimilarityTextEvaluation(BaseModel):
     brand_name : str
     similarity_code : str
-    
-    
-@router.post('/discernment', name="식별력 평가")
-async def discernment_trademark(request: DiscernmentEvaluation):
-    brand_name = request.brand_name
-    brand_image_url = request.brand_image_url
-    
-    brand_image_path = save_file.download_image(brand_image_url)
-    
-    if not brand_image_path:
-        raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
-    
-    #스레드 생성 및 메시지 제출
-    # 스래드 생성
-    thread, run = discernment_create_thread_and_run(
-        f"""
-        업로드한 이미지 상표 '{brand_name}'의 상표 식별력을 평가해주세요.
-        """, 
-        image_path=brand_image_path, 
-        image_url= brand_image_url
-        )
-
-    run= await common.wait_on_run(run, thread)
-
-    response = init.client.beta.threads.messages.list(thread_id=thread.id)
-    messages = common.print_message(response)
-
-    save_file.delete_downloaded_images(brand_image_path)
-
-    return {"messages": messages}
 
 
 @router.post("/similarity_report", name="상표유사여부보고서 형식의 유사도 평가 with KIPRIS",)
@@ -96,10 +62,6 @@ async def similar_text(request: SimilarityTextEvaluation):
     except Exception as e :
         raise HTTPException(status_code=500, detail = f"서버오류 발생: {str(e)}")
     
-
-
-
-
 
 
 #####################################################################################

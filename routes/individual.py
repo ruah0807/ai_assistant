@@ -1,24 +1,20 @@
-import json, time
 from fastapi import APIRouter, HTTPException
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
-from brand_discernment.mes import discernment_create_thread_and_run
-from brand_similarity.mes import similarity_create_thread_and_run
-from similar_img import mes_img
-from similar_text import mes_text
-import kipris_api, similar, save_file, init, common
+import kipris_api, similar, common
 
 
 router = APIRouter(
     prefix="/individual",
-    tags=["파이프라인 분리"]
+    tags=["SimilarWords & KIPRIS"]
 )
 
 class SearchKipris(BaseModel):
-    similar_words : List[str] = [""]
-    similarity_code: str = ""
-    vienna_code: str = ""
+    words : List[str] = [""]
+    similarity_code: Optional[str] = None
+    vienna_code: Optional[str] = None
     num_of_rows: int = 5
+
 
 @router.post("/similar-words", name="비슷한 상표명 찾기")
 async def get_similar_words(brand_name: str):
@@ -34,13 +30,13 @@ async def get_similar_words(brand_name: str):
     return similar_words
 
 
-@router.post("/search-kipris", name="KIPRIS 유사 상표 찾기", description="찾고자 하는 유사상표명(List)와 유사코드, 비엔나 코드를 입력하세요")
+@router.post("/search-kipris", name="KIPRIS 유사 상표 찾기", description="찾고자 하는 유사상표명(List)와 유사코드, 비엔나 코드 각 상표명마다 받고싶은 검색 수를 입력하세요")
 async def search_kipris(request: SearchKipris):
-    if not request.similar_words:
+    if not request.words:
         raise HTTPException(status_code=400, detail="검색할 단어 목록을 입력하세요")
     
     # KIPRIS 검색 수행
-    result_data = await kipris_api.search_and_save_all_results(request.similar_words, request.similarity_code, request.vienna_code, request.num_of_rows)
+    result_data = await kipris_api.search_and_save_all_results(request.words, request.similarity_code, request.vienna_code, request.num_of_rows)
 
     if not result_data:
         raise HTTPException(status_code=404, detail ="검색된 데이터가 없습니다.")

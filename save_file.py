@@ -93,40 +93,6 @@ def save_messages_to_md(responses, filename='assistant_response.md'):
                         f.write(f"{content.text.value}")
                 f.write("\n\n---\n\n")
     print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
-
-
-
-
-
-
-# def download_image_from_url(image_url, save_dir='img/downloaded_images'):
-#     """
-#     주어진 URL에서 이미지를 다운로드하고 로컬에 저장합니다.
-#     """
-#     try:
-#         # 이미지 URL에서 이미지 데이터를 다운로드
-#         response = requests.get(image_url)
-#         response.raise_for_status()  # 응답 오류가 있을 경우 예외 발생
-
-#         # 이미지 파일을 저장할 디렉토리 생성
-#         if not os.path.exists(save_dir):
-#             os.makedirs(save_dir)
-
-#         # 이미지 이름을 URL에서 추출하거나 고유한 이름으로 지정
-#         image_name = image_url.split("/")[-1]
-#         image_path = os.path.join(save_dir, image_name)
-
-#         # 이미지 데이터를 파일로 저장
-#         image = Image.open(BytesIO(response.content))
-#         image.save(image_path)
-
-#         print(f"이미지가 성공적으로 다운로드되었습니다: {image_path}")
-#         return image_path  # 이미지의 로컬 경로 반환
-
-#     except requests.exceptions.RequestException as e:
-#         print(f"이미지 다운로드 실패: {e}")
-#         return None
-    
     
 
 
