@@ -5,7 +5,7 @@ from brand_discernment.mes import discernment_create_thread_and_run
 from brand_similarity.mes import similarity_create_thread_and_run
 from similar_img import mes_img
 from similar_text import mes_text
-import kipris_control, similar, save_file, common
+import kipris_control, similar, file_handler, common
 
 
 router = APIRouter(
@@ -25,18 +25,18 @@ class SimilarityTextEvaluation(BaseModel):
     similarity_code : str
 
 
-@router.post("/similarity_report", name="상표유사여부보고서(별책).pdf를 참고한 형식의 유사도 평가 with KIPRIS",)
+@router.post("/similarity_report", name="상표유사여부보고서(별책).pdf를 참고한 형식의 유사도 평가 with KIPRIS and LLM",)
 async def similarity_trademark(request: SimilarityEvaluation, download_image: bool = True):
 
     return await process_similarity_evaluation(request, download_image, opinion_format="상표유사보고서")
     
 
-@router.post("/similarity_img_opinion", name="의견서 형식의 IMAGE 유사도 평가 (문서 검색 X)",)
+@router.post("/similarity_img_opinion", name="의견서 형식의 IMAGE 유사도 평가(문서 검색 X) with KIPRIS and LLM",)
 async def similarity_trademark_1(request: SimilarityEvaluation, download_image: bool = True):
-    return await process_similarity_evaluation(request, download_image,opinion_format="의견서형식 with 이미지")
+    return await process_similarity_evaluation(request, download_image, opinion_format="의견서형식 with 이미지")
     
 
-@router.post("/similarity_text_opinion", name="의견서 형식의 TEXT 유사도 평가 (문서참고 O)")
+@router.post("/similarity_text_opinion", name="의견서 형식의 TEXT 유사도 평가(문서참고 O) with KIPRIS and LLM")
 async def similar_text(request: SimilarityTextEvaluation, download_image: bool = False):
     try:
         #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
@@ -70,7 +70,7 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, download_
     try:
         start_time = time.time()
          #브랜드 이미지 다운로드
-        brand_image_path = save_file.download_image(request.brand_image_url)
+        brand_image_path = file_handler.download_image(request.brand_image_url)
         if not brand_image_path:
             raise HTTPException(status_code=400, detail="이미지 파일 다운로드 실패")
         
@@ -105,7 +105,7 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, download_
         total_duration = end_time - start_time
         print(f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초")
 
-        save_file.delete_downloaded_images(download_image_paths)
+        file_handler.delete_downloaded_images(download_image_paths)
 
         return{"message": all_responses}
     

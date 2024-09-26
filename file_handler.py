@@ -4,7 +4,7 @@ from io import BytesIO
 import os
 import json
 
-def download_image(image_url, save_dir = 'img/downloaded_images', application_number = None):
+def download_image(image_url, save_dir = 'img/downloaded_images'):
     """
     주어진 URL 내에서 이미지를 다운로드하고 로컬에저장
     application_number가 있으면 해당 번호로 파일명을 저장하고, 없으면 기본 URL내에서 추출한 파일명 사용.
@@ -18,11 +18,7 @@ def download_image(image_url, save_dir = 'img/downloaded_images', application_nu
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         
-        #application_number가 있을 경우 파일명에 출원 번호 사용
-        if application_number:
-            image_filename = f'출원번호_{application_number}.png'
-        else:
-            image_filename = image_url.split("/")[-1]
+        image_filename = image_url.split("/")[-1]
 
         image_path = os.path.join(save_dir, image_filename)
 

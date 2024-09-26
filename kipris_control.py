@@ -1,5 +1,5 @@
 import concurrent.futures, asyncio
-from save_file import save_to_json,download_image_with_application_number
+from file_handler import save_to_json,download_image_with_application_number
 from kipris_api import get_trademark_info
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장

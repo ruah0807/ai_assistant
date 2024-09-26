@@ -1,12 +1,10 @@
-import json, time, asyncio
+import time, asyncio
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
 from brand_discernment.mes import discernment_create_thread_and_run
 from brand_similarity.mes import similarity_create_thread_and_run
-from similar_img import mes_img
-from similar_text import mes_text
-import kipris_control, save_file, common
+import kipris_control, file_handler, common
 
 router = APIRouter(
     prefix="/assistant",
@@ -37,7 +35,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     brand_name = request.brand_name
     brand_image_url = request.brand_image_url
     
-    brand_image_path = save_file.download_image(brand_image_url)
+    brand_image_path = file_handler.download_image(brand_image_url)
     
     if not brand_image_path:
         raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
@@ -57,7 +55,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     response = common.get_response(thread)
     messages = common.print_message(response)
 
-    save_file.delete_downloaded_images(brand_image_path)
+    file_handler.delete_downloaded_images(brand_image_path)
     
     end_time = time.time()
     total_duration = end_time - start_time
@@ -72,7 +70,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
         # 1. 브랜드 이미지 다운로드
-        brand_image_path = save_file.download_image(request.brand_image_url)
+        brand_image_path = file_handler.download_image(request.brand_image_url)
 
         if not brand_image_path:
             raise HTTPException(status_code=400, detail="이미지 파일 다운로드 실패")
@@ -97,7 +95,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
         total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
         print(total_duration)
 
-        save_file.delete_downloaded_images(download_image_paths)
+        file_handler.delete_downloaded_images(download_image_paths)
 
         return{"message": all_responses, "processing_time": total_duration}
     
