@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
-import kipris_api, similar, common
+import kipris_control, similar
 
 
 router = APIRouter(
@@ -36,7 +36,7 @@ async def search_kipris(request: SearchKipris):
         raise HTTPException(status_code=400, detail="검색할 단어 목록을 입력하세요")
     
     # KIPRIS 검색 수행
-    result_data = await kipris_api.search_and_save_all_results(request.words, request.similarity_code, request.vienna_code, request.num_of_rows)
+    result_data = await kipris_control.search_and_save_all_results(request.words, request.similarity_code, request.vienna_code, request.num_of_rows)
 
     if not result_data:
         raise HTTPException(status_code=404, detail ="검색된 데이터가 없습니다.")

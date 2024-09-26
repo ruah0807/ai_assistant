@@ -6,7 +6,7 @@ from brand_discernment.mes import discernment_create_thread_and_run
 from brand_similarity.mes import similarity_create_thread_and_run
 from similar_img import mes_img
 from similar_text import mes_text
-import kipris_api, similar, save_file, common, init
+import kipris_control, save_file, common
 
 router = APIRouter(
     prefix="/assistant",
@@ -68,7 +68,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
 
 
 @router.post("/evaluate-similarity", name="보고서 형식의 유사도 평가")
-async def evaluate_similarity(request:SimilarityEvaluationRequest):
+async def evaluate_similarity(request:SimilarityEvaluationRequest, download_image: bool = True):
     try:    
         start_time = time.time()
         # 1. 브랜드 이미지 다운로드
@@ -79,7 +79,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
         print(f"브랜드 이미지 경로: {brand_image_path}")
 
         # 2. kipris 데이터 이미지 다운로드 및 경로 추가
-        result_data = await kipris_api.download_and_add_image_path(request.kipris_data)
+        result_data = await kipris_control.download_and_add_image_path(request.kipris_data)
 
         all_responses = []
         download_image_paths = [brand_image_path]

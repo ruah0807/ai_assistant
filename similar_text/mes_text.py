@@ -1,7 +1,6 @@
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
-from kipris_api import updated_search_results_for_text
 from similar import generate_similar_barnd_names
 
 # Assistant Name: 상표 TEXT 유사도 평가 Assistant
@@ -31,7 +30,7 @@ async def submit_message(ass_id, thread, user_message):
                 - 검토의견: 
                     상표명 : (title)
                     상품류: (claasificationCode)
-                    상표이미지: ![](bigDrawing)
+                    상표이미지: ![](drawing)
                     출원/등록일 : (applicationDate)
                     출원인/등록권자: (applicantName)
                     유사도 : (O - 유사, △ - 중간유사, X - 비유사 로 판단)

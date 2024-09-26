@@ -5,7 +5,7 @@ from brand_discernment.mes import discernment_create_thread_and_run
 from brand_similarity.mes import similarity_create_thread_and_run
 from similar_img import mes_img
 from similar_text import mes_text
-import kipris_api, similar, save_file, common
+import kipris_control, similar, save_file, common
 
 
 router = APIRouter(
@@ -26,24 +26,24 @@ class SimilarityTextEvaluation(BaseModel):
 
 
 @router.post("/similarity_report", name="상표유사여부보고서 형식의 유사도 평가 with KIPRIS",)
-async def similarity_trademark(request: SimilarityEvaluation):
+async def similarity_trademark(request: SimilarityEvaluation, download_image: bool = True):
 
-    return await process_similarity_evaluation(request, opinion_format="상표유사보고서")
+    return await process_similarity_evaluation(request, download_image, opinion_format="상표유사보고서")
     
 
 @router.post("/similarity_img_opinion", name="의견서 형식의 이미지 유사도 평가 without 문서 검색",)
-async def similarity_trademark_1(request: SimilarityEvaluation):
-    return await process_similarity_evaluation(request, opinion_format="의견서형식 with 이미지")
+async def similarity_trademark_1(request: SimilarityEvaluation, download_image: bool = True):
+    return await process_similarity_evaluation(request, download_image,opinion_format="의견서형식 with 이미지")
     
 
 @router.post("/similarity_text_opinion", name="의견서 형식의 테스트 유사도 평가 with 문서참고")
-async def similar_text(request: SimilarityTextEvaluation):
+async def similar_text(request: SimilarityTextEvaluation, download_image: bool = False):
     try:
         #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
         similar_words = similar.generate_similar_barnd_names(request.brand_name)
 
         #상표 검색 수행
-        result_data = await kipris_api.updated_search_results_for_text(similar_words['words'], request.similarity_code)
+        result_data = await kipris_control.updated_search_results(similar_words['words'], request.similarity_code, download_images=download_image)
 
         #메시지를 전송하기 위한 스레드 생성
         thread, run = await mes_text.create_thread_and_run(
@@ -66,7 +66,7 @@ async def similar_text(request: SimilarityTextEvaluation):
 
 #####################################################################################
 #공통 함수 처리
-async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_format: str):
+async def process_similarity_evaluation(request: SimilarityEvaluation, download_image: bool, opinion_format: str):
     try:
         start_time = time.time()
          #브랜드 이미지 다운로드
@@ -87,10 +87,10 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, opinion_f
             print("상표이름 비어있음")
             search_words = []
         #상표 검색 수행
-        result_data = await kipris_api.updated_search_results_for_image(search_words, request.similarity_code, request.vienna_code)
+        result_data = await kipris_control.updated_search_results(search_words, request.similarity_code, request.vienna_code, download_images=download_image)
 
         all_responses = []
-        download_image_paths = []
+        download_image_paths = [brand_image_path]
 
         tasks = []
         for idx, result in enumerate(result_data[:request.max_messages]):
