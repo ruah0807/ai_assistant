@@ -67,8 +67,8 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     return {"messages": messages, "ducation": total_duration}
 
 
-@router.post("/evaluate-similarity", name="보고서 형식의 유사도 평가")
-async def evaluate_similarity(request:SimilarityEvaluationRequest, download_image: bool = True):
+@router.post("/evaluate-similarity", name="상표유사여부보고서(별책).pdf를 참고한 형식의 유사도 평가(IMAGE포함)")
+async def evaluate_similarity(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
         # 1. 브랜드 이미지 다운로드

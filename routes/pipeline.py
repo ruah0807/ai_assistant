@@ -25,18 +25,18 @@ class SimilarityTextEvaluation(BaseModel):
     similarity_code : str
 
 
-@router.post("/similarity_report", name="상표유사여부보고서 형식의 유사도 평가 with KIPRIS",)
+@router.post("/similarity_report", name="상표유사여부보고서(별책).pdf를 참고한 형식의 유사도 평가 with KIPRIS",)
 async def similarity_trademark(request: SimilarityEvaluation, download_image: bool = True):
 
     return await process_similarity_evaluation(request, download_image, opinion_format="상표유사보고서")
     
 
-@router.post("/similarity_img_opinion", name="의견서 형식의 이미지 유사도 평가 without 문서 검색",)
+@router.post("/similarity_img_opinion", name="의견서 형식의 IMAGE 유사도 평가 (문서 검색 X)",)
 async def similarity_trademark_1(request: SimilarityEvaluation, download_image: bool = True):
     return await process_similarity_evaluation(request, download_image,opinion_format="의견서형식 with 이미지")
     
 
-@router.post("/similarity_text_opinion", name="의견서 형식의 테스트 유사도 평가 with 문서참고")
+@router.post("/similarity_text_opinion", name="의견서 형식의 TEXT 유사도 평가 (문서참고 O)")
 async def similar_text(request: SimilarityTextEvaluation, download_image: bool = False):
     try:
         #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
@@ -49,7 +49,7 @@ async def similar_text(request: SimilarityTextEvaluation, download_image: bool =
         thread, run = await mes_text.create_thread_and_run(
             f"""
             제가 등록하고 싶은 상표명입니다.
-            \n상표명 : {request.brand_name}\n상품류/유사군:{request.similarity_code}
+            \n상표명 : {request.brand_name}\n상품류/유사군:{request.similarity_code}\n
             아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 10가지 상표명의 유사도를 명확하게 판단하고, 
             어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명하세요.\n\n{result_data}""",
         )
