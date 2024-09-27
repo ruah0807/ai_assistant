@@ -5,11 +5,12 @@ app = FastAPI()
 
 routers = []
 
-from routes import pipeline, individual, assistant
+from routes import pipeline, individual, assistant, comparison
 
 #라우터 추가
 app.include_router(pipeline.router)
 app.include_router(individual.router)
+app.include_router(comparison.router)
 app.include_router(assistant.router)
 
 @app.get("/")

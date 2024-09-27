@@ -65,8 +65,8 @@ async def run_with_tools(ass_id, thread):
         - 10점: 거의 동일하거나 구별이 어려움
         
         [ Context ]
-            text_similarity_score: (텍스트 유사 점수 1점부터 10점 사이 판단) 
-            shape_similarity_score : (도형 유사 점수 1점부터 10점 사이 판단)
+            text_similarity_score : (텍스트 유사 점수 1점부터 10점 사이 판단) 
+            image_similarity_score : (도형 유사 점수 1점부터 10점 사이 판단)
 
         """
     )

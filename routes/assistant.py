@@ -81,7 +81,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = common_ass.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
+            task = handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
             tasks.append(task)
 
         # 비동기적으로 병렬 처리

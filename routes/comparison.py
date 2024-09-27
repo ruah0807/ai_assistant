@@ -2,12 +2,12 @@ from fastapi import APIRouter, HTTPException
 import time, asyncio
 from typing import List, Optional
 from pydantic import BaseModel
-import kipris_control, file_handler, common, common_ass
+import kipris_control, file_handler, common
 import comparison.mes as similarity
 
 router = APIRouter(
-    prefix="/comepare",
-    tags=["brand_comparison"]
+    prefix="/assistant",
+    tags=["Comepare Brands"]
 )
 
 class LabeledKiprisItems(BaseModel):
@@ -25,8 +25,8 @@ class SimilarityEvaluationRequest(BaseModel):
     
     
 
-@router.post("/evaluate-similarity", name="상표유사여부보고서(별책).pdf를 참고한 형식의 유사도 평가(IMAGE포함)")
-async def evaluate_similarity(request:SimilarityEvaluationRequest):
+@router.post("/comepare_brands", name="각각의 상표 유사도를 평가하는 Assistant")
+async def compare_brand(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
         # 1. 브랜드 이미지 다운로드
@@ -44,7 +44,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = common_ass.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
+            task = score_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
             tasks.append(task)
 
         # 비동기적으로 병렬 처리
@@ -82,7 +82,9 @@ async def score_result(result, idx, request, brand_image_path, all_responses, do
         image_url_pair = [request.brand_image_url, similar_image_url]
 
         user_message = f"""
-
+        상표 이미지 비교를 요청합니다.
+        등록대상상표 : {request.brand_image_url}
+        선등록상표 : {similar_image_url}
 
         """
 
