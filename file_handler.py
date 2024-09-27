@@ -4,10 +4,9 @@ from io import BytesIO
 import os
 import json
 
+
+# 주어진 URL 내에서 이미지를 다운로드하고 로컬에저장
 def download_image(image_url, save_dir = 'img/downloaded_images'):
-    """
-    주어진 URL 내에서 이미지를 다운로드하고 로컬에저장
-    """
     try:
         #이미지 URL 에서 이미지 데이터 다운로드 
         response = requests.get(image_url)
@@ -39,7 +38,6 @@ def download_image(image_url, save_dir = 'img/downloaded_images'):
         return None
 
 
-
 #JSON 파일로 저장(자동 줄바꿈)
 def save_to_json(data, filename='trademark_info.json', folder_name= 'docs/output_folder'):
     # 폴더가 없으면 생성
@@ -52,7 +50,6 @@ def save_to_json(data, filename='trademark_info.json', folder_name= 'docs/output
     with open(file_path, 'w', encoding ='utf-8') as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4)
     print(f'DATA saved to {file_path}')
-
 
 
 # 이미지 파일 삭제
@@ -71,24 +68,6 @@ def delete_downloaded_images(downloaded_image_paths):
 
     except OSError as e:
         print(f"이미지 삭제 실패 : {image}. 에러 : {e}")
-
-
-# 메시지들을 Markdown 파일로 저장하는 함수
-def save_messages_to_md(responses, filename='assistant_response.md'):
-    """
-    responses : get_response 함수로부터 받은 메시지 리스트
-    filename : 저장할 md 파일명
-    """
-    with open(filename, 'w', encoding='utf-8') as f:
-        for res in responses:
-            # assistant의 응답만을 저장
-            if res.role == 'assistant':
-                for content in res.content:
-                    if content.type == 'text':
-                        f.write(f"{content.text.value}")
-                f.write("\n\n---\n\n")
-    print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
-    
 
 
 # 이미지 url로부터 다운로드하고 파일로 저장하는 함수
@@ -117,3 +96,21 @@ async def download_image_with_application_number(image_url, application_number,s
             else:
                 print(f"Error : {response.status} - 이미지를 다운로드 할 수 없습니다.")
                 return None
+            
+
+# 메시지들을 Markdown 파일로 저장하는 함수
+# def save_messages_to_md(responses, filename='assistant_response.md'):
+#     """
+#     responses : get_response 함수로부터 받은 메시지 리스트
+#     filename : 저장할 md 파일명
+#     """
+#     with open(filename, 'w', encoding='utf-8') as f:
+#         for res in responses:
+#             # assistant의 응답만을 저장
+#             if res.role == 'assistant':
+#                 for content in res.content:
+#                     if content.type == 'text':
+#                         f.write(f"{content.text.value}")
+#                 f.write("\n\n---\n\n")
+#     print(f"Assistant의 응답이 {filename} 파일에 저장되었습니다.")
+    

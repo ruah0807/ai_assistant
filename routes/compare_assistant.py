@@ -16,7 +16,6 @@ class LabeledKiprisItems(BaseModel):
     similar_image_url: Optional[str] = None
     application_number: Optional[str] = None
     vienna_code : Optional[str] = None
-    image_path: str = None
 
 class SimilarityEvaluationRequest(BaseModel):
     brand_name: Optional[str] = None
@@ -25,7 +24,13 @@ class SimilarityEvaluationRequest(BaseModel):
     
     
 
-@router.post("/comepare_brands", name="각각의 상표 유사도를 평가하는 Assistant")
+@router.post("/comepare_brands", name="상표 1차 필터링", 
+             description="""
+             Kipris에서 검색한 상표리스트를 1차필터링을 통해 
+             "text_similar_score" : True or False
+             "image_similar_score" : True or False
+             판단 후 하나라도 True가 들어가있다면 값을 반환
+             """)
 async def compare_brand(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
