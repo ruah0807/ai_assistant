@@ -1,4 +1,4 @@
-import os, sys, time, requests, asyncio
+import os, sys, time, json, asyncio
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
@@ -13,7 +13,7 @@ def print_message(response):
         for content in res.content:
             # 텍스트일 경우
             if content.type == 'text':
-                message_data['content'].append({"type":"text", "value":content.text.value})
+                message_data['content'].append({content.text.value})
                 print(f"{content.text.value}\n")
             # 이미지 파일일 경우
             elif content.type == 'image_file':
@@ -22,6 +22,41 @@ def print_message(response):
         print("-" * 60)
 
         return messages
+    
+def print_json_from_assistant(response):
+    # 첫 번째 메시지 처리
+    res = response.data[0]  # response 리스트의 첫 번째 항목
+    
+    # res.content가 리스트일 수 있으므로, 이를 순차적으로 처리
+    for content in res.content:
+        if content.type == 'text':  # content의 타입이 'text'일 경우 처리
+            try:
+                # JSON 스타일의 텍스트를 파싱
+                parsed_json = json.loads(content.text.value)
+                
+                # 필요한 필드만 추출하여 저장
+                filtered_data = {
+                    "title": parsed_json.get("title"),
+                    "similar_image_url": parsed_json.get("similar_image_url"),
+                    "application_number": parsed_json.get("application_number"),
+                    "classification_code": parsed_json.get("classification_code"),
+                    "vienna_code": parsed_json.get("vienna_code"),
+                    "text_similarity_score": parsed_json.get("text_similarity_score"),
+                    "image_similarity_score": parsed_json.get("image_similarity_score"),
+                }
+                
+                # 필터된 데이터를 반환
+                return filtered_data
+            
+            except json.JSONDecodeError as e:
+                # 만약 JSON 파싱이 실패하면 오류 로그를 출력
+                print(f"JSON 파싱 실패: {e}")
+                print(f"오류 발생한 내용: {content.text.value}")
+                return None
+        
+    else:
+        print("텍스트 콘텐츠를 찾을 수 없습니다.")
+        return None
 
 
 # 실행 완료까지 대기하는 함수
@@ -51,7 +86,7 @@ async def handle_run_response(run, thread):
         response = client.beta.threads.messages.list(thread_id=thread.id)
         
         # 응답 메시지 출력
-        messages = print_message(response)
+        messages = print_json_from_assistant(response)
         
         return messages
     

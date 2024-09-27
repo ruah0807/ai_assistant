@@ -13,21 +13,25 @@ def generate_similar_barnd_names(brand_name):
     prompt = f"""
     '{brand_name}'이라는 상표명을 기반으로, 외관, 발음, 관념 측면에서 유사한 검색어를 생성해 주세요. 다음 조건들을 고려해서 검색어를 만들어 주세요.
 
-1. **기본 단어와 번역본 추가**:
+1. **기본 단어와 번역본 추가 그리고 합성어 분리**:
     - '{brand_name}'과 그 번역본을 첫 번째에 추가해 주세요.
-    - 예: 'onboarders'와 '온보더스'.
+    - example: 'onboarders'와 '온보더스'.
+    - '{brand_name}'을 분리한 단어들을 두번째에 나열하세요.
+    - example: '유상우정신건강의학원' -> '유상우', '정신건강의학원'
+    - ** 이후 특정이름으로된 단어는 생성불가. 흔한 명칭으로 검색어를 만듭니다.**
+
 
 2. **철자 오류와 발음 유사성 반영**:
     - 철자 오류(누락, 추가, 순서 변경)를 반영해 유사한 단어를 추가해 주세요. 발음이 비슷한 단어들도 포함해 주세요.
-    - 예: 'onboarders' -> 'onboader', '온보딩'. 
-    - 생성 불가한 검색어 : '유상우정신건강병원'-> '유상우정신과', '유상우정신병원' 등의 특정이름이나 명칭을 포함한 검색어는 생성 불가합니다.
-
+    - example : 'onboarders' -> 'onboader', '온보딩'. 
+    - [important!] 특정이름이나 명칭을 포함한 검색어는 생성 불가.
+    - example:'유상우정신건강병원'-> '유상우정신과', '유상우정신병원' 등의 
 3. **합성어 분리 및 불필요한 단어 제거**:
     - 현재 존재할것 같은 상표명으로 쓰일 단어들 위주로 생성하세요.
-        - 예 : 'onboarders' -> 'board', 'boards' 
-        - 예 :'on','온', 'in', '인', 'a', '어', 'an', '언' 등과 같은 전치사로 판단되는 것들은 검색어로 생성하지 않아야합니다.
+        - example 1 : 'onboarders' -> 'board', 'boards' 
+        - example 2 :'on','온', 'in', '인', 'a', '어', 'an', '언' 등과 같은 전치사로 판단되는 것들은 검색어로 생성하지 않아야합니다.
     - 특정 명칭이나 이름은 분리한 뒤 한번만 검색어에 추가, 흔한 단어 위주로 만드세요.
-        - 예: '유상우정신건강의학원' -> '유상우', '정신건강의학원', '정신건강의학과', '정신병원'
+        - example : '유상우정신건강의학원' -> '유상우', '정신건강의학원', '정신건강의학과', '정신병원'
 
 4. **한 글자 검색어 필터링**:
     - 의미 없는 한 글자는 제외해 주세요. 단, 약어의 일부이거나 의미가 있으면 허용.
@@ -38,7 +42,7 @@ def generate_similar_barnd_names(brand_name):
 6. **음운론적 변형 생성**:
     - 영어단어로된 상표명이거나 영어발음으로된 상표명은 영어단어도 만들어주세요.
     - 다른 언어 간 발음 변환을 반영해 주세요. 발음 변환된 단어도 포함해 주세요.
-        - 예: 'onboarders' -> '온보더스','onboarders', '온보드', 'onboard'.
+        - example : 'onboarders' -> '온보더스','onboarders', '온보드', 'onboard'.
 
 
 7. **결과는 JSON 형식으로 출력**:
@@ -53,8 +57,8 @@ def generate_similar_barnd_names(brand_name):
 
 ** Warning! **
 - 등록하려는 {brand_name}의 유사한 상표명을 찾을때 쓰일 검색어 입니다. 상표명으로 있을법한 단어를 위주로 나열하세요
-- 반드시!!! 중복 단어는 나열하지 마세요.
-- 특정이름은 중복단어로 판단하여 제외합니다.
+- important!!! don't give me the same words.
+- After dividing aword, don't create more words with a specific person name or building name etc.
 
     """
     start_time = time.time()

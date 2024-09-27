@@ -50,24 +50,26 @@ async def run_with_tools(ass_id, thread):
         assistant_id=ass_id,
         tools=[{'type':'file_search'}],
         instructions= f"""
-        '등록대상상표'는 한개이고. 유사검색된 '선등록상표'들은 한개에서 여러개가 될수있습니다. 각각의 기준을 세워비슷한 이미지를 찾아 json 형식으로 반환하세요.
+        '등록대상상표'는 한개이고. 유사검색된 '선등록상표'들은 한개에서 여러개가 될수있습니다.
+        각 텍스트와 이미지의 도형 유사도를 평가하세요.
 
         [평가 점수 기준]
-        - 1점: 전혀 유사하지 않음
-        - 2점: 거의 유사하지 않음
-        - 3점: 약간의 유사성
-        - 4점: 몇가지 유사성
-        - 5점: 일부 유사성 있음
-        - 6점: 꽤 유사
-        - 7점: 전반적으로 유사
-        - 8점: 거의 동일한 디자인
-        - 9점: 매우 유사
+        - true: 30% 이상 유사한 부분이 있다면 true
+        - false: 30%미만 유사성이 없다 판단되면 false
         - 10점: 거의 동일하거나 구별이 어려움
-        
-        [ Context ]
-            text_similarity_score : (텍스트 유사 점수 1점부터 10점 사이 판단) 
-            image_similarity_score : (도형 유사 점수 1점부터 10점 사이 판단)
 
+        다음과 같은 형식의 json스타일로 답변을 주세요 :
+        응답 형식 예시:
+
+    {{
+        "title": (선등록대상상표명),
+        "similar_image_url": (선등록상표 이미지 url)
+        "application_number": (선등록상표 출원번호),
+        "classification_code": (유사코드),
+        "vienna_code": (비엔나코드),
+        "text_similarity_score": (텍스트 유사도 true or false),
+        "image_similarity_score": (이미지 유사도 true or false)
+    }}
         """
     )
     return run
