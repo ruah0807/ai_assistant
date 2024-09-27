@@ -26,6 +26,7 @@ class LabeledKiprisItems(BaseModel):
 class SimilarityEvaluationRequest(BaseModel):
     brand_name: Optional[str] = None
     brand_image_url: str
+    brand_image_path: str
     kipris_data: List[LabeledKiprisItems]
     
     
@@ -66,22 +67,22 @@ async def discernment_trademark(request: DiscernmentEvaluation):
 async def evaluate_similarity(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
-        # 1. 브랜드 이미지 다운로드
-        brand_image_path = file_handler.download_image(request.brand_image_url)
+        # # 1. 브랜드 이미지 다운로드
+        # brand_image_path = file_handler.download_image(request.brand_image_url)
 
-        if not brand_image_path:
-            raise HTTPException(status_code=400, detail="이미지 파일 다운로드 실패")
-        print(f"브랜드 이미지 경로: {brand_image_path}")
+        # if not brand_image_path:
+        #     raise HTTPException(status_code=400, detail="이미지 파일 다운로드 실패")
+        # print(f"브랜드 이미지 경로: {brand_image_path}")
 
         # 2. kipris 데이터 이미지 다운로드 및 경로 추가
         result_data = await kipris_control.download_and_add_image_path(request.kipris_data)
 
         all_responses = []
-        download_image_paths = [brand_image_path]
+        download_image_paths = [request.brand_image_path]
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
+            task = handle_single_result(result, idx, request, request.brand_image_path, all_responses, download_image_paths)
             tasks.append(task)
 
         # 비동기적으로 병렬 처리

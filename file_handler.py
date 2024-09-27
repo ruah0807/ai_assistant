@@ -19,7 +19,7 @@ def download_image(image_url, save_dir = 'img/downloaded_images'):
         
         image_filename = image_url.split("/")[-1]
 
-        image_path = os.path.join(save_dir, image_filename)
+        image_path = os.path.join(os.getcwd(), save_dir, image_filename)
 
         #이미지 데이터를 파일로 저장
         image = Image.open(BytesIO(response.content))

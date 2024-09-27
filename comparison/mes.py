@@ -4,7 +4,6 @@ from init import client
 
 ass_id = 'asst_JQfJwI5N6CdoPMqQyAtTUptv'
 
-
 async def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
 
@@ -65,11 +64,13 @@ async def run_with_tools(ass_id, thread):
     {{
         "title": (선등록대상상표명),
         "similar_image_url": (선등록상표 이미지 url)
+        "similar_image_path": (선등록상표 이미지 경로),
         "application_number": (선등록상표 출원번호),
         "classification_code": (유사코드),
         "vienna_code": (비엔나코드),
         "text_similarity_score": (Boolean Type: True or False),
         "image_similarity_score": (Boolean Type: True or False)
+
     }}
         """
     )

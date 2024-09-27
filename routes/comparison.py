@@ -29,7 +29,6 @@ class SimilarityEvaluationRequest(BaseModel):
 async def compare_brand(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
-        print(1)
         # 1. 브랜드 이미지 다운로드
         brand_image_path = file_handler.download_image(request.brand_image_url)
 
@@ -51,14 +50,23 @@ async def compare_brand(request:SimilarityEvaluationRequest):
         # 비동기적으로 병렬 처리
         await asyncio.gather(*tasks)
 
+
         end_time = time.time()
         total_duration = end_time - start_time
-        total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
+        total_duration = f"상표 유사도 평가 Assistant 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
         print(total_duration)
+        # 유효한 응답의 개수 카운트
+        similar_count = f"유사판단 상표 갯수 : {sum(1 for response in all_responses if response)} 개"
+        print(similar_count)
 
-        file_handler.delete_downloaded_images(download_image_paths)
-
-        return{"message": all_responses, "processing_time": total_duration}
+        return{
+            "brand_name": request.brand_name,
+            "brand_image_url": request.brand_image_url,
+            "brand_image_path": brand_image_path,
+            "kipris_data": all_responses, 
+            "processing_time": total_duration, 
+            "similar_count":similar_count
+            }
     
     except Exception as e :
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
@@ -88,6 +96,7 @@ async def score_result(result, idx, request, brand_image_path, all_responses, do
         등록대상상표 : {request.brand_image_url}
         등록대상상표명 : {request.brand_name}
         선등록상표 : {similar_image_url}
+        선등록상표 경로 : {similar_image_path}
         선등록상표명 : {similar_title}
         출원번호: {application_number}, 분류코드: {classification_code}, 비엔나코드: {vienna_code}
         텍스트와 이미지의 유사도 점수를 매기고 json형식의 답변을 주세요.
