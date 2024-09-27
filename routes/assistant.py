@@ -2,8 +2,8 @@ import time, asyncio
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
-from brand_discernment.mes import discernment_create_thread_and_run
-from brand_similarity.mes import similarity_create_thread_and_run
+import brand_discernment.mes as discernment
+import brand_similarity.mes as similarity
 import kipris_control, file_handler, common
 
 router = APIRouter(
@@ -42,7 +42,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     
     #스레드 생성 및 메시지 제출
     # 스래드 생성
-    thread, run = discernment_create_thread_and_run(
+    thread, run = discernment.discernment_create_thread_and_run(
         f"""
         업로드한 이미지 상표 '{brand_name}'의 상표 식별력을 평가해주세요.
         """, 
@@ -50,10 +50,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
         image_url= brand_image_url
         )
 
-    run= await common.wait_on_run(run, thread)
-
-    response = common.get_response(thread)
-    messages = common.print_message(response)
+    messages = await common.handle_run_response(run,thread)
 
     file_handler.delete_downloaded_images(brand_image_path)
     
@@ -84,7 +81,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
+            task = common_ass.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
             tasks.append(task)
 
         # 비동기적으로 병렬 처리
@@ -102,11 +99,6 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
     except Exception as e :
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
     
-
-
-
-#####################################################################################
-
 
 async def handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths):
     """ 개별 결과처리 함수"""
@@ -126,16 +118,14 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
 
         user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {request.brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
 
-        thread, run = await similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
+        thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
 
-        # 실행 완료 대기
-        run = await common.wait_on_run(run, thread)  # 비동기 대기
-        response = common.get_response(thread)
-        messages = common.print_message(response)
+        messages = await common.handle_run_response(run,thread)
+
         all_responses.append(messages)
     
     except Exception as e:
         print(f"Error handling result {idx}: {str(e)}")
 
-#####################################################################################
+
 

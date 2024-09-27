@@ -53,9 +53,7 @@ async def similar_text(request: SimilarityTextEvaluation, download_image: bool =
             아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 10가지 상표명의 유사도를 명확하게 판단하고, 
             어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명하세요.\n\n{result_data}""",
         )
-        run = await common.wait_on_run(run, thread)
-        response = common.get_response(thread)
-        messages = common.print_message(response)
+        messages = await common.handle_run_response(run,thread)
 
         return {"message": messages}
 
@@ -113,6 +111,8 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, download_
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
 
 
+#####################################################################################
+
 
 async def handle_single_result(result, idx, request, opinion_format, brand_image_path, all_responses, download_image_paths):
     """ 개별 결과처리 함수"""
@@ -137,16 +137,12 @@ async def handle_single_result(result, idx, request, opinion_format, brand_image
         else:
             thread, run = await mes_img.create_thread_and_run(user_message, image_pair, image_url_pair)
 
-        # 실행 완료 대기
-        run = await common.wait_on_run(run, thread)  # 비동기 대기
-        response = common.get_response(thread)
-        messages = common.print_message(response)
+        messages = await common.handle_run_response(run,thread)
         all_responses.append(messages)
     
     except Exception as e:
         print(f"Error handling result {idx}: {str(e)}")
 
-#####################################################################################
 
 
 

@@ -7,7 +7,6 @@ import json
 def download_image(image_url, save_dir = 'img/downloaded_images'):
     """
     주어진 URL 내에서 이미지를 다운로드하고 로컬에저장
-    application_number가 있으면 해당 번호로 파일명을 저장하고, 없으면 기본 URL내에서 추출한 파일명 사용.
     """
     try:
         #이미지 URL 에서 이미지 데이터 다운로드 

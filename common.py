@@ -38,6 +38,23 @@ async def wait_on_run(run, thread, timeout=500):
     return run
 
 
-# 스레드에서 메세지 목록가져오기
-def get_response(thread):
-    return client.beta.threads.messages.list(thread_id=thread.id)
+
+async def handle_run_response(run, thread):
+    """
+    assistant의 실행 결과를 기다리고, 결과 메시지를 처리하는 함수
+    """
+    try:
+        # 실행 완료 대기
+        run = await wait_on_run(run, thread)
+        
+        # 응답 받아오기
+        response = client.beta.threads.messages.list(thread_id=thread.id)
+        
+        # 응답 메시지 출력
+        messages = print_message(response)
+        
+        return messages
+    
+    except Exception as e:
+        print(f"Error while handling run response: {e}")
+        return None
