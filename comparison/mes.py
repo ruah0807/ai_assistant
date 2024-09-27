@@ -29,7 +29,7 @@ async def submit_message_with_image(thread, user_message, image_path, image_url)
         client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
     else:
         print(f"Error : 이미지 파일 전송 실패 ")
-    print(f"이미지 업로드 완료 . thread_id : {thread.id}")
+    print(f"[ 이미지 업로드 완료 ] thread_id : {thread.id}, file_id: {file.id}")
 
 
 def upload_image(local_image_path, original_image_url):
@@ -52,6 +52,7 @@ async def run_with_tools(ass_id, thread):
         instructions= f"""
         '등록대상상표'는 한개이고. 유사검색된 '선등록상표'들은 한개에서 여러개가 될수있습니다.
         각 텍스트와 이미지의 도형 유사도를 평가하세요.
+        - text_similarity_score와 image_similarity_score는 boolean 타입으로, true 아니면 false를 반환합니다.
 
         [평가 점수 기준]
         - true: 30% 이상 유사한 부분이 있다면 true
@@ -67,8 +68,8 @@ async def run_with_tools(ass_id, thread):
         "application_number": (선등록상표 출원번호),
         "classification_code": (유사코드),
         "vienna_code": (비엔나코드),
-        "text_similarity_score": (텍스트 유사도 true or false),
-        "image_similarity_score": (이미지 유사도 true or false)
+        "text_similarity_score": (Boolean Type: True or False),
+        "image_similarity_score": (Boolean Type: True or False)
     }}
         """
     )

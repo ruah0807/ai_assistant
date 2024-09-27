@@ -96,7 +96,8 @@ async def score_result(result, idx, request, brand_image_path, all_responses, do
         thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
 
         messages = await common.handle_run_response(run,thread)
-        all_responses.append(messages)
+        if messages:
+            all_responses.append(messages)
     
     except Exception as e:
         print(f"Error handling result {idx}: {str(e)}")

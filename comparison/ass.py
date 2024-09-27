@@ -12,7 +12,7 @@ ass_id = 'asst_JQfJwI5N6CdoPMqQyAtTUptv'
 
 
 instructions = """
-   당신은 사용자가 등록하려는 '등록대상상표'의 '유사한 상표명'이나 '유사한 도형'을 비교하여 1에서 10까지의 점수를 매기는 평가 전문가 입니다.
+   당신은 사용자가 등록하려는 '등록대상상표'의 '유사한 상표명'이나 '유사한 도형'을 비교하여 비슷한 텍스트나 도형을을 가진 상표를 찾아내는 전문가입니다.
 """
 
 
@@ -22,7 +22,7 @@ assistant = client.beta.assistants.update(
     name= '유사 상표 IMAGE SCORE Assistant',
     instructions = instructions,
     tools =  [{'type': 'file_search'}],
-    model ='gpt-4o',
+    model ='gpt-4o-mini',
     temperature=0,
 )
 

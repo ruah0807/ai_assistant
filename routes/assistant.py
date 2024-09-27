@@ -116,12 +116,24 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
         image_pair = [brand_image_path, similar_image_path]
         image_url_pair = [request.brand_image_url, similar_image_url]
 
-        user_message = f"등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.\n 이 정보는 이사건 등록상표 입니다.: {request.brand_image_url} \n 다음 정보는 등록되어있는 유사한 이미지의 정보입니다:\n출원번호:{application_number}, 분류코드:{classification_code}, 비엔나코드: {vienna_code}, 이미지URL: {similar_image_url}\n 두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요."
+        user_message = f"""등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.
+
+        이 정보는 이사건 등록상표 입니다.: {request.brand_image_url}
+
+        다음 정보는 등록되어있는 유사한 이미지의 정보입니다:
+
+        출원번호:{application_number}, 
+        분류코드:{classification_code}, 
+        비엔나코드: {vienna_code}, 
+        이미지URL: {similar_image_url}
+        
+        두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요.
+        
+        """
 
         thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
 
         messages = await common.handle_run_response(run,thread)
-
         all_responses.append(messages)
     
     except Exception as e:

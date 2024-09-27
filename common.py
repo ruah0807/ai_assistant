@@ -23,39 +23,60 @@ def print_message(response):
 
         return messages
     
+
+
+    # 모든 메시지를 처리
 def print_json_from_assistant(response):
-    # 첫 번째 메시지 처리
-    res = response.data[0]  # response 리스트의 첫 번째 항목
-    
-    # res.content가 리스트일 수 있으므로, 이를 순차적으로 처리
-    for content in res.content:
-        if content.type == 'text':  # content의 타입이 'text'일 경우 처리
-            try:
-                # JSON 스타일의 텍스트를 파싱
-                parsed_json = json.loads(content.text.value)
-                
-                # 필요한 필드만 추출하여 저장
-                filtered_data = {
-                    "title": parsed_json.get("title"),
-                    "similar_image_url": parsed_json.get("similar_image_url"),
-                    "application_number": parsed_json.get("application_number"),
-                    "classification_code": parsed_json.get("classification_code"),
-                    "vienna_code": parsed_json.get("vienna_code"),
-                    "text_similarity_score": parsed_json.get("text_similarity_score"),
-                    "image_similarity_score": parsed_json.get("image_similarity_score"),
-                }
-                
-                # 필터된 데이터를 반환
-                return filtered_data
-            
-            except json.JSONDecodeError as e:
-                # 만약 JSON 파싱이 실패하면 오류 로그를 출력
-                print(f"JSON 파싱 실패: {e}")
-                print(f"오류 발생한 내용: {content.text.value}")
-                return None
-        
-    else:
-        print("텍스트 콘텐츠를 찾을 수 없습니다.")
+    for res in response.data:
+        # res.content가 리스트일 수 있으므로, 이를 순차적으로 처리
+        for content in res.content:
+            if content.type == 'text':  # content의 타입이 'text'일 경우 처리
+                try:
+                    # JSON 스타일의 텍스트를 파싱
+                    print(f"{content.text.value}\n")
+                    parsed_json = extract_json_from_text(content.text.value.strip())
+                    if not parsed_json:  # 만약 문자열이 비어 있으면 건너뜀
+                        print("비어 있는 메시지 발견, 건너뜀.")
+                        continue
+                    
+                    # 필요한 필드만 추출하여 저장
+                    filtered_data = {
+                        "title": parsed_json.get("title"),
+                        "similar_image_url": parsed_json.get("similar_image_url"),
+                        "application_number": parsed_json.get("application_number"),
+                        "classification_code": parsed_json.get("classification_code"),
+                        "vienna_code": parsed_json.get("vienna_code"),
+                        "text_similarity_score": parsed_json.get("text_similarity_score"),
+                        "image_similarity_score": parsed_json.get("image_similarity_score"),
+                    }
+
+                    # 조건: text_similarity_score 또는 image_similarity_score가 True인 경우만 저장
+                    if filtered_data.get("text_similarity_score") == True or filtered_data.get("image_similarity_score") == True:
+                        return filtered_data
+                    else:
+                        print(f"브랜드명 : {filtered_data.get('title')} - 둘 다 false.")
+                        return None
+
+                except Exception as e:
+                    print(f"예상치 못한 오류 발생: {e} - {content.text.value}")
+                    return None
+
+
+#  텍스트에서 JSON 부분만 추출하여 반환하는 함수
+def extract_json_from_text(text):
+    try:
+        # 응답 텍스트에서 JSON 부분을 찾기
+        start = text.find('{')
+        end = text.rfind('}') + 1
+        # JSON 형식의 부분만 추출
+        if start != -1 and end != -1:
+            json_str = text[start:end]  # 중괄호 안의 내용만 추출
+            return json.loads(json_str)  # JSON 파싱 시도
+        else:
+            print("JSON 형식의 데이터를 찾을 수 없습니다.")
+            return None
+    except json.JSONDecodeError as e:
+        print(f"JSON 파싱 실패: {e}")
         return None
 
 
@@ -74,20 +95,15 @@ async def wait_on_run(run, thread, timeout=500):
 
 
 
+# assistant의 실행 결과를 기다리고, 결과 메시지를 처리하는 함수
 async def handle_run_response(run, thread):
-    """
-    assistant의 실행 결과를 기다리고, 결과 메시지를 처리하는 함수
-    """
     try:
         # 실행 완료 대기
         run = await wait_on_run(run, thread)
-        
         # 응답 받아오기
         response = client.beta.threads.messages.list(thread_id=thread.id)
-        
         # 응답 메시지 출력
         messages = print_json_from_assistant(response)
-        
         return messages
     
     except Exception as e:
