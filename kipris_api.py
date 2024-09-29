@@ -54,10 +54,18 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
             if isinstance(items, dict):
                 items = [items]  # 단일 항목을 리스트로 변환
             print(f"KIPRIS 검색명 [{trademark_name}] : {len(items)}개가 검색되었습니다.")
-            return items
         except Exception as e:
             print(f"API 응답에서 [{trademark_name}] 검색 결과를 찾을 수 없습니다: {e}")
             return []
+        
+        # viennaCode를 빈값으로 요청시 null 값만 반환 
+        if not vienna_code : 
+            filtered_items = [item for item in items if not item.get('viennaCode')]
+            print(f"ViennaCode가 null인 항목 수: {len(filtered_items)}")
+            return filtered_items
+        else:
+            return items
+            
     else:
         print(f"Error: {response.status_code} - {response.reason}")
         return None
