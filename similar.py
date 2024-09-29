@@ -39,8 +39,8 @@ def generate_similar_barnd_names(brand_name):
 5. **Exclude single-character terms**:
     - Do not generate single-character terms. All generated terms must be at least two characters or more.
 
-6. **Reflect conceptual and phonetic transformations**:
-    - Reflect conceptual similarities and phonetic transformations across languages.
+6. **Reflect theotrical and phonetic transformations**:
+    - Reflect theotrical similarities and phonetic transformations across languages.
     - Example: 'onboarders' -> '온보드', 'onboard'
 
 7. **Output in JSON format**:
