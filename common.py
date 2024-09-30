@@ -104,6 +104,7 @@ async def handle_run_response(run, thread):
         response = client.beta.threads.messages.list(thread_id=thread.id)
         # 응답 메시지 출력
         messages = print_json_from_assistant(response)
+        # messages = print_message(response)
         return messages
     
     except Exception as e:
