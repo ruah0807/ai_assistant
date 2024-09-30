@@ -24,7 +24,7 @@ class LabeledKiprisItems(BaseModel):
     image_path: str = None
 
 class SimilarityEvaluationRequest(BaseModel):
-    brand_name: Optional[str] = None
+    brand_name: Optional[str] = ""
     brand_image_url: str
     brand_image_path: str
     kipris_data: List[LabeledKiprisItems]
