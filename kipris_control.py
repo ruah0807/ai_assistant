@@ -21,15 +21,19 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
                     all_results.extend(result)
     
     filtered_results = []
+    application_numbers_seen = set()    # 중복 체크를 위한 집합.
     null_vienna_count = 0   # null인 viennaCode 항목의 수를 카운트하는 변수
-    
+
     for item in all_results:
         # only_null_vienna_search 이 True일 경우 vienna_code가 null인 항목만 필터링
         if only_null_vienna_search and item.get('viennaCode')is not None:
             null_vienna_count += 1
             continue
 
-
+        # 중복된 application_number를 제거.
+        application_number = item.get('applicationNumber')
+        if application_number in application_numbers_seen:
+            continue
 
         filtered_item = {
             'title': item.get('title'),
@@ -39,6 +43,7 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
             'vienna_code': item.get('viennaCode')
         }
         filtered_results.append(filtered_item)
+        application_numbers_seen.add(application_number)
 
     print(f"ViennaCode가 null인 항목 수: {null_vienna_count}")
     print(f"필터된 리스트 수: {len(filtered_results)}")
@@ -80,7 +85,6 @@ async def download_and_add_image_path(filtered_results: list, save_dir="img/down
             raise TypeError(f"지원되지않는 타입")
         if result:
             item_dict['image_path'] = result  # dict에 이미지 경로 추가
-        
         updated_results.append(item_dict)
 
     save_to_json(updated_results, f'item_labeling.json')

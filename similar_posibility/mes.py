@@ -51,13 +51,12 @@ async def run_with_tools(ass_id, thread):
         temperature=0.56,
         instructions= f"""
         '등록대상상표'는 한개이고. 유사검색된 '선등록상표'들은 한개에서 여러개가 될수있습니다.
-        각 텍스트와 이미지의 도형이나 배치 유사를 평가하세요.
-        - text_similarity_score와 image_similarity_score는 boolean 타입으로, true 아니면 false를 반환합니다.
+        각 이미지 내의 도형이나 상표이미지의 배치 혹은 텍스트의 배치를 판단하여 비교 가능성이 있다 판단되는것은 true, 전혀 일치않는것은 false로 반환합니다.
+        - similarity는 boolean 타입으로, true 아니면 false를 반환합니다.
 
-        [평가 점수 기준]
-        - true: 30% 이상 유사한 부분이 있다면 true
-        - false: 30%미만 유사성이 없다 판단되면 false
-        - 10점: 거의 동일하거나 구별이 어려움
+        [평가 기준]
+        - 도형이나 배치가 조금이라도 유사하면 true
+        - 배치나 도형이 조금이라도 일치하지않다면 false
 
         다음과 같은 형식의 json스타일로 답변을 주세요 :
         응답 형식 예시:
@@ -69,8 +68,7 @@ async def run_with_tools(ass_id, thread):
         "application_number": (선등록상표 출원번호),
         "classification_code": (유사코드),
         "vienna_code": (비엔나코드),
-        "text_similarity_score": (Boolean Type: True or False),
-        "image_similarity_score": (Boolean Type: True or False)
+        "similarity": (Boolean Type: True or False),
 
     }}
         """

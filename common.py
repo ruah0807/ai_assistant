@@ -46,12 +46,11 @@ def print_json_from_assistant(response):
                         "application_number": parsed_json.get("application_number"),
                         "classification_code": parsed_json.get("classification_code"),
                         "vienna_code": parsed_json.get("vienna_code"),
-                        "text_similarity_score": parsed_json.get("text_similarity_score"),
-                        "image_similarity_score": parsed_json.get("image_similarity_score"),
+                        "similarity": parsed_json.get("similarity")
                     }
 
                     # 조건: text_similarity_score 또는 image_similarity_score가 True인 경우만 저장
-                    if filtered_data.get("text_similarity_score") == True or filtered_data.get("image_similarity_score") == True:
+                    if filtered_data.get("similarity") == True :
                         return filtered_data
                     else:
                         print(f"브랜드명 : {filtered_data.get('title')} - 둘 다 false.")

@@ -3,7 +3,7 @@ import time, asyncio
 from typing import List, Optional
 from pydantic import BaseModel
 import kipris_control, file_handler, common
-import comparison.mes as similarity
+import similar_posibility.mes as similarity
 
 router = APIRouter(
     prefix="/assistant",
@@ -55,7 +55,6 @@ async def compare_brand(request:SimilarityEvaluationRequest):
         # 비동기적으로 병렬 처리
         await asyncio.gather(*tasks)
 
-
         end_time = time.time()
         total_duration = end_time - start_time
         total_duration = f"상표 유사도 평가 Assistant 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
@@ -104,7 +103,7 @@ async def score_result(result, idx, request, brand_image_path, all_responses, do
         선등록상표 경로 : {similar_image_path}
         선등록상표명 : {similar_title}
         출원번호: {application_number}, 분류코드: {classification_code}, 비엔나코드: {vienna_code}
-        텍스트와 이미지의 유사도 점수를 매기고 json형식의 답변을 주세요.
+        상표의 유사도를 판단하여 json형식의 답변을 주세요.
         """
 
         thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)

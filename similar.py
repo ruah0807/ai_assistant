@@ -81,8 +81,8 @@ Output Example:
         ],
         n=1, # 한번에 하나의 응답 생성
         # stop=None, #명시적인 멈춤 신호가 없으면 자동 멈춤.
-        temperature = 0.86, # 창의성 없음, 예측가능한 결과.
-        top_p= 0.6 # 확률 합 90%를 만족하는 후보 중 선택
+        temperature = 0.56, # 약간의 창의성 추가.
+        top_p= 0.9 # 확률 합 90%를 만족하는 후보 중 선택
     )
     end_time = time.time()
 
