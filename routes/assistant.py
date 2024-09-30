@@ -101,10 +101,11 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
     
 
-async def handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths):
+async def handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, expect_json=False):
     """ 개별 결과처리 함수"""
     try:
         # 딕셔너리로 접근하도록 수정
+        similar_title = result.get('title')
         similar_image_path = result.get('image_path')
         similar_image_url = result.get('similar_image_url')
         application_number = result.get('application_number')
@@ -119,14 +120,18 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
 
         user_message = f"""등록하고자 하는 이미지와(과) 유사성이 있을지 모르는 이미지 {idx + 1}입니다.
 
-        이 정보는 이사건 등록상표 입니다.: {request.brand_image_url}
+        이 정보는 이사건 등록상표 입니다.: 
+        등록대상상표: {request.brand_image_url}
+        상표명: {request.brand_name}
 
         다음 정보는 등록되어있는 유사한 이미지의 정보입니다:
 
-        출원번호:{application_number}, 
-        분류코드:{classification_code}, 
+        출원번호:{application_number},
+        선등록상표명: {similar_title}
+        분류코드:{classification_code},
         비엔나코드: {vienna_code}, 
         이미지URL: {similar_image_url}
+        
         
         두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요.
         
@@ -134,7 +139,7 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
 
         thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
 
-        messages = await common.handle_run_response(run,thread)
+        messages = await common.handle_run_response(run,thread, expect_json=expect_json)
         all_responses.append(messages)
     
     except Exception as e:

@@ -96,15 +96,18 @@ async def wait_on_run(run, thread, timeout=500):
 
 
 # assistant의 실행 결과를 기다리고, 결과 메시지를 처리하는 함수
-async def handle_run_response(run, thread):
+async def handle_run_response(run, thread, expect_json=True):
     try:
         # 실행 완료 대기
         run = await wait_on_run(run, thread)
         # 응답 받아오기
         response = client.beta.threads.messages.list(thread_id=thread.id)
-        # 응답 메시지 출력
-        messages = print_json_from_assistant(response)
-        # messages = print_message(response)
+        
+        # 응답 메시지를 json형식으로 파싱할경우와 일반답변을 얻을경우 조건문
+        if expect_json:
+            messages = print_json_from_assistant(response)
+        else:
+            messages = print_message(response)
         return messages
     
     except Exception as e:

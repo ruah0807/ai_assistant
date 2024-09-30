@@ -79,7 +79,7 @@ async def compare_brand(request:SimilarityEvaluationRequest):
 
 
 
-async def score_result(result, idx, request, brand_image_path, all_responses, download_image_paths):
+async def score_result(result, idx, request, brand_image_path, all_responses, download_image_paths, expect_json=True):
     """ 개별 결과처리 함수"""
     try:
         # 딕셔너리로 접근하도록 수정
@@ -109,7 +109,7 @@ async def score_result(result, idx, request, brand_image_path, all_responses, do
 
         thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
 
-        messages = await common.handle_run_response(run,thread)
+        messages = await common.handle_run_response(run,thread, expect_json=expect_json)
         if messages:
             all_responses.append(messages)
     
