@@ -43,13 +43,14 @@ def print_json_from_assistant(response):
                     filtered_data = {
                         "title": parsed_json.get("title"),
                         "similar_image_url": parsed_json.get("similar_image_url"),
+                        "similar_image_path": parsed_json.get("similar_image_path"),
                         "application_number": parsed_json.get("application_number"),
                         "classification_code": parsed_json.get("classification_code"),
                         "vienna_code": parsed_json.get("vienna_code"),
                         "similarity": parsed_json.get("similarity")
                     }
 
-                    # 조건: text_similarity_score 또는 image_similarity_score가 True인 경우만 저장
+                    # 조건: similarity 가 True인 경우만 저장
                     if filtered_data.get("similarity") == True :
                         return filtered_data
                     else:

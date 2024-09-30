@@ -16,6 +16,7 @@ class LabeledKiprisItems(BaseModel):
     similar_image_url: Optional[str] = None
     application_number: Optional[str] = None
     vienna_code : Optional[str] = None
+    image_path: Optional[str] = None
 
 class SimilarityEvaluationRequest(BaseModel):
     brand_name: Optional[str] = None

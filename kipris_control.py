@@ -39,7 +39,7 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
             'title': item.get('title'),
             'classification_code' : item.get('classificationCode'),
             'similar_image_url' : item.get('bigDrawing'),
-            'application_number' : item.get('applicationNumber'),
+            'application_number' : application_number,
             'vienna_code': item.get('viennaCode')
         }
         filtered_results.append(filtered_item)
