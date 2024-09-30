@@ -14,6 +14,7 @@ router = APIRouter(
 class DiscernmentEvaluation(BaseModel):
     brand_name: str 
     brand_image_url: str
+    
 
 class LabeledKiprisItems(BaseModel):
     title: Optional[str] = None
@@ -51,7 +52,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
         image_url= brand_image_url
         )
 
-    messages = await common.handle_run_response(run,thread)
+    messages = await common.handle_run_response(run,thread, expect_json=False)
 
     file_handler.delete_downloaded_images(brand_image_path)
     
