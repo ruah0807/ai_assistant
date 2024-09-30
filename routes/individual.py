@@ -14,6 +14,7 @@ class SearchKipris(BaseModel):
     similarity_code: Optional[str] = None
     vienna_code: Optional[str] = None
     num_of_rows: int = 5
+    only_null_vienna_search: bool = False  # 비엔나값이 null 값인 것만 추가하고 싶을때 True로 변경한다. 
 
 
 @router.post("/similar-words", name="비슷한 상표명 찾기")
@@ -36,7 +37,7 @@ async def search_kipris(request: SearchKipris):
         raise HTTPException(status_code=400, detail="검색할 단어 목록을 입력하세요")
     
     # KIPRIS 검색 수행
-    result_data = await kipris_control.search_and_save_all_results(request.words, request.similarity_code, request.vienna_code, request.num_of_rows)
+    result_data = await kipris_control.search_and_save_all_results(request.words, request.similarity_code, request.vienna_code, request.num_of_rows, request.only_null_vienna_search)
 
     if not result_data:
         raise HTTPException(status_code=404, detail ="검색된 데이터가 없습니다.")

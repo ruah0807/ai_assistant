@@ -1,4 +1,4 @@
-import requests
+import requests, aiohttp
 from PIL import Image
 from io import BytesIO
 import os

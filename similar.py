@@ -15,7 +15,7 @@ def generate_similar_barnd_names(brand_name):
 
 0. **Language Conditions**:
     - If '{brand_name}' is in Korean, do not generate any English translations.
-    - If '{brand_name}' is in English or based on English phonetics in Korean, generate translations for all terms in both English and Korean.
+    - If '{brand_name}' is in English or based on English phonetics in Korean as a Korean writing, **generate translations for all terms in both English and Korean**.
     - When '{brand_name}' is in English or based on English phonetics, similar terms should also be generated in both English and Korean. This applies to all terms derived from or similar to '{brand_name}'.
 
 1. **Add the original term and its translation**:
@@ -28,7 +28,7 @@ def generate_similar_barnd_names(brand_name):
     - Example: '유상우정신건강의학원' -> '유상우', '정신건강의학원'
     - Avoid creating single-character terms under any circumstances.
 
-3. **Prepositions and Unnecessary Words**:
+3. **Prepositions and Unnecessary Words, if it's base on English phonetics or English**:
     - Identify prepositions and unnecessary words (e.g., 'on', 'in', 'a', '언', '온', '인') and **exclude them** from the generated search terms.
     - Example: 'onboarding' -> 'boarding' (exclude 'on')
 
@@ -81,8 +81,8 @@ Output Example:
         ],
         n=1, # 한번에 하나의 응답 생성
         # stop=None, #명시적인 멈춤 신호가 없으면 자동 멈춤.
-        temperature = 0.56, # 창의성 없음, 예측가능한 결과.
-        top_p= 0.9 # 확률 합 90%를 만족하는 후보 중 선택
+        temperature = 0.86, # 창의성 없음, 예측가능한 결과.
+        top_p= 0.6 # 확률 합 90%를 만족하는 후보 중 선택
     )
     end_time = time.time()
 

@@ -3,7 +3,7 @@ from file_handler import save_to_json,download_image_with_application_number
 from kipris_api import get_trademark_info
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
-async def search_and_save_all_results(trademark_names, similarity_code, vienna_code, num_of_rows = 5):
+async def search_and_save_all_results(trademark_names, similarity_code, vienna_code, num_of_rows = 5, only_null_vienna_search=False):
     
     if not trademark_names:
         all_results = get_trademark_info(None, similarity_code, vienna_code, num_of_rows)
@@ -21,7 +21,16 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
                     all_results.extend(result)
     
     filtered_results = []
+    null_vienna_count = 0   # null인 viennaCode 항목의 수를 카운트하는 변수
+    
     for item in all_results:
+        # only_null_vienna_search 이 True일 경우 vienna_code가 null인 항목만 필터링
+        if only_null_vienna_search and item.get('viennaCode')is not None:
+            null_vienna_count += 1
+            continue
+
+
+
         filtered_item = {
             'title': item.get('title'),
             'classification_code' : item.get('classificationCode'),
@@ -31,6 +40,7 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
         }
         filtered_results.append(filtered_item)
 
+    print(f"ViennaCode가 null인 항목 수: {null_vienna_count}")
     print(f"필터된 리스트 수: {len(filtered_results)}")
     save_to_json(filtered_results, f'item_labeling.json')
 

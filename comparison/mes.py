@@ -48,9 +48,10 @@ async def run_with_tools(ass_id, thread):
         thread_id=thread.id,
         assistant_id=ass_id,
         tools=[{'type':'file_search'}],
+        temperature=0.56,
         instructions= f"""
         '등록대상상표'는 한개이고. 유사검색된 '선등록상표'들은 한개에서 여러개가 될수있습니다.
-        각 텍스트와 이미지의 도형 유사도를 평가하세요.
+        각 텍스트와 이미지의 도형이나 배치 유사를 평가하세요.
         - text_similarity_score와 image_similarity_score는 boolean 타입으로, true 아니면 false를 반환합니다.
 
         [평가 점수 기준]
