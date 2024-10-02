@@ -1,16 +1,15 @@
 from fastapi import FastAPI
 
-
 app = FastAPI()
 
 routers = []
 
-from routes import a_individual,a_vienna_code, b_mid_assistant, c_last_assistant, pipeline
+from routes import a_find_similar_vienna_code, a_individual,b_mid_assistant, c_last_assistant, pipeline
 
 #라우터 추가
-app.include_router(pipeline.router)
+# app.include_router(pipeline.router)
+app.include_router(a_find_similar_vienna_code.router)
 app.include_router(a_individual.router)
-app.include_router(a_vienna_code.router)
 app.include_router(b_mid_assistant.router)
 app.include_router(c_last_assistant.router)
 

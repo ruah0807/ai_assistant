@@ -3,19 +3,22 @@ from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
 import a_vienna_code.mes as vienna
+import a_similarity_code.mes as similarity_code
 import file_handler, common
 
 
 
 router = APIRouter(
     prefix="/find",
-    tags=["Vienna Code"]
+    tags=["Similarity Code & Vienna Code"]
 )
 
 class FindViennaCode(BaseModel):
     # brand_name: str 
     brand_image_url: str
 
+class FindSimilarityCode(BaseModel):
+    user_input: str
 
 @router.post('/vienna_code', name="비엔나 코드 찾는 assistant")
 async def discernment_trademark(request: FindViennaCode):
@@ -42,6 +45,29 @@ async def discernment_trademark(request: FindViennaCode):
 
     file_handler.delete_downloaded_images(brand_image_path)
     
+    end_time = time.time()
+    total_duration = end_time - start_time
+    total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
+    print(total_duration)
+
+    return {"messages": messages, "ducation": total_duration}
+
+
+
+@router.post('/similarity_code', name="유사군 코드 찾는 assistant")
+async def discernment_trademark(request: FindSimilarityCode):
+    start_time = time.time()
+    
+    #스레드 생성 및 메시지 제출
+    # 스래드 생성
+    thread, run = similarity_code.create_thread_and_run(
+        f"""
+        {request.user_input}
+        """
+        )
+
+    messages = await common.handle_run_response(run,thread, expect_json=False)
+
     end_time = time.time()
     total_duration = end_time - start_time
     total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
