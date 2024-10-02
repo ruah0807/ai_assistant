@@ -2,8 +2,8 @@ import time, asyncio
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
-import brand_discernment.mes as discernment
-import brand_similarity.mes as similarity
+import c_brand_discernment.mes as discernment
+import c_brand_similarity.mes as similarity
 import kipris_control, file_handler, common
 
 router = APIRouter(

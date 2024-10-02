@@ -3,7 +3,7 @@ import time, asyncio
 from typing import List, Optional
 from pydantic import BaseModel
 import kipris_control, file_handler, common
-import similar_posibility.mes as similarity
+import b_similar_posibility.mes as similarity
 
 router = APIRouter(
     prefix="/assistant",
