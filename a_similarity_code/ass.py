@@ -6,32 +6,32 @@ from init import client
 
 load_dotenv()
 
-ass_id = 'asst_5AAVBLsDY7vpCx7g4nVGe67R'
+ass_id = ''
 
-instructions = '''
-[ Role ]
-비엔나 분류(파리조약 가입국들이 상표에 포함된 도형요소를 일관되게 분류해서 데이터베이스를 구축할 목적으로 만든 "Vienna Agreement"에 따라서 만든 도형상표 분류 기준)를 분석하고 찾아내는 분석가 입니다.
-'''
+# instructions = '''
+# [ Role ]
+# 당신은 similarityCode를 분석하는 전문가 입니다. 문서를 기반으로하여 해당 유사코드를 추측하고 답변하세요.
+# '''
 
-vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_QtSniSyyBiMQ8P8AJYONaBJq'
-)
+# # vector_store = client.beta.vector_stores.update(
+# #     vector_store_id= 'vs_QtSniSyyBiMQ8P8AJYONaBJq'
+# # )
 
-### 어시스턴트 업데이트
-assistant = client.beta.assistants.update(
-    assistant_id= ass_id,
-    name= '비엔나코드 추측 전문가',
-    instructions = instructions,
-    # model ='gpt-4o-2024-08-06',
-    tools =  [{'type': 'file_search'}],
-    tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
-    model ='gpt-4o',
-    temperature=0.56,
-    top_p= 0.9
-)
+# ### 어시스턴트 업데이트
+# assistant = client.beta.assistants.create(
+#     assistant_id= ass_id,
+#     name= '유사코드 추측 전문가',
+#     instructions = instructions,
+#     # model ='gpt-4o-2024-08-06',
+#     tools =  [{'type': 'file_search'}],
+#     tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
+#     model ='gpt-4o',
+#     temperature=0.56,
+#     top_p= 0.9
+# )
 
-assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
-print(f"[현재 어시스턴트 정보]\n{assistant_info}")
+# assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+# print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 
 
@@ -41,23 +41,29 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-### 백터스토어 생성및 파일 임베딩 업로드 ####
-# vector_store = client.beta.vector_stores.create(
-#     name = 'Vienna Code',
-# )
+## 백터스토어 생성및 파일 임베딩 업로드 ####
+vector_store = client.beta.vector_stores.create(
+    name = 'Similarity Code',
+)
 
 
-# # #업로드할 파일들의 경로를 지정
-# files_to_uploaded = [
-#     '../_docs/example/vienna_code.md',
-# ]
+# #업로드할 파일들의 경로를 지정
+files_to_uploaded = [
+    '../_docs/similarity_code/24년_지정상품고시목록(출처포함)-표1.md',
+    '../_docs/similarity_code/35-구매대행업-표1.md',
+    '../_docs/similarity_code/35-도매업-표1.md',
+    '../_docs/similarity_code/35-소매업-표1.md',
+    '../_docs/similarity_code/35-중개업-표1.md',
+    '../_docs/similarity_code/35-판매대행업-표1.md',
+    '../_docs/similarity_code/35-판매알선업-표1.md'
+]
 
-# file_streams = [open(path, 'rb') for path in files_to_uploaded]
+file_streams = [open(path, 'rb') for path in files_to_uploaded]
 
-# # 파일 업로드 및 백터 스토어에 추가
-# file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
-#     vector_store_id=vector_store.id, files = file_streams
-# )
+# 파일 업로드 및 백터 스토어에 추가
+file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
+    vector_store_id=vector_store.id, files = file_streams
+)
 
 
 
