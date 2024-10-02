@@ -4,3 +4,4 @@ img
 downloaded_images
 output_folder
 __pycache__
+.DS_Store
