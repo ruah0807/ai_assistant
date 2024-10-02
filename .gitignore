@@ -1,7 +1,7 @@
 .env
-docs
-img
-downloaded_images
-output_folder
+_docs
+_img
+_downloaded_images
+_output_folder
 __pycache__
 .DS_Store

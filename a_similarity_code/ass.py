@@ -49,7 +49,7 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '../docs/example/vienna_code.md',
+#     '../_docs/example/vienna_code.md',
 # ]
 
 # file_streams = [open(path, 'rb') for path in files_to_uploaded]

@@ -104,10 +104,10 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '../docs/example/상표검색 프로세스.pdf',
-#     '../docs/example/상표심사기준202405.pdf',
-#     '../docs/example/선행상표조사결과(샘플)_화음이 만든 샘플임_240822.pdf',
-#     '../docs/example/상표유사여부보고서(별책).pdf',
+#     '../_docs/example/상표검색 프로세스.pdf',
+#     '../_docs/example/상표심사기준202405.pdf',
+#     '../_docs/example/선행상표조사결과(샘플)_화음이 만든 샘플임_240822.pdf',
+#     '../_docs/example/상표유사여부보고서(별책).pdf',
 
 # ]
 

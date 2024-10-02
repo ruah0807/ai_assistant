@@ -52,7 +52,7 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
     return filtered_results
 
 
-async def download_and_add_image_path(filtered_results: list, save_dir="img/downloaded_images"):
+async def download_and_add_image_path(filtered_results: list, save_dir="_img/downloaded_images"):
     tasks = []
     # 이미지 다운로드 작업 생성
     for item in filtered_results:

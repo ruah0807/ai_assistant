@@ -73,8 +73,8 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '../docs/example/상표심사기준202405.pdf',
-#     '../docs/example/상표유사여부보고서(예시).md',
+#     '../_docs/example/상표심사기준202405.pdf',
+#     '../_docs/example/상표유사여부보고서(예시).md',
 # ]
 
 # file_streams = [open(path, 'rb') for path in files_to_uploaded]

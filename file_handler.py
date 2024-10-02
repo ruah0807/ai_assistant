@@ -6,7 +6,7 @@ import json
 
 
 # 주어진 URL 내에서 이미지를 다운로드하고 로컬에저장
-def download_image(image_url, save_dir = 'img/downloaded_images'):
+def download_image(image_url, save_dir = '_img/downloaded_images'):
     try:
         #이미지 URL 에서 이미지 데이터 다운로드 
         response = requests.get(image_url)
@@ -39,7 +39,7 @@ def download_image(image_url, save_dir = 'img/downloaded_images'):
 
 
 #JSON 파일로 저장(자동 줄바꿈)
-def save_to_json(data, filename='trademark_info.json', folder_name= 'docs/output_folder'):
+def save_to_json(data, filename='trademark_info.json', folder_name= '_docs/output_folder'):
     # 폴더가 없으면 생성
     if not os.path.exists(folder_name):
         os.makedirs(folder_name, exist_ok=True)
@@ -71,7 +71,7 @@ def delete_downloaded_images(downloaded_image_paths):
 
 
 # 이미지 url로부터 다운로드하고 파일로 저장하는 함수
-async def download_image_with_application_number(image_url, application_number,save_dir="img/downloaded_images"):
+async def download_image_with_application_number(image_url, application_number,save_dir="_img/downloaded_images"):
 
      # 디렉토리 경로 설정 (상대 경로를 절대 경로로 변환)
     save_dir = os.path.join(os.getcwd(), save_dir)

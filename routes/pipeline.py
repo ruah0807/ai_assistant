@@ -1,10 +1,10 @@
 import time, asyncio
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from brand_discernment.mes import discernment_create_thread_and_run
-from brand_similarity.mes import similarity_create_thread_and_run
-from similar_img import mes_img
-from similar_text import mes_text
+from c_brand_discernment.mes import discernment_create_thread_and_run
+from c_brand_similarity.mes import similarity_create_thread_and_run
+from c_similar_img import mes_img
+from c_similar_text import mes_text
 import kipris_control, similar, file_handler, common
 
 
