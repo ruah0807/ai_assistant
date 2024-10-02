@@ -16,7 +16,6 @@ class LabeledKiprisItems(BaseModel):
     similar_image_url: Optional[str] = None
     application_number: Optional[str] = None
     vienna_code : Optional[str] = None
-    image_path: Optional[str] = None
 
 class SimilarityEvaluationRequest(BaseModel):
     brand_name: Optional[str] = None
@@ -25,12 +24,23 @@ class SimilarityEvaluationRequest(BaseModel):
     
     
 
-@router.post("/comepare_brands", name="상표 1차 필터링", 
+@router.post("/comepare_brands", name="상표 보고서 작성 전 데이터 필터링", 
              description="""
-             Kipris에서 검색한 상표리스트를 1차필터링을 통해 
-             "text_similar_score" : True or False
-             "image_similar_score" : True or False
-             판단 후 하나라도 True가 들어가있다면 값을 반환
+# 상표 보고서 작성 전 데이터 필터링
+```
+상표 보고서 작성 전 Kipris에서 검색한 리스트가 너무 많을경우 상표리스트를 상표 이미지를 기반으로 하여 필터링합니다.
+```
+
+### 응 답
+- 리스트에 similarity 항목이 추가
+- "similarity" : True or False
+
+
+### 참고 사항 
+- 판단 후 하나라도 True가 들어가있다면 값을 반환
+- 각 상표 이미지의 업로드 시간이 걸릴수 있습니다.
+    * 30개의 검색어 : 총소요시간 1분 27.21초 
+    * 45개의 검색어 : 총소요시간 1분 59.56초
              """)
 async def compare_brand(request:SimilarityEvaluationRequest):
     try:    
