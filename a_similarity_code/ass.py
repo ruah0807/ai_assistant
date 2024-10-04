@@ -93,7 +93,7 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 #     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
 
-### 백터스토어 아이디 안 파일 리스트 ####
+## 백터스토어 아이디 안 파일 리스트 ####
 vector_store_files = client.beta.vector_stores.retrieve(
     vector_store_id='vs_0dJoKkouQ6Qa7HbczRnwC1VG',
 )
