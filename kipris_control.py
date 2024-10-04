@@ -84,7 +84,7 @@ async def download_and_add_image_path(filtered_results: list, save_dir="_img/dow
         else: 
             raise TypeError(f"지원되지않는 타입")
         if result:
-            item_dict['image_path'] = result  # dict에 이미지 경로 추가
+            item_dict['similar_image_path'] = result  # dict에 이미지 경로 추가
         updated_results.append(item_dict)
 
     save_to_json(updated_results, f'item_labeling.json')

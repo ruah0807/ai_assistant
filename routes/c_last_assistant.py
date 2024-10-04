@@ -97,7 +97,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
 ### 요 청 
 - **brand_name** : 등록 상표명
 - **brand_image_url** : 등록상표이미지 URL
-- **brand_image_path** : 전처리 필터를 이용했다면 경로와 함께 입력 빈값 가능.
+- **brand_image_path** : 전처리 필터를 이용했다면 경로와 함께 입력 **빈값** 가능.
 - **kipris_data** : 전처리 완료한 리스트 혹은 키프리스  
 
 ### 응 답 
@@ -118,25 +118,29 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
         if not brand_image_path:
             # brand_image_path가 없거나 유효하지 않은 경우 다운로드 시도
             brand_image_path = file_handler.download_image(request.brand_image_url)
-            
             if not brand_image_path:
                 # 다운로드 실패 시 예외 처리
                 raise HTTPException(status_code=400, detail="브랜드 이미지 다운로드 실패")
-            
             print(f"브랜드 이미지 경로(다운로드): {brand_image_path}")
         else:
             print(f"브랜드 이미지 경로(제공된 경로): {brand_image_path}")
+        
+        kipris = request.kipris_data
 
         # Kipris 데이터 이미지 다운로드 및 경로 추가
-        result_data = await kipris_control.download_and_add_image_path(request.kipris_data)
+        result_data = await kipris_control.download_and_add_image_path(kipris)
 
         # 2. kipris 데이터 이미지 다운로드 및 경로 추가
         all_responses = []
-        download_image_paths = [brand_image_path] if brand_image_path else []
+        download_image_paths = [brand_image_path] 
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = handle_single_result(result, idx, request, request.brand_image_path, all_responses, download_image_paths)
+            # 디버깅을 위해 각 이미지 경로를 출력하여 확인
+            print(f"브랜드 이미지 경로 전달 전: {brand_image_path}")
+            print(f"유사 이미지 경로 전달 전: {result.get('similar_image_path') if isinstance(result, dict) else result.similar_image_path}")
+
+            task = handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
             tasks.append(task)
         print("3")
         # 비동기적으로 병렬 처리
@@ -167,7 +171,6 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
             application_number = result.get('application_number')
             classification_code = result.get('classification_code')
             vienna_code = result.get('vienna_code')
-            
         elif hasattr(result, 'title'):  # Pydantic 모델일 경우 점 표기법으로 접근
             similar_title = result.title
             similar_image_url = result.similar_image_url
@@ -175,7 +178,6 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
             application_number = result.application_number
             classification_code = result.classification_code
             vienna_code = result.vienna_code
-
         else:
             # 예상하지 못한 타입일 경우 예외 처리
             raise ValueError(f"Unexpected result type: {type(result)}")
