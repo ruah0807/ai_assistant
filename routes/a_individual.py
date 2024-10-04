@@ -88,5 +88,5 @@ async def search_kipris(request: SearchKipris):
     if not result_data:
         raise HTTPException(status_code=404, detail ="검색된 데이터가 없습니다.")
 
-    return result_data
+    return {"kipris_data":result_data}
 

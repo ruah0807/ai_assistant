@@ -24,17 +24,24 @@ class SimilarityEvaluationRequest(BaseModel):
     
     
 
-@router.post("/comepare_brands", name="상표 보고서 작성 전 데이터 필터링", 
+@router.post("/comepare_brands", name="상표 보고서 작성 전 이미지 유사 데이터 필터링", 
              description="""
-# 상표 보고서 작성 전 데이터 필터링
+# 상표 보고서 작성 전 이미지를 기준으로 한 데이터 필터링
 ```
 상표 보고서 작성 전 Kipris에서 검색한 리스트가 너무 많을경우 상표리스트를 상표 이미지를 기반으로 하여 필터링합니다.
+또한, 해당 이미지는 viennaCode가 null값인것도 이미지 속 텍스트의 배치를 판단하고 필터링합니다.
+
+만일 필터링이 필요없다 판단되면 건너뛰어도 무방합니다.
+
 ```
+### 요 청
+- brand_name : 해당 등록 상표 
+- brand_image_url :해당 등록 상표의 URL
+- kipris_data : 키프리스에서 검색한 리스트
 
 ### 응 답
 - 리스트에 similarity 항목이 추가
-- "similarity" : True or False
-
+- "similarity" : True 인 항목들만을 반환.
 
 ### 참고 사항 
 - 판단 후 하나라도 True가 들어가있다면 값을 반환
