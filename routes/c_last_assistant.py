@@ -111,8 +111,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
 async def evaluate_similarity(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
-        print("1")
-            # 브랜드 이미지 경로 확인 또는 다운로드
+        # 브랜드 이미지 경로 확인 또는 다운로드
         brand_image_path = request.brand_image_path if request.brand_image_path and os.path.exists(request.brand_image_path) else None
 
         if not brand_image_path:
@@ -121,28 +120,33 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
             if not brand_image_path:
                 # 다운로드 실패 시 예외 처리
                 raise HTTPException(status_code=400, detail="브랜드 이미지 다운로드 실패")
-            print(f"브랜드 이미지 경로(다운로드): {brand_image_path}")
         else:
             print(f"브랜드 이미지 경로(제공된 경로): {brand_image_path}")
         
-        kipris = request.kipris_data
+        # Kipris 데이터의 similar_image_path 확인 및 다운로드
+        download_needed = False
+        for item in request.kipris_data:
+            # similar_image_path 확인: 경로가 없거나 파일이 존재하지 않으면 다운로드 필요
+            if not item.similar_image_path or not os.path.exists(item.similar_image_path):
+                download_needed = True
+                break  # 다운로드가 필요하면 바로 종료
+        
+        # 다운로드가 필요한 경우에만 다운로드 진행
+        if download_needed:
+            print("Kipris 데이터 이미지 다운로드 중...")
+            result_data = await kipris_control.download_and_add_image_path(request.kipris_data)
+        else:
+            print("Kipris 데이터 이미지가 모두 존재합니다.")
+            result_data = request.kipris_data  # 기존 데이터 사용
 
-        # Kipris 데이터 이미지 다운로드 및 경로 추가
-        result_data = await kipris_control.download_and_add_image_path(kipris)
-
-        # 2. kipris 데이터 이미지 다운로드 및 경로 추가
+        # kipris 데이터 이미지 다운로드 및 경로 추가
         all_responses = []
         download_image_paths = [brand_image_path] 
 
         tasks = []
         for idx, result in enumerate(result_data):
-            # 디버깅을 위해 각 이미지 경로를 출력하여 확인
-            print(f"브랜드 이미지 경로 전달 전: {brand_image_path}")
-            print(f"유사 이미지 경로 전달 전: {result.get('similar_image_path') if isinstance(result, dict) else result.similar_image_path}")
-
             task = handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
             tasks.append(task)
-        print("3")
         # 비동기적으로 병렬 처리
         await asyncio.gather(*tasks)
 

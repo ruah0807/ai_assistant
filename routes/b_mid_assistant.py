@@ -94,7 +94,7 @@ async def score_result(result, idx, request, brand_image_path, all_responses, do
     try:
         # 딕셔너리로 접근하도록 수정
         similar_title = result.get('title')
-        similar_image_path = result.get('image_path')
+        similar_image_path = result.get('similar_image_path')
         similar_image_url = result.get('similar_image_url')
         application_number = result.get('application_number')
         classification_code = result.get('classification_code')

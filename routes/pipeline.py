@@ -27,7 +27,6 @@ class SimilarityTextEvaluation(BaseModel):
 
 @router.post("/similarity_report", name="상표유사여부보고서(별책).pdf를 참고한 형식의 유사도 평가 with KIPRIS and LLM",)
 async def similarity_trademark(request: SimilarityEvaluation, download_image: bool = True):
-
     return await process_similarity_evaluation(request, download_image, opinion_format="상표유사보고서")
     
 
@@ -117,7 +116,7 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, download_
 async def handle_single_result(result, idx, request, opinion_format, brand_image_path, all_responses, download_image_paths):
     """ 개별 결과처리 함수"""
     try:
-        similar_image_path = result['image_path']
+        similar_image_path = result['similar_image_path']
         similar_image_url = result['similar_image_url']
         application_number = result['application_number']
         classification_code = result['classification_code']
