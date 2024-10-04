@@ -14,8 +14,10 @@ instructions = """
 """
 
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_m1b79x1RYgGhA6f8qaUIHzUU'
+    vector_store_id= 'vs_0dJoKkouQ6Qa7HbczRnwC1VG'
 )
+# [ Similarity Code Batch Ver.] - vs_0dJoKkouQ6Qa7HbczRnwC1VG
+# [ Similarity Code ] -  vs_m1b79x1RYgGhA6f8qaUIHzUU
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
@@ -84,19 +86,19 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-## 벡터스토어 리스트 검색 ###
+# # 벡터스토어 리스트 검색 ###
 # vector_store_list = client.beta.vector_stores.list()
 
 # for vectorstore in vector_store_list:
 #     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
 
-#### 백터스토어 아이디 안 파일 리스트 ####
-# vector_store_files = client.beta.vector_stores.retrieve(
-#     vector_store_id='vs_m1b79x1RYgGhA6f8qaUIHzUU',
-# )
-# file_ids = vector_store_files.file_counts
+### 백터스토어 아이디 안 파일 리스트 ####
+vector_store_files = client.beta.vector_stores.retrieve(
+    vector_store_id='vs_0dJoKkouQ6Qa7HbczRnwC1VG',
+)
+file_ids = vector_store_files.file_counts
 
-# print('백터스토어에 저장된 파일 목록 : ')
-# for file_id in file_ids:
-#     print(file_id)
+print('백터스토어에 저장된 파일 목록 : ')
+for file_id in file_ids:
+    print(file_id)

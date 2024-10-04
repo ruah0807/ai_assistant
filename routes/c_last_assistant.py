@@ -92,20 +92,21 @@ async def discernment_trademark(request: DiscernmentEvaluation):
 
 ### 참고 문서
 - 상표심사기준 202405.pdf
-- 예제
+- 상표유사여부보고서(별책).pdf
 
 ### 요 청 
 - **brand_name** : 등록 상표명
 - **brand_image_url** : 등록상표이미지 URL
-- **brand_image_path** : 전처리 필터를 이용했다면 경로와 함께 입력 **빈값** 가능.
-- **kipris_data** : 전처리 완료한 리스트 혹은 키프리스  
+- **kipris_data** : 키프리스 데이터
+
+- (**brand_image_path** : 전처리 필터를 이용했다면 경로 포함)
+- (**kipris_data.similar_image_path** : 전처리 필터를 이용했다면 경로 포함)
 
 ### 응 답 
 - 유사여부보고서 형식의 유사도 평가.
 
 ### 참고사항
-- 식별력 판단 중간필터링을 거쳤다면 image_path가 포함이 되어있을것이고,
-- 그렇지 않다면 포함이 되어있지않을 것이다. 
+- 유사도 판단 중간필터링을 거쳤다면 brand_image_path와 similar_image_path가 포함이 되어있을것이고, 그렇지 않다면 포함이 되어있지않을 것이다. 
 """
              )
 async def evaluate_similarity(request:SimilarityEvaluationRequest):
@@ -155,7 +156,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
         total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
         print(total_duration)
 
-        # file_handler.delete_downloaded_images(download_image_paths)
+        file_handler.delete_downloaded_images(download_image_paths)
 
         return{"message": all_responses, "processing_time": total_duration}
     
