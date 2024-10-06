@@ -22,7 +22,7 @@ assistant = client.beta.assistants.update(
     name= '유사 상표 IMAGE Filtering Assistant',
     instructions = instructions,
     tools =  [{'type': 'file_search'}],
-    model ='gpt-4o-mini',
+    model ='gpt-4o-2024-08-06',
     temperature=0,
 )
 

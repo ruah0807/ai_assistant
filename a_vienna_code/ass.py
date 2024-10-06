@@ -22,10 +22,9 @@ assistant = client.beta.assistants.update(
     assistant_id= ass_id,
     name= '비엔나코드 추측 전문가',
     instructions = instructions,
-    # model ='gpt-4o-2024-08-06',
+    model ='gpt-4o-2024-08-06',
     tools =  [{'type': 'file_search'}],
     tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
-    model ='gpt-4o',
     temperature=0.56,
     top_p= 0.9
 )
@@ -84,10 +83,10 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 
 ## 벡터스토어 리스트 검색 ###
-vector_store_list = client.beta.vector_stores.list()
+# vector_store_list = client.beta.vector_stores.list()
 
-for vectorstore in vector_store_list:
-    print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
+# for vectorstore in vector_store_list:
+#     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
 
 

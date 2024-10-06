@@ -53,10 +53,9 @@ assistant = client.beta.assistants.update(
     assistant_id= ass_id,
     name= '상표 식별력 평가 AI',
     instructions = instructions,
-    # model ='gpt-4o-2024-08-06',
+    model ='gpt-4o-2024-08-06',
     tools =  [{'type': 'file_search'}],
     tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
-    model ='gpt-4o',
     temperature=0,
 )
 
