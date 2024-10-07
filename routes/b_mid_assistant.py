@@ -3,7 +3,7 @@ import time, asyncio
 from typing import List, Optional
 from pydantic import BaseModel
 import kipris_control, file_handler, common
-import b_similar_posibility_image.mes as similarity
+import b_similar_posibility_image.execute as similarity
 
 router = APIRouter(
     prefix="/assistant",
@@ -67,7 +67,7 @@ async def compare_brand(request:SimilarityEvaluationRequest):
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = score_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
+            task = similarity.score_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
             tasks.append(task)
 
         # 비동기적으로 병렬 처리
@@ -77,6 +77,7 @@ async def compare_brand(request:SimilarityEvaluationRequest):
         total_duration = end_time - start_time
         total_duration = f"상표 유사도 평가 Assistant 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
         print(total_duration)
+        
         # 유효한 응답의 개수 카운트
         similar_count = f"유사판단 상표 갯수 : {sum(1 for response in all_responses if response)} 개"
         print(similar_count)
@@ -94,41 +95,3 @@ async def compare_brand(request:SimilarityEvaluationRequest):
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")
     
 
-
-
-async def score_result(result, idx, request, brand_image_path, all_responses, download_image_paths, expect_json=True):
-    """ 개별 결과처리 함수"""
-    try:
-        # 딕셔너리로 접근하도록 수정
-        similar_title = result.get('title')
-        similar_image_path = result.get('similar_image_path')
-        similar_image_url = result.get('similar_image_url')
-        application_number = result.get('application_number')
-        classification_code = result.get('classification_code')
-        vienna_code = result.get('vienna_code')
-
-        # 이미지 다운로드 경로 저장
-        download_image_paths.append(similar_image_path)
-
-        image_pair = [brand_image_path, similar_image_path]
-        image_url_pair = [request.brand_image_url, similar_image_url]
-
-        user_message = f"""
-        {idx + 1}번째 상표 이미지 비교를 요청합니다.
-        등록대상상표 : {request.brand_image_url}
-        등록대상상표명 : {request.brand_name}
-        선등록상표 : {similar_image_url}
-        선등록상표 경로 : {similar_image_path}
-        선등록상표명 : {similar_title}
-        출원번호: {application_number}, 분류코드: {classification_code}, 비엔나코드: {vienna_code}
-        상표의 유사도를 판단하여 json형식의 답변을 주세요.
-        """
-
-        thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
-
-        messages = await common.handle_run_response(run,thread, expect_json=expect_json)
-        if messages:
-            all_responses.append(messages)
-    
-    except Exception as e:
-        print(f"Error handling result {idx}: {str(e)}")

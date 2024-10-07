@@ -107,7 +107,6 @@ Output Example:
         #json 문자열 정리
         result = result_str.strip('```json').strip('```') 
         result = json.loads(result)
-        print(result)
         return result
 
     except json.JSONDecodeError as e:
