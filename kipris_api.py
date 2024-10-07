@@ -40,42 +40,44 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
         params['viennaCode'] = vienna_code
     if num_of_rows:
         params['numOfRows'] = num_of_rows
-        
-    # api 요청 보내기
-    response = requests.get(BASE_URL, params=params)
     
-    #응답이 성공적인지 확인
-    if response.status_code == 200 :
- 
-        # XML 데이터를 JSON으로 변환
+    try:
+        # api 요청 보내기
+        response = requests.get(BASE_URL, params=params)
+
+        # 응답이 성공적인지 확인
+        response.raise_for_status()
+
         data = xmltodict.parse(response.content)
-        try:
-            items = data['response']['body']['items']['item']
-            if isinstance(items, dict):
-                items = [items]  # 단일 항목을 리스트로 변환
-            print(f"KIPRIS 검색명 [{trademark_name}] : {len(items)}개가 검색되었습니다.")
-            return items
-        except Exception as e:
-            print(f"API 응답에서 [{trademark_name}] 검색 결과를 찾을 수 없습니다: {e}")
+
+        # response, body, items, item이 존재하는지 확인
+        if data.get('response') and data['response'].get('body') and data['response']['body'].get('items'):
+            items = data['response']['body']['items'].get('item')
+            if items:
+                if isinstance(items, dict):
+                    items = [items]  # 단일 항목을 리스트로 변환
+                print(f"KIPRIS 검색명 [{trademark_name}] : {len(items)}개가 검색되었습니다.")
+                return items
+            else:
+                print(f"KIPRIS 응답에서 [{trademark_name}] 검색 결과가 없습니다.")
+        else:
+            total_count = data['response']['count'].get('totalCount','0')
+            print(f"KIPRIS 응답에서 결과가 없습니다: totalCount: {total_count}")
             return []
         
-         # only_null이 True일 경우 viennaCode가 null인 항목만 필터링
-        # if only_null_vienna_search : 
-        #     filtered_items = [item for item in items if not item.get('viennaCode')]
-        #     print(f"ViennaCode가 null인 항목 수: {len(filtered_items)}")
-        #     return filtered_items
-        # else:
-        #      # only_null이 False일 경우 전체 항목 반환
-        #     return items
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err} - {response.status_code} : {response.reason}")
+   
+    except requests.exceptions.RequestException as req_err:
+        print(f"Error: 요청 중 예외가 발생했습니다: {req_err}")
+    
+    except Exception as e:
+        print(f"알 수 없는 오류가 발생했습니다: {e}")
             
-    else:
-        print(f"Error: {response.status_code} - {response.reason}")
-        return None
-
+    return None
 
 
 ########################################################################
-
 
 
 # # 테스트 데이터

@@ -1,4 +1,4 @@
-import os, sys, time, requests
+import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
@@ -32,7 +32,7 @@ async def run_with_tools(ass_id, thread):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=ass_id,
-        tools= [],
+        tools=[{'type':'file_search'}],
         instructions= """
             모든 텍스틀간의 검토가 끝난 후 
             반드시 문서를 참고하여 출처와 함께 종합의견을 내세요. 
@@ -42,7 +42,7 @@ async def run_with_tools(ass_id, thread):
             - 대상 상표 : 
                 ![](original_image_url)
                 (사용자가 업로드한 상표 이미지 묘사)
-            - 검토의견: 
+            - 선등록상표와 유사도 검토 의견: 
                 상표이미지: ![](similar_image_url)
                 출원/등록번호 : (application_number)
                 상품류 : (classification_code)

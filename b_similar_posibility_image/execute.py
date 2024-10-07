@@ -1,8 +1,5 @@
-import kipris_control, file_handler, common
+import common
 import b_similar_posibility_image.mes as similarity
-
-import time, asyncio
-
 
 
 async def score_result(result, idx, request, brand_image_path, all_responses, download_image_paths, expect_json=True):
@@ -40,7 +37,7 @@ async def score_result(result, idx, request, brand_image_path, all_responses, do
         선등록상표 경로 : {similar_image_path}
         선등록상표명 : {similar_title}
         출원번호: {application_number}, 분류코드: {classification_code}, 비엔나코드: {vienna_code}
-        상표의 유사도를 판단하여 json형식의 답변을 주세요.
+        아주 조금이라도 유사하다 판단 한것을 true로 필터링해주세요.
         """
 
         thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)

@@ -10,24 +10,24 @@ load_dotenv()
 ass_id = 'asst_FY8Yfek8H3CrJKSLX2OyWFB1'
 
 
-def return_ai_company():
-    return '(주)에이아이노미스'
+# def return_ai_company():
+#     return '(주)에이아이노미스'
 
-function_schema={
-    'name' : 'return_ai_nomis',
-    'description' : "모든 응답 마지막에 반환한 문자열 문구를 추가합니다",
-    'parameters':{
-        'type': 'object',
-        'properties': {},
-        'additionalProperties':False
-    },
-    'strict': True # 모든 응답에서 호출되도록
-}
+# function_schema={
+#     'name' : 'return_ai_nomis',
+#     'description' : "모든 응답 마지막에 반환한 문자열 문구를 추가합니다",
+#     'parameters':{
+#         'type': 'object',
+#         'properties': {},
+#         'additionalProperties':False
+#     },
+#     'strict': True # 모든 응답에서 호출되도록
+# }
 
 
 instructions = '''
 [ Role ]
-    당신은 상표등록을 위한 '이미지 유사도 분석가' 입니다. 텍스트는 평가 하지 않습니다. 
+    당신은 상표등록을 위한 '도형 유사도 분석가' 입니다. 예시로 작성된 의견서 예시들을 참고로 도형 부분의 의견서를 작성해주세요. 
 
 [ Context ]
     •	[이미지 유사도 평가 방법]을 참고하여 상표 이미지의 유사성을 평가.
@@ -59,17 +59,13 @@ instructions = '''
     각각의 상표 이미지를 사용자가 등록하고자하는 이미지와 비교하여 유사성을 평가합니다
 
 [ Constraints ]
-    •	상표명(텍스트)는 평가하지 않고, 상표의 이미지 유사도만 평가합니다.
+    •	해당 상표와 선등록상표의 도형 및 이미지 배치 유사도만 평가합니다.
 
 '''
 
-
-
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_rLXYrSoCNE7aNpLI6cBGPseN'
+    vector_store_id= 'vs_I1f6CEXf49Ul7Ko6iOx5oeQ8'
 )
-
-
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
@@ -88,26 +84,21 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 
 
-
-
-
-
-
 ###############################################################
 
 
-#### 백터스토어 생성및 파일 임베딩 업로드 ####
+# ### 백터스토어 생성및 파일 임베딩 업로드 ####
 # vector_store = client.beta.vector_stores.create(
-#     name = '상표 식별 documents',
+#     name = '의견서 작성 예시',
 # )
 
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '../_docs/example/상표검색 프로세스.pdf',
-#     '../_docs/example/상표심사기준202405.pdf',
-#     '../_docs/example/선행상표조사결과(샘플)_화음이 만든 샘플임_240822.pdf',
-#     '../_docs/example/상표유사여부보고서(별책).pdf',
+#     '/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/example/[의견서예시][의견서미제출-거절]선행상표조사_MindShare.pdf',
+#     '/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/example/[의견서예시][의견서제출-거절]crople선행상표조사보고서(제출).pdf',
+#     '/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/example/[의견서예시]몸선필라테스&발레핏.pdf',
+#     '/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/example/선행상표조사결과(샘플)_화음이 만든 샘플임_240822.pdf',
 
 # ]
 
