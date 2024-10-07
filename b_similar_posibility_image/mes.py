@@ -71,6 +71,10 @@ async def run_with_tools(ass_id, thread):
         "similarity": (Boolean Type: True or False),
 
     }}
+        [Warning]
+        - 이미지 속 문구로 판단하지 않습니다.
+        - 이미지속 텍스트의 '배치'나 '글씨체', 혹은 그림이라면 '도형'만을 위주로 판단합니다.
+        - 조금이라도 비슷한 부분이 있으면 true를 줍니다.
         """
     )
     return run

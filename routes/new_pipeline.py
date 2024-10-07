@@ -97,12 +97,12 @@ async def main():
     start_time = time.time()
 
     await similarity_pipeline(
-        brand_name = "mindshare",
-        brand_image_url= "https://kipris.s3.ap-northeast-2.amazonaws.com/mindshare.png",
-        similarity_code="G3402|G390701|G390803|G390801|G390802|G390802|S123101|S1370|S0101|S123301|S120999|S121001|S120102|S120502|S120503",   # 유사코드 (필요에 따라 변경)
-        vienna_code="",  # 비엔나 코드
-        num_of_rows=5, # 검색 결과 수
-        only_null_vienna_search=True,  # 비엔나 코드 필터링 여부
+        brand_name = "pooch pony",
+        brand_image_url= "https://ultimatum0807.s3.ap-northeast-2.amazonaws.com/brand_similarity_discernment/pooch_pony.png",
+        similarity_code="S2090|S2043|S2018|S2037",   # 유사코드 (필요에 따라 변경)
+        vienna_code="020101|020123|030108|030116|030124",  # 비엔나 코드
+        num_of_rows= 3, # 검색 결과 수
+        only_null_vienna_search=False,  # 비엔나 코드 필터링 여부
         filter=True
     )
     end_time = time.time()
