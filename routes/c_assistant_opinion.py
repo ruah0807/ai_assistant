@@ -32,7 +32,7 @@ class SimilarityTextEvaluation(BaseModel):
     similarity_code : str
 
 
-@router.post("/text_opinion", name="의견서 형식의 TEXT 유사도 평가(문서참고 O)")
+# @router.post("/text_opinion", name="의견서 형식의 TEXT 유사도 평가(문서참고 O)")
 async def similar_text(request: SimilarityTextEvaluation, download_image: bool = False):
     try:
         #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
@@ -58,31 +58,31 @@ async def similar_text(request: SimilarityTextEvaluation, download_image: bool =
     
 
     
-@router.post("/image-opinion", name="의견서 형식의 IMAGE 유사도 평가(문서참고 O)",
-             description="""
-# 유사도 의견서 Assistant
-```
-등록을 원하는 상표의 상표명과 미리 생성해놓은 이미지 URL로 Assistant에게 유사도 평가를 요청합니다.
-```
+# @router.post("/image-opinion", name="의견서 형식의 IMAGE 유사도 평가(문서참고 O)",
+#              description="""
+# # 유사도 의견서 Assistant
+# ```
+# 등록을 원하는 상표의 상표명과 미리 생성해놓은 이미지 URL로 Assistant에게 유사도 평가를 요청합니다.
+# ```
 
-### 참고 문서
-- 
+# ### 참고 문서
+# - 
 
-### 요 청 
-- **brand_name** : 등록 상표명
-- **brand_image_url** : 등록상표이미지 URL
-- **kipris_data** : 키프리스 데이터
+# ### 요 청 
+# - **brand_name** : 등록 상표명
+# - **brand_image_url** : 등록상표이미지 URL
+# - **kipris_data** : 키프리스 데이터
 
-- (**brand_image_path** : 전처리 필터를 이용했다면 경로 포함)
-- (**kipris_data.similar_image_path** : 전처리 필터를 이용했다면 경로 포함)
+# - (**brand_image_path** : 전처리 필터를 이용했다면 경로 포함)
+# - (**kipris_data.similar_image_path** : 전처리 필터를 이용했다면 경로 포함)
 
-### 응 답 
-- 유사여부보고서 형식의 유사도 평가.
+# ### 응 답 
+# - 유사여부보고서 형식의 유사도 평가.
 
-### 참고사항
-- 유사도 판단 중간필터링을 거쳤다면 brand_image_path와 similar_image_path가 포함이 되어있을것이고, 그렇지 않다면 포함이 되어있지않을 것이다. 
-"""
-             )
+# ### 참고사항
+# - 유사도 판단 중간필터링을 거쳤다면 brand_image_path와 similar_image_path가 포함이 되어있을것이고, 그렇지 않다면 포함이 되어있지않을 것이다. 
+# """
+#              )
 async def evaluate_similarity(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
