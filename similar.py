@@ -66,7 +66,7 @@ Output Example:
 """
     start_time = time.time()
     response = openai.chat.completions.create(
-        model='gpt-4o-2024-08-06',
+        model='gpt-4o',
         messages=[
             {
                 "role":"system", 

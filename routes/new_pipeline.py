@@ -1,13 +1,10 @@
 import os,sys, time
-# 현재 파일의 상위 디렉토리를 sys.path에 추가
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import b_similar_posibility_image.execute as filter_similarity
 import c_brand_similarity.execute as similarity
 import similar, kipris_control, file_handler
-from typing import Optional
 import asyncio
 # from pydantic import BaseModel
-
 
 # class CombinedSearchRequest(BaseModel):
 #     brand_name: str
@@ -17,24 +14,26 @@ import asyncio
 #     only_null_vienna_search: bool = False
 
 async def similarity_pipeline(
-        brand_name = None, 
-        brand_image_url=None, 
-        similarity_code=None, 
-        vienna_code=None, 
-        num_of_rows=5, 
-        only_null_vienna_search=False,
-        filter=False):
+                            brand_name = None, 
+                            brand_image_url=None, 
+                            similarity_code=None, 
+                            vienna_code=None, 
+                            num_of_rows=5, 
+                            only_null_vienna_search=False,
+                            filter=False):
     try:
+        # Step 1 : brand유사 상표명 검색
         if brand_name:
-            # Step 1 : 유사 상표명 검색
             print(f"'{brand_name}'에 대한 유사 상표명 검색 중...")
             similar_words = similar.generate_similar_barnd_names(brand_name)
             if not similar_words:
                 return{"error": "비슷한 단어를 찾을 수 없습니다."} 
-            
+            search_words = similar_words['words']
+        else : 
+            search_words = [""]
         # Step 2 : 유사상표명 KIPRIS 검색 수행
         kipris_result = await kipris_control.search_and_save_all_results(
-            similar_words['words'],
+            search_words,
             similarity_code,
             vienna_code,
             num_of_rows,
@@ -50,10 +49,7 @@ async def similarity_pipeline(
         # Step 4 : Kipris 데이터 이미지 다운로드 및 경로 추가
         result_data = await kipris_control.download_and_add_image_path(kipris_result)
 
-        request = {
-            'brand_name': brand_name,
-            'brand_image_url': brand_image_url
-        }
+        request = {'brand_name': brand_name,'brand_image_url': brand_image_url}
 
         download_image_paths = [brand_image_path]
 
@@ -101,12 +97,12 @@ async def main():
     start_time = time.time()
 
     await similarity_pipeline(
-        brand_name = "titet",
-        brand_image_url= "https://ultimatum0807.s3.ap-northeast-2.amazonaws.com/brand_similarity_discernment/titet.png",
+        brand_name = "mindshare",
+        brand_image_url= "https://kipris.s3.ap-northeast-2.amazonaws.com/mindshare.png",
         similarity_code="G3402|G390701|G390803|G390801|G390802|G390802|S123101|S1370|S0101|S123301|S120999|S121001|S120102|S120502|S120503",   # 유사코드 (필요에 따라 변경)
-        vienna_code="040501|040505|050313|050315|051110|270507|270909",  # 비엔나 코드
+        vienna_code="",  # 비엔나 코드
         num_of_rows=5, # 검색 결과 수
-        only_null_vienna_search=False,  # 비엔나 코드 필터링 여부
+        only_null_vienna_search=True,  # 비엔나 코드 필터링 여부
         filter=True
     )
     end_time = time.time()

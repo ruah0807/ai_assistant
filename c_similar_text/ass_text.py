@@ -49,7 +49,7 @@ assistant = client.beta.assistants.update(
     instructions = instructions,
     tools = default_tools,
     tool_resources={'file_search': {'vector_store_ids': [vector_store.id]}},
-    model ='gpt-4o-2024-08-06',
+    model ='gpt-4o',
     temperature=0,
     
 )
