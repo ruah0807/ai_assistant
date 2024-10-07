@@ -2,9 +2,8 @@ import time
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
-import a_vienna_code.mes as vienna
-import a_similarity_code.mes as similarity_code
-import file_handler, common
+import a_vienna_code.execute as vienna_ex
+import a_similarity_code.execute as similarity_code
 
 
 
@@ -46,29 +45,10 @@ class FindSimilarityCode(BaseModel):
 
             """ 
             )
-async def discernment_trademark(request: FindViennaCode):
+async def find_vienna_code(request: FindViennaCode):
     start_time = time.time()
-    # brand_name = request.brand_name
-    brand_image_url = request.brand_image_url
     
-    brand_image_path = file_handler.download_image(brand_image_url)
-    
-    if not brand_image_path:
-        raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
-    
-    #스레드 생성 및 메시지 제출
-    # 스래드 생성
-    thread, run = vienna.create_thread_and_run(
-        f"""
-        업로드한 이미지의 비엔나코드를 찾아주세요.
-        """, 
-        image_path=brand_image_path, 
-        image_url= brand_image_url
-        )
-
-    messages = await common.handle_run_response(run,thread, expect_json=False)
-
-    file_handler.delete_downloaded_images(brand_image_path)
+    messages = await vienna_ex.process_vienna_code(request.brand_image_url)
     
     end_time = time.time()
     total_duration = end_time - start_time
@@ -107,18 +87,10 @@ async def discernment_trademark(request: FindViennaCode):
 - 키워드 검색 방향으로 전환해야할 가능성이 있습니다.
 """
              )
-async def discernment_trademark(request: FindSimilarityCode):
+async def find_similarity_code(request: FindSimilarityCode):
     start_time = time.time()
-    
-    #스레드 생성 및 메시지 제출
-    # 스래드 생성
-    thread, run = similarity_code.create_thread_and_run(
-        f"""
-        {request.user_input}
-        """
-        )
-
-    messages = await common.handle_run_response(run,thread, expect_json=False)
+   
+    messages = await similarity_code.similarity_code_finding_logic(request.user_input)
 
     end_time = time.time()
     total_duration = end_time - start_time
