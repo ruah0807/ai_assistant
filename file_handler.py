@@ -96,7 +96,8 @@ async def download_image_with_application_number(image_url, application_number,s
             else:
                 print(f"Error : {response.status} - 이미지를 다운로드 할 수 없습니다.")
                 return None
-            
+       
+       
 
 # 메시지들을 Markdown 파일로 저장하는 함수
 # def save_messages_to_md(responses, filename='assistant_response.md'):

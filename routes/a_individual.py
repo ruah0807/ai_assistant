@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
-import kipris_control, similar
+import create_names
+import kipris.kipris_control as kipris_control
+
 
 
 router = APIRouter(
@@ -44,7 +46,7 @@ async def get_similar_words(brand_name: str):
         raise HTTPException(status_code=400, detail="상표명을 입력하세요")
     
     # LLM 유사 단어 목록 만들기
-    similar_words = similar.generate_similar_barnd_names(brand_name)
+    similar_words = create_names.generate_similar_barnd_names(brand_name)
 
     if not similar_words:
         raise HTTPException(status_code=404, detail="비슷한 단어를 찾을 수 없습니다.")

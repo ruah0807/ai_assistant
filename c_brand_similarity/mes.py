@@ -87,7 +87,8 @@ async def similarity_create_thread_and_run(user_input, image_paths, image_urls):
     return thread, run
 
 
-######################## 유저 인풋 ##########################
+####################################################################################################
+
 
 # brand_name = ''
 # similarity_code = 'S121002|S121001|S110101'

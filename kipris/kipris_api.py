@@ -76,6 +76,8 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
     return None
 
 
+
+
 ########################################################################
 
 

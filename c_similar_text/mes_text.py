@@ -1,7 +1,7 @@
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
-from similar import generate_similar_barnd_names
+from create_names import generate_similar_barnd_names
 
 # Assistant Name: 상표 TEXT 유사도 평가 Assistant
 ass_id = 'asst_IbYT7EatQkmSnremkg5RuiC0'
@@ -54,6 +54,8 @@ async def create_thread_and_run(user_input):
     return thread, run
 
 
+
+####################################################################################################
 
 # def send_message_in_same_thread(thread, user_message):
 #     # 메시지 전송

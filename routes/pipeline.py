@@ -5,7 +5,8 @@ from c_brand_discernment.mes import discernment_create_thread_and_run
 from c_brand_similarity.mes import similarity_create_thread_and_run
 from c_similar_img import mes_img
 from c_similar_text import mes_text
-import kipris_control, similar, file_handler, common
+import create_names, file_handler, common
+import kipris.kipris_control as kipris_control
 
 
 router = APIRouter(
@@ -39,7 +40,7 @@ async def similarity_trademark_1(request: SimilarityEvaluation, download_image: 
 async def similar_text(request: SimilarityTextEvaluation, download_image: bool = False):
     try:
         #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
-        similar_words = similar.generate_similar_barnd_names(request.brand_name)
+        similar_words = create_names.generate_similar_barnd_names(request.brand_name)
 
         #상표 검색 수행
         result_data = await kipris_control.updated_search_results(similar_words['words'], request.similarity_code, download_images=download_image)
@@ -77,7 +78,7 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, download_
         search_words = []
         if request.brand_name:
             # 비슷한 단어 찾기
-            similar_words = similar.generate_similar_barnd_names(request.brand_name)
+            similar_words = create_names.generate_similar_barnd_names(request.brand_name)
             search_words = similar_words['words']
         else:
             # brand_name이 없으면 기본 빈 리스트로 설정

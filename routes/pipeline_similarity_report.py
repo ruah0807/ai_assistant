@@ -2,7 +2,8 @@ import os,sys, time, asyncio
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import b_similar_posibility_image.execute as filter_similarity
 import c_brand_similarity.execute as similarity
-import similar, kipris_control, file_handler
+import create_names, file_handler
+import kipris.kipris_control as kipris_control
 from typing import Optional
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException
@@ -56,7 +57,7 @@ async def similarity_report_pipeline(
     # Step 1 : brand유사 상표명 검색
     if brand_name:
         print(f"\n'{brand_name}'에 대한 유사 상표명 검색 중...\n")
-        similar_words = similar.generate_similar_barnd_names(brand_name)
+        similar_words = create_names.generate_similar_barnd_names(brand_name)
         if not similar_words:
             return{"error": "비슷한 단어를 찾을 수 없습니다."} 
         search_words = similar_words['words']
@@ -123,6 +124,7 @@ async def similarity_report_pipeline(
 
 
     
+####################################################################################################
 
 
 
