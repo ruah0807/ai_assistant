@@ -99,12 +99,11 @@ async def process_similarity_evaluation(request: SimilarityEvaluation, download_
 
         # save_file.save_messages_to_md(all_responses, filename='assistant_response.md')
         end_time = time.time()
-        total_duration = end_time - start_time
-        print(f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초")
+        total_duration =f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time) %60:.2f}초"
 
         file_handler.delete_downloaded_images(download_image_paths)
 
-        return{"message": all_responses}
+        return{"message": all_responses, "total_duration" : total_duration}
     
     except Exception as e :
         raise HTTPException(status_code=500, detail = f"서버오류발생: {str(e)}")

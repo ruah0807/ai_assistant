@@ -11,7 +11,7 @@ router = APIRouter(
 
 class SearchKipris(BaseModel):
     words : List[str] = [""]
-    similarity_code: Optional[str] = None
+    similarity_code: Optional[str] = ""
     vienna_code: Optional[str] = ""
     num_of_rows: int = 5
     only_null_vienna_search: bool = False  # 비엔나값이 null 값인 것만 추가하고 싶을때 True로 변경한다. 

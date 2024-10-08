@@ -74,8 +74,7 @@ async def compare_brand(request:SimilarityEvaluationRequest):
         await asyncio.gather(*tasks)
 
         end_time = time.time()
-        total_duration = end_time - start_time
-        total_duration = f"상표 유사도 평가 Assistant 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
+        total_duration = f"상표 유사도 평가 Assistant 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time) %60:.2f}초"
         print(total_duration)
         
         # 유효한 응답의 개수 카운트

@@ -41,10 +41,10 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
     if num_of_rows:
         params['numOfRows'] = num_of_rows
     
+        # print(f"kiprisAPI : {kipris_api}")
     try:
         # api 요청 보내기
         response = requests.get(BASE_URL, params=params)
-
         # 응답이 성공적인지 확인
         response.raise_for_status()
 
@@ -61,8 +61,7 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
             else:
                 print(f"KIPRIS 응답에서 [{trademark_name}] 검색 결과가 없습니다.")
         else:
-            total_count = data['response']['count'].get('totalCount','0')
-            print(f"KIPRIS 응답에서 결과가 없습니다: totalCount: {total_count}")
+            print(f"KIPRIS 응답에서 결과가 없습니다: trademark_name -[{trademark_name}]")
             return []
         
     except requests.exceptions.HTTPError as http_err:
@@ -95,7 +94,6 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
 
 # all_result = updated_search_results_for_text(seperated_words)
 # print(all_result)
-
 
 
 # # big Drawing 필드를 처리하고 base64로 변환

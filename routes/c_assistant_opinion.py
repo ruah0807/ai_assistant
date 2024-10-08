@@ -4,7 +4,6 @@ from typing import List, Optional
 from pydantic import BaseModel
 import c_brand_similarity.execute as similarity
 import kipris_control, file_handler, common
-import similar
 from c_similar_text import mes_text
 
 
@@ -21,69 +20,67 @@ class LabeledKiprisItems(BaseModel):
     classification_code: Optional[str] = None
     vienna_code : Optional[str] = None
 
-class SimilarityEvaluationRequest(BaseModel):
+class SimilarityImageEvaluation(BaseModel):
     brand_name: Optional[str] = ""
     brand_image_url: str
-    brand_image_path: Optional[str] = None
+    brand_image_path: Optional[str] = ""
     kipris_data: List[LabeledKiprisItems]
 
 class SimilarityTextEvaluation(BaseModel):
-    brand_name : str
-    similarity_code : str
+    brand_name : str = ""
+    similarity_code : str = ""
+    kipris_data : List[LabeledKiprisItems]
 
 
-# @router.post("/text_opinion", name="의견서 형식의 TEXT 유사도 평가(문서참고 O)")
-async def similar_text(request: SimilarityTextEvaluation, download_image: bool = False):
+@router.post("/text_opinion", name="의견서 형식의 TEXT 유사도 평가(문서참고 O)")
+async def similar_text(request: SimilarityTextEvaluation):
     try:
-        #입력받은 상표명과 유사성 코드를 기반으로 비슷한 단어 찾기
-        similar_words = similar.generate_similar_barnd_names(request.brand_name)
-
-        #상표 검색 수행
-        result_data = await kipris_control.updated_search_results(similar_words['words'], request.similarity_code, download_images=download_image)
-
+        start_time = time.time()
         #메시지를 전송하기 위한 스레드 생성
         thread, run = await mes_text.create_thread_and_run(
             f"""
             제가 등록하고 싶은 상표명입니다.
             \n상표명 : {request.brand_name}\n상품류/유사군:{request.similarity_code}\n
-            아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 10가지 상표명의 유사도를 명확하게 판단하고, 
-            어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명하세요.\n\n{result_data}""",
+            아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 선등록된 모든 상표명과의 유사도를 명확하게 판단하고, 
+            어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명해주세요.\n\n{request.kipris_data}""",
         )
-        messages = await common.handle_run_response(run,thread)
+        messages = await common.handle_run_response(run,thread, expect_json=False)
+        end_time = time.time()
+        total_duration = f"전체 처리시간 : {int((end_time-start_time)//60)}분 {(end_time-start_time)%60:.2f}초"
 
-        return {"message": messages}
+        return {"message": messages, "total_duration": total_duration}
 
     except Exception as e :
         raise HTTPException(status_code=500, detail = f"서버오류 발생: {str(e)}")
     
 
     
-# @router.post("/image-opinion", name="의견서 형식의 IMAGE 유사도 평가(문서참고 O)",
-#              description="""
-# # 유사도 의견서 Assistant
-# ```
-# 등록을 원하는 상표의 상표명과 미리 생성해놓은 이미지 URL로 Assistant에게 유사도 평가를 요청합니다.
-# ```
+@router.post("/image-opinion", name="의견서 형식의 IMAGE 유사도 평가(문서참고 O)",
+             description="""
+# 유사도 의견서 Assistant
+```
+등록을 원하는 상표의 상표명과 미리 생성해놓은 이미지 URL로 Assistant에게 유사도 평가를 요청합니다.
+```
 
-# ### 참고 문서
-# - 
+### 참고 문서
+- 
 
-# ### 요 청 
-# - **brand_name** : 등록 상표명
-# - **brand_image_url** : 등록상표이미지 URL
-# - **kipris_data** : 키프리스 데이터
+### 요 청 
+- **brand_name** : 등록 상표명
+- **brand_image_url** : 등록상표이미지 URL
+- **kipris_data** : 키프리스 데이터
 
-# - (**brand_image_path** : 전처리 필터를 이용했다면 경로 포함)
-# - (**kipris_data.similar_image_path** : 전처리 필터를 이용했다면 경로 포함)
+- (**brand_image_path** : 전처리 필터를 이용했다면 경로 포함)
+- (**kipris_data.similar_image_path** : 전처리 필터를 이용했다면 경로 포함)
 
-# ### 응 답 
-# - 유사여부보고서 형식의 유사도 평가.
+### 응 답 
+- 유사여부보고서 형식의 유사도 평가.
 
-# ### 참고사항
-# - 유사도 판단 중간필터링을 거쳤다면 brand_image_path와 similar_image_path가 포함이 되어있을것이고, 그렇지 않다면 포함이 되어있지않을 것이다. 
-# """
-#              )
-async def evaluate_similarity(request:SimilarityEvaluationRequest):
+### 참고사항
+- 유사도 판단 중간필터링을 거쳤다면 brand_image_path와 similar_image_path가 포함이 되어있을것이고, 그렇지 않다면 포함이 되어있지않을 것이다. 
+"""
+             )
+async def evaluate_similarity(request:SimilarityImageEvaluation):
     try:    
         start_time = time.time()
         # 브랜드 이미지 경로 확인 또는 다운로드
@@ -126,8 +123,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
         await asyncio.gather(*tasks)
 
         end_time = time.time()
-        total_duration = end_time - start_time
-        total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
+        total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time) %60:.2f}초"
         print(total_duration)
 
         file_handler.delete_downloaded_images(download_image_paths)

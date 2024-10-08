@@ -76,8 +76,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     file_handler.delete_downloaded_images(brand_image_path)
     
     end_time = time.time()
-    total_duration = end_time - start_time
-    total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
+    total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time) %60:.2f}초"
     print(total_duration)
 
     return {"messages": messages, "ducation": total_duration}
@@ -152,8 +151,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
         await asyncio.gather(*tasks)
 
         end_time = time.time()
-        total_duration = end_time - start_time
-        total_duration = f"전체 처리 시간: {int(total_duration // 60)}분 {total_duration %60:.2f}초"
+        total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time) %60:.2f}초"
         print(total_duration)
 
         file_handler.delete_downloaded_images(download_image_paths)
