@@ -30,7 +30,7 @@ router = APIRouter(
 @router.post("/similarity-pipeline", name="유사도보고서 작성 전체 파이프라인")
 async def similarity_report_api(request: CombinedSearchRequest):
     try:
-        messages= await similarity_pipeline(request.brand_name, 
+        messages= await similarity_report_pipeline(request.brand_name, 
                                             request.brand_image_url, 
                                             request.similarity_code,
                                             request.vienna_code,
@@ -45,7 +45,7 @@ async def similarity_report_api(request: CombinedSearchRequest):
 
 
 
-async def similarity_pipeline(
+async def similarity_report_pipeline(
                             brand_name = None, 
                             brand_image_url=None, 
                             similarity_code=None, 

@@ -1,8 +1,9 @@
-import c_brand_similarity.mes as similarity
-import kipris_control, file_handler, common
+import c_brand_similarity.mes as report
+import c_similar_img.mes_img as opinion
+import common
 
 
-async def handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, expect_json=False):
+async def handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, opinion_format, expect_json=False):
     """ 개별 결과처리 함수"""
     try:
         # result가 딕셔너리인지 Pydantic 모델인지에 따라 다른 방식으로 처리
@@ -56,7 +57,10 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
         두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요.
         """
 
-        thread, run = await similarity.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
+        if opinion_format == "report":
+            thread, run = await report.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
+        else:
+            thread, run = await opinion.create_thread_and_run(user_message, image_pair, image_url_pair)
 
         messages = await common.handle_run_response(run,thread, expect_json=expect_json)
         all_responses.append(messages)
