@@ -1,6 +1,6 @@
 import concurrent.futures, asyncio
 from file_handler import save_to_json,download_image_with_application_number
-from kipris_api import get_trademark_info
+from kipris.kipris_api import get_trademark_info
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
 async def search_and_save_all_results(trademark_names, similarity_code, vienna_code, num_of_rows = 5, only_null_vienna_search=False):

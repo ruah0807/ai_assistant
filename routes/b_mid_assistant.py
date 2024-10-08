@@ -2,8 +2,9 @@ from fastapi import APIRouter, HTTPException
 import time, asyncio
 from typing import List, Optional
 from pydantic import BaseModel
-import kipris_control, file_handler, common
+import file_handler, common
 import b_similar_posibility_image.execute as similarity
+import kipris.kipris_control as kipris_control
 
 router = APIRouter(
     prefix="/assistant",

@@ -4,7 +4,9 @@ from typing import List, Optional
 from pydantic import BaseModel
 import c_brand_discernment.mes as discernment
 import c_brand_similarity.execute as similarity
-import kipris_control, file_handler, common
+import file_handler, common
+import kipris.kipris_control as kipris_control
+
 
 router = APIRouter(
     prefix="/assistant",
