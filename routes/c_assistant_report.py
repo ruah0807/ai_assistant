@@ -110,7 +110,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
 - 유사도 판단 중간필터링을 거쳤다면 brand_image_path와 similar_image_path가 포함이 되어있을것이고, 그렇지 않다면 포함이 되어있지않을 것이다. 
 """
              )
-async def evaluate_similarity(request:SimilarityEvaluationRequest, format="report"):
+async def evaluate_similarity(request:SimilarityEvaluationRequest):
     try:    
         start_time = time.time()
         # 브랜드 이미지 경로 확인 또는 다운로드
@@ -147,7 +147,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest, format="repor
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format)
+            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="report")
             tasks.append(task)
         # 비동기적으로 병렬 처리
         await asyncio.gather(*tasks)

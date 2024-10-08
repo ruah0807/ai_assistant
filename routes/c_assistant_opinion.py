@@ -33,7 +33,7 @@ class SimilarityTextEvaluation(BaseModel):
     kipris_data : List[LabeledKiprisItems]
 
 
-@router.post("/text_opinion", name="의견서 형식의 TEXT 유사도 평가(문서참고 O)")
+@router.post("/text-opinion", name="의견서 형식의 TEXT 유사도 평가(문서참고 O)")
 async def similar_text(request: SimilarityTextEvaluation):
     try:
         start_time = time.time()
@@ -81,7 +81,7 @@ async def similar_text(request: SimilarityTextEvaluation):
 - 유사도 판단 중간필터링을 거쳤다면 brand_image_path와 similar_image_path가 포함이 되어있을것이고, 그렇지 않다면 포함이 되어있지않을 것이다. 
 """
              )
-async def evaluate_similarity(request:SimilarityImageEvaluation, format="opinion"):
+async def evaluate_similarity(request:SimilarityImageEvaluation):
     try:    
         start_time = time.time()
         # 브랜드 이미지 경로 확인 또는 다운로드
@@ -118,7 +118,7 @@ async def evaluate_similarity(request:SimilarityImageEvaluation, format="opinion
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format)
+            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="opinion")
             tasks.append(task)
         # 비동기적으로 병렬 처리
         await asyncio.gather(*tasks)

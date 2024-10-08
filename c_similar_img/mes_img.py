@@ -35,7 +35,7 @@ async def run_with_tools(ass_id, thread):
         tools=[{'type':'file_search'}],
         instructions= """
             모든 텍스틀간의 검토가 끝난 후 
-            반드시 문서를 참고하여 출처와 함께 종합의견을 내세요. 
+            반드시 문서에 있는 예시를 참고하여 상세한 종합의견을 내세요. 
 
             응답 형식 :     
             < 이미지 유사도 의견서 >    
@@ -50,7 +50,6 @@ async def run_with_tools(ass_id, thread):
                 유사도 : (O - 유사, △ - 중간유사, X - 비유사 로 판단)
                 검토의견 : [해당 이미지는 어떤 외관을 가지고 있는지 설명 후 사용자가 등록하고자 하는 이미지와의 유사성을 비교합니다.]
             - 종합의견 : [제시한(이미지 유사도 평가 방법)에 따라 각 이미지들을 비교하며 유사성을 1000자 이내로 설명하세요]
-            - 출처 : (참고한 문서의 해당 출처를 밝히세요)
         """
     )
     print(f'assistant_id : {ass_id}, thread_id : {thread.id}, run_id : {run.id}')

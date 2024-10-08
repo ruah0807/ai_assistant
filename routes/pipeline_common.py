@@ -4,56 +4,9 @@ import b_similar_posibility_image.execute as filter_similarity
 import c_brand_similarity.execute as similarity
 import create_names, file_handler
 import kipris.kipris_control as kipris_control
-from typing import Optional
-from pydantic import BaseModel
-from fastapi import APIRouter, HTTPException
-
-class CombinedSearchRequest(BaseModel):
-    brand_name: str
-    brand_image_url: str
-    similarity_code: Optional[str] = None
-    vienna_code: Optional[str] = None
-    num_of_rows: int = 5
-    only_null_vienna_search: bool = False
-    filter: bool = False
 
 
-# FastAPI 애플리케이션 생성
-app = APIRouter()
-
-# 라우터 설정
-router = APIRouter(
-    prefix="/pipe",  # 엔드포인트 앞에 붙을 공통 URL
-    tags=["Similarity Pipeline"]
-)
-
-
-@router.post("/similarity-pipeline", name="유사도보고서 작성 전체 파이프라인")
-async def similarity_report_api(request: CombinedSearchRequest):
-    try:
-        messages= await similarity_report_pipeline(request.brand_name, 
-                                            request.brand_image_url, 
-                                            request.similarity_code,
-                                            request.vienna_code,
-                                            request.num_of_rows,
-                                            request.only_null_vienna_search,
-                                            request.filter)
-        return messages
-    except ValueError as e:
-        print(f"Error : {str(e)}")
-        raise HTTPException(status_code=500, detail = str(e))
-
-
-
-
-async def similarity_report_pipeline(
-                            brand_name = None, 
-                            brand_image_url=None, 
-                            similarity_code=None, 
-                            vienna_code=None, 
-                            num_of_rows=5, 
-                            only_null_vienna_search=False,
-                            filter=False):
+async def similarity_pipeline(brand_name, brand_image_url, similarity_code, vienna_code, num_of_rows, only_null_vienna_search, filter, format):
     # Step 1 : brand유사 상표명 검색
     if brand_name:
         print(f"\n'{brand_name}'에 대한 유사 상표명 검색 중...\n")
@@ -108,7 +61,10 @@ async def similarity_report_pipeline(
     all_responses = [] # similarity 결과를 위한 새로운 리스트
     tasks = []
     for idx, result in enumerate(filtered_results):
-        task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths)
+        if format =="report":
+            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="report")
+        else :
+            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="opinion")
         tasks.append(task)
     # 비동기적으로 병렬 처리
     await asyncio.gather(*tasks)
