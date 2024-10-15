@@ -41,6 +41,7 @@ def generate_similar_barnd_names(brand_name, designated_goods):
 
 출력 예시:
 {{
+  "designated_goods_word": "추측되는_일반명사",
   "words": [
     "{brand_name}",
     "번역된_단어",
