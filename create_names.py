@@ -9,53 +9,53 @@ load_dotenv()
 
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
-def generate_similar_barnd_names(brand_name):
+def generate_similar_barnd_names(brand_name, designated_goods):
     prompt = f"""
+상표명 '{brand_name}'과(와) 관련된 외관, 발음, 관념적 유사성을 기반으로 검색어를 생성하세요. 다음 조건과 지정상품 '{designated_goods}'를 고려하세요:
 
-    Generate search terms related to the brand name '{brand_name}' based on visual, phonetic, and conceptual similarities. Please consider the following conditions:
+0. **언어 조건**:
+    - '{brand_name}'이 한글일 경우, 영어 음역 및 번역을 생성하세요.
+    - '{brand_name}'이 영어일 경우, 한글 음역 및 번역을 생성하세요.
 
-0. **Language Conditions**:
-    - If '{brand_name}' is in Korean, generate English transliterations and translations.
-    - If '{brand_name}' is in English, generate Korean transliterations and translations.
+1. **지정상품과 관련된 일반 명사 제거**:
+    - 지정상품 '{designated_goods}'과 밀접하게 연관된 일반 명사나 산업 관련 단어를 제외하고 상표명의 고유한 부분을 추출하여 검색어를 생성하세요.
+    - 예시 1: 29류 식품류에서 'CALIFIA FARMS' → 'CALIFIA' (FARMS는 식품 및 농업과 관련된 단어이므로 제외)
+    - 예시 2: 35류 여행 서비스에서 'HAPPITRAVEL' → 'HAPPI' (TRAVEL은 여행과 관련된 단어이므로 제외)
 
-1. **Remove common words**:
-    - If the brand name contains generic words related to the designated goods (e.g., "FARMS", "TECHNOLOGY"), exclude those parts from the search terms. Focus on the unique part of the brand name.
-    - Example: "CALIFIA FARMS" -> "CALIFIA"
+2. **단어 줄이기**:
+    - 마지막 음절을 제외한 축약형 검색어를 생성하세요.
+    - 예: '나이키' → '나이'
 
-2. **Shortened forms**:
-    - Generate shortened forms by excluding the last syllable.
-    - Example: "나이키" -> "나이"
+3. **발음 변형 생성**:
+    - 발음이 유사한 음절을 변경하거나 추가, 삭제하여 발음 변형을 생성하세요.
+    - 예: 'adidas' → 'adida'
 
-3. **Generate phonetic variations**:
-    - Generate phonetic variations by changing, adding, or removing similar-sounding syllables.
-    - Example: "adidas" -> "adida"
-
-4. **Exclude generic parts**:
-    - Exclude common words or suffixes like "on", "in", "the", "Co", "Corp", "Ltd".
+4. **지정상품과 관련된 일반적 단어 제거**:
+    - 'on', 'in', 'Co', 'Corp', 'Ltd' 등과 같은 일반적 단어나 '{designated_goods}'와 관련된 단어는 검색어에서 제외하세요.
     
-5. **Use examples of similarity from the document**:
-    - Follow examples like: "INTERCEPTOR" ≒ "인터셉트", "REVILLON" ≒ "REVLON", etc.
+5. **유사성 예시 활용**:
+    - "INTERCEPTOR" ≒ "인터셉트", "REVILLON" ≒ "REVLON"과 같은 유사성 예시를 참고하여 발음, 외관, 관념적 유사성을 고려한 검색어를 생성하세요.
     
-6. **Output in JSON format**:
-    - Include all generated search terms in a `words` list without duplicates. The first search term should always be '{brand_name}'.
+6. **JSON 형식으로 출력**:
+    - 중복 없이 생성된 모든 검색어를 `words` 리스트에 포함하세요. 첫 번째 검색어는 항상 '{brand_name}'이어야 합니다.
 
-Output Example:
+출력 예시:
 {{
   "words": [
     "{brand_name}",
-    "translated_term",
-    "English_term_1",
-    "Korean_term_1",
-    "English_term_2",
-    "Korean_term_2",
-    "similar_terms_list"
+    "번역된_단어",
+    "영어_단어_1",
+    "한글_단어_1",
+    "영어_단어_2",
+    "한글_단어_2",
+    ...
   ]
 }}
 
-**Important Notes**:
-- Do not include specific person or building names.
-- Do not generate single-character terms. Ensure that all terms are at least two characters long.
-- Exclude all prepositions and unnecessary words (e.g., 'on', 'in', 'a', '언', '온', '인') from the final search terms.
+**중요 사항**:
+- 특정 인명이나 건물명은 포함하지 마세요.
+- 한 글자 단어는 생성하지 마세요. 모든 단어는 최소 두 글자 이상이어야 합니다.
+- 지정상품 '{designated_goods}'과 관련된 일반 명사를 제외하는 것에 집중하세요.
 """
     start_time = time.time()
     response = openai.chat.completions.create(
@@ -67,7 +67,7 @@ Output Example:
                 당신은 제시된 상표명을 기반으로, 외관, 발음, 관념 측면에서 유사한 상표명을 검색하기 전에 
                 유사 상표명을 발췌하는 전문가 입니다. 
                 또한 중복단어는 절대 답하지 않도록 합니다.
-                4~20 개 의 단어들을 생성하세요
+                
                 """
                 },
             {'role': 'user', 'content': prompt}
