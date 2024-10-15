@@ -11,40 +11,33 @@ openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 def generate_similar_barnd_names(brand_name):
     prompt = f"""
+
     Generate search terms related to the brand name '{brand_name}' based on visual, phonetic, and conceptual similarities. Please consider the following conditions:
 
 0. **Language Conditions**:
-    - If '{brand_name}' is in Korean, do not generate any English translations.
-    - If '{brand_name}' is in English or based on English phonetics in Korean as a Korean writing, **generate translations for all terms in both English and Korean**.
-    - When '{brand_name}' is in English or based on English phonetics, similar terms should also be generated in both English and Korean. This applies to all terms derived from or similar to '{brand_name}'.
+    - If '{brand_name}' is in Korean, generate English transliterations and translations.
+    - If '{brand_name}' is in English, generate Korean transliterations and translations.
 
-1. **Add the original term and its translation**:
-    - Add '{brand_name}' and its translation as the first entries.
-    - Example 1 (English): 'mindshare' -> 'mindshare', '마인드쉐어'
-    - Example 2 (Korean with English phonetics): '마인드쉐어' -> '마인드쉐어', 'mindshare''
+1. **Remove common words**:
+    - If the brand name contains generic words related to the designated goods (e.g., "FARMS", "TECHNOLOGY"), exclude those parts from the search terms. Focus on the unique part of the brand name.
+    - Example: "CALIFIA FARMS" -> "CALIFIA"
 
-2. **Split the components**:
-    - Split the components of '{brand_name}' into separate terms, but only generate terms that are **at least two characters** long.
-    - Example: '유상우정신건강의학원' -> '유상우', '정신건강의학원'
-    - Avoid creating single-character terms under any circumstances.
+2. **Shortened forms**:
+    - Generate shortened forms by excluding the last syllable.
+    - Example: "나이키" -> "나이"
 
-3. **Prepositions and Unnecessary Words, if it's base on English phonetics or English**:
-    - Identify prepositions and unnecessary words (e.g., 'on', 'in', 'a', '언', '온', '인') and **exclude them** from the generated search terms.
-    - Example: 'onboarding' -> 'boarding' (exclude 'on')
+3. **Generate phonetic variations**:
+    - Generate phonetic variations by changing, adding, or removing similar-sounding syllables.
+    - Example: "adidas" -> "adida"
 
-4. **Include spelling variations and phonetic similarities**:
-    - Include terms with spelling errors (missing, added, or rearranged letters) and phonetic similarities.
-    - Example: 'onboarders' -> 'onboader', '온보딩'
-
-5. **Exclude single-character terms**:
-    - Do not generate single-character terms. All generated terms must be at least two characters or more.
-
-6. **Reflect theotrical and phonetic transformations**:
-    - Reflect theotrical similarities and phonetic transformations across languages.
-    - Example: 'onboarders' -> '온보드', 'onboard'
-
-7. **Output in JSON format**:
-    - Include all generated search terms in a `words` list without duplicates. The first search term should always be '{brand_name}' and its translation.
+4. **Exclude generic parts**:
+    - Exclude common words or suffixes like "on", "in", "the", "Co", "Corp", "Ltd".
+    
+5. **Use examples of similarity from the document**:
+    - Follow examples like: "INTERCEPTOR" ≒ "인터셉트", "REVILLON" ≒ "REVLON", etc.
+    
+6. **Output in JSON format**:
+    - Include all generated search terms in a `words` list without duplicates. The first search term should always be '{brand_name}'.
 
 Output Example:
 {{
@@ -183,4 +176,49 @@ Output Example:
 - 특정 인명이나 건물명은 포함하지 마세요.
 - 한 글자 단어는 생성하지 마세요. 모든 단어는 최소 두 글자 이상이어야 합니다.
 - 전치사 및 불필요한 단어(예: 'on', 'in', 'a', '언', '온', '인')는 최종 검색어에서 제외하세요.
+
+
+
+---
+
+
+
+
+
+
+    Generate search terms related to the brand name '{brand_name}' based on visual, phonetic, and conceptual similarities. Please consider the following conditions:
+
+0. **Language Conditions**:
+    - If '{brand_name}' is in Korean, do not generate any English translations.
+    - If '{brand_name}' is in English or based on English phonetics in Korean as a Korean writing, **generate translations for all terms in both English and Korean**.
+    - When '{brand_name}' is in English or based on English phonetics, similar terms should also be generated in both English and Korean. This applies to all terms derived from or similar to '{brand_name}'.
+
+1. **Add the original term and its translation**:
+    - Add '{brand_name}' and its translation as the first entries.
+    - Example 1 (English): 'mindshare' -> 'mindshare', '마인드쉐어'
+    - Example 2 (Korean with English phonetics): '마인드쉐어' -> '마인드쉐어', 'mindshare''
+
+2. **Split the components**:
+    - Split the components of '{brand_name}' into separate terms, but only generate terms that are **at least two characters** long.
+    - Example: '유상우정신건강의학원' -> '유상우', '정신건강의학원'
+    - Avoid creating single-character terms under any circumstances.
+
+3. **Prepositions and Unnecessary Words, if it's base on English phonetics or English**:
+    - Identify prepositions and unnecessary words (e.g., 'on', 'in', 'a', '언', '온', '인') and **exclude them** from the generated search terms.
+    - Example: 'onboarding' -> 'boarding' (exclude 'on')
+
+4. **Include spelling variations and phonetic similarities**:
+    - Include terms with spelling errors (missing, added, or rearranged letters) and phonetic similarities.
+    - Example: 'onboarders' -> 'onboader', '온보딩'
+
+5. **Exclude single-character terms**:
+    - Do not generate single-character terms. All generated terms must be at least two characters or more.
+
+6. **Reflect theotrical and phonetic transformations**:
+    - Reflect theotrical similarities and phonetic transformations across languages.
+    - Example: 'onboarders' -> '온보드', 'onboard'
+
+7. **Output in JSON format**:
+    - Include all generated search terms in a `words` list without duplicates. The first search term should always be '{brand_name}' and its translation.
+
 """
