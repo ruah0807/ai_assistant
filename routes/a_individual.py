@@ -29,10 +29,10 @@ KIPRIS 검색 전, 상표명의 비슷한 검색어를 찾아주는 API
 
 ### 요 청 
 - brand_name: 해당상표의 이미지
-- designated_goods : 지정상품 주요부 판단을위한 유사군 입력
+- description : 지정상품 주요부 판단을위한 유사군 설명
 
 ### 응 답 (Json 파싱) 
-- designated_goods_word :지정상품 유사군으로 추정되는 "일반 명사" - 해당부분을 나눈 이유는 LLM이 일반명사와 아닌것을 한번 더 확실히 구분하게 하기 위함입니다. 
+- description_word :지정상품 유사군으로 추정되는 "일반 명사" - 해당부분을 나눈 이유는 LLM이 일반명사와 아닌것을 한번 더 확실히 구분하게 하기 위함입니다. 
 - words : 해당 상표명과 비슷한 상표명들
 
 ### 참고 사항
@@ -42,14 +42,14 @@ KIPRIS 검색 전, 상표명의 비슷한 검색어를 찾아주는 API
 - 영어와 한글을 번갈아가며 검색어에 추가하도록 하였습니다.
             """ 
              )
-async def get_similar_words(brand_name: str, designated_goods: str):
+async def get_similar_words(brand_name: str, description: str):
     if not brand_name :
         raise HTTPException(status_code=400, detail="상표명을 입력하세요")
-    elif not designated_goods :
+    elif not description :
         raise HTTPException(status_code=400, detail="지정상품 주요부 판별을 위해 유사군을 입력하세요")
     
     # LLM 유사 단어 목록 만들기
-    similar_words = create_names.generate_similar_barnd_names(brand_name, designated_goods)
+    similar_words = create_names.generate_similar_barnd_names(brand_name, description)
 
     if not similar_words:
         raise HTTPException(status_code=404, detail="비슷한 단어를 찾을 수 없습니다.")
