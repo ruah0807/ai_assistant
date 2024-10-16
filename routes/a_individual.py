@@ -31,15 +31,15 @@ KIPRIS 검색 전, 상표명의 비슷한 검색어를 찾아주는 API
 - brand_name: 해당상표의 이미지
 - designated_goods : 지정상품 주요부 판단을위한 유사군 입력
 
-### 응 답 
-- 해당 상표명과 비슷한 상표명 (Json 파싱)
+### 응 답 (Json 파싱) 
+- designated_goods_word :지정상품 유사군으로 추정되는 "일반 명사" - 해당부분을 나눈 이유는 LLM이 일반명사와 아닌것을 한번 더 확실히 구분하게 하기 위함입니다. 
+- words : 해당 상표명과 비슷한 상표명들
 
 ### 참고 사항
-- LLM 특성상 검색을 할때마다 다른결과를 가져오기 때문에 여러번 검색이가능합니다.
+- LLM 특성상 검색을 할때마다 다른결과를 가져오기 때문에 여러번 검색이 가능합니다.
 - 한번에 마음에 드는 결과를 얻을수 없는 경우 여러번 검색하여 답을 얻습니다.
-- 한 글자 검색은 현재 90% 이상 검색어에 포함되지 않습니다.
-- 영어로 검색할 경우에만 영어와 한글을 번갈아가며 검색어에 추가하고, 영어 발음을 한글로 검색할경우에는 한번만 추가합니다.
-
+- 한 글자 검색은 검색어에 포함하지 않도록 하였습니다.
+- 영어와 한글을 번갈아가며 검색어에 추가하도록 하였습니다.
             """ 
              )
 async def get_similar_words(brand_name: str, designated_goods: str):
@@ -80,7 +80,6 @@ async def get_similar_words(brand_name: str, designated_goods: str):
 - 유사코드를 제외한 각 검색은 상표명, 비엔나코드는 빈값이 검색가능합니다.
 - only_null_vienna_search : true - 텍스트위주의 상표일경우 vienna_code가 null 값인것만 선택적으로 받을수 있습니다.
 - only_null_vienna_search : false - 도형위주의 상표이거나, 텍스트위주라도 도형관계없이 받고싶다면 false로 검색합니다.
-
             """ 
              )
 async def search_kipris(request: SearchKipris):
