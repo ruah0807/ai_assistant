@@ -40,9 +40,9 @@ def run_with_tools(ass_id, thread):
 
         {{
             [
-                info: (포함되는 상품 및 서비스(설명))
-                niceNum: (분류)
+                niceNum: (분류),
                 similarity_code: (유사군코드),
+                info: (포함되는 상품 및 서비스)
             ],
             ...
         }}
