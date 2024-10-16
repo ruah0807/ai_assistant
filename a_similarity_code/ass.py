@@ -14,10 +14,10 @@ instructions = """
 """
 
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_0dJoKkouQ6Qa7HbczRnwC1VG'
+    vector_store_id= 'vs_n45uaYmRy4Em5BxJA6AFDZFr'
 )
-# [ Similarity Code Batch Ver.] - vs_0dJoKkouQ6Qa7HbczRnwC1VG
-# [ Similarity Code ] -  vs_m1b79x1RYgGhA6f8qaUIHzUU
+# # [ Similarity Code Batch Ver.] - vs_0dJoKkouQ6Qa7HbczRnwC1VG
+# # [ Similarity Code ] -  vs_72qRAe3yFTBvAP1XP305J9e0
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
@@ -41,19 +41,13 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # ## 백터스토어 생성및 파일 임베딩 업로드 ####
 # vector_store = client.beta.vector_stores.create(
-#     name = 'Similarity Code',
+#     name = 'Similarity Code Document',
 # )
 
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '../_docs/similarity_code/24년_지정상품고시목록(출처포함)-표1.md',
-#     '../_docs/similarity_code/35-구매대행업-표1.md',
-#     '../_docs/similarity_code/35-도매업-표1.md',
-#     '../_docs/similarity_code/35-소매업-표1.md',
-#     '../_docs/similarity_code/35-중개업-표1.md',
-#     '../_docs/similarity_code/35-판매대행업-표1.md',
-#     '../_docs/similarity_code/35-판매알선업-표1.md'
+#     "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/similarity_code/trademark_class.md"
 # ]
 
 # file_streams = [open(path, 'rb') for path in files_to_uploaded]
@@ -64,18 +58,19 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 # )
 
 
+
 ###############################################################
 
-# # vectorstore 삭제 ###
+# ### vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_4zYjMaJ286D2bEQfvRodjP1Y'
+#     vector_store_id='vs_eKgl1FIZqLcqCYSBaa8UlZiJ'
 # )
 
 
 ###############################################################
 
 
-# 기존 어시스턴트 ID 확인
+# # 기존 어시스턴트 ID 확인
 # assistant_list = client.beta.assistants.list()
 
 # for assistant in assistant_list:
@@ -92,12 +87,12 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 #     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
 
-## 백터스토어 아이디 안 파일 리스트 ####
-vector_store_files = client.beta.vector_stores.retrieve(
-    vector_store_id='vs_0dJoKkouQ6Qa7HbczRnwC1VG',
-)
-file_ids = vector_store_files.file_counts
+# # 백터스토어 아이디 안 파일 리스트 ####
+# vector_store_files = client.beta.vector_stores.retrieve(
+#     vector_store_id='vs_eKgl1FIZqLcqCYSBaa8UlZiJ',
+# )
+# file_ids = vector_store_files.file_counts
 
-print('백터스토어에 저장된 파일 목록 : ')
-for file_id in file_ids:
-    print(file_id)
+# print('백터스토어에 저장된 파일 목록 : ')
+# for file_id in file_ids:
+#     print(file_id)
