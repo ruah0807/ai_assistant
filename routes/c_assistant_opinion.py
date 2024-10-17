@@ -29,7 +29,6 @@ class SimilarityImageEvaluation(BaseModel):
 
 class SimilarityTextEvaluation(BaseModel):
     brand_name : str = ""
-    similarity_code : str = ""
     kipris_data : List[LabeledKiprisItems]
 
 
@@ -41,7 +40,7 @@ async def similar_text(request: SimilarityTextEvaluation):
         thread, run = await mes_text.create_thread_and_run(
             f"""
             제가 등록하고 싶은 상표명입니다.
-            \n상표명 : {request.brand_name}\n상품류/유사군:{request.similarity_code}\n
+            \n상표명 : {request.brand_name}\n
             아래는 특허청에서 비슷한 상표를 검색한 데이터입니다. 업로드되어있는 문서를 기반으로 하여 선등록된 모든 상표명과의 유사도를 명확하게 판단하고, 
             어떤 근거에 따라 유사성이 같은지 혹은 다른지를 소스를 주고 디테일하게 설명해주세요.\n\n{request.kipris_data}""",
         )
@@ -118,7 +117,7 @@ async def evaluate_similarity(request:SimilarityImageEvaluation):
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="opinion")
+            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format_type="opinion")
             tasks.append(task)
         # 비동기적으로 병렬 처리
         await asyncio.gather(*tasks)

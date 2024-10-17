@@ -19,8 +19,8 @@ class DiscernmentEvaluation(BaseModel):
     
 
 class LabeledKiprisItems(BaseModel):
-    title: Optional[str] = None
-    similar_image_url: Optional[str] = None
+    title: Optional[str]
+    similar_image_url: Optional[str] 
     similar_image_path: str = None
     application_number: Optional[str] = None
     classification_code: Optional[str] = None
@@ -147,7 +147,7 @@ async def evaluate_similarity(request:SimilarityEvaluationRequest):
 
         tasks = []
         for idx, result in enumerate(result_data):
-            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="report")
+            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format_type="report")
             tasks.append(task)
         # 비동기적으로 병렬 처리
         await asyncio.gather(*tasks)
