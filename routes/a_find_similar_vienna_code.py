@@ -10,7 +10,7 @@ import a_similarity_code.execute as similarity_code
 
 router = APIRouter(
     prefix="/individual",
-    tags=["Similarity Code & SimilarWords & KIPRIS"]
+    tags=["SimilarWords & Similarity Code  & KIPRIS"]
 )
 
 class FindViennaCode(BaseModel):
