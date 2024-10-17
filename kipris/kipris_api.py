@@ -23,11 +23,11 @@ def get_trademark_info(trademark_name, similarity_code, vienna_code, num_of_rows
         'sound': 'false',               # 소리 상표 중에서 검색
         'color': 'true',                # 색채 상표 중에서 검색
         'colorMixed': 'true',           # 색채 복합 상표 중에서 검색
-        'dimension': 'false',           # 입체상표 중에서 검색
-        'hologram': 'false',            # 홀로그램 상표 중에서 검색
-        'invisible': 'false',           # 시각적으로 인식 불가능한 상표 중에서 검색
-        'motion': 'false',              # 동작 상표 중에서 검색
-        'visual': 'false',              # 시각적으로 인식 가능한 상표 중에서 검색
+        'dimension': 'true',           # 입체상표 중에서 검색                   # false -> true
+        'hologram': 'true',            # 홀로그램 상표 중에서 검색               # false -> true
+        'invisible': 'true',           # 시각적으로 인식 불가능한 상표 중에서 검색   # false -> true
+        'motion': 'true',              # 동작 상표 중에서 검색                  # false -> true
+        'visual': 'true',              # 시각적으로 인식 가능한 상표 중에서 검색    # false -> true
         'ServiceKey': kipris_api,       # KIPRIS API 키
         'trademark' : 'true',           # 이게 true여야 제대로 검색됩니다.
         'pageNo' : 1

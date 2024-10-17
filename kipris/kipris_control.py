@@ -3,7 +3,8 @@ from file_handler import save_to_json,download_image_with_application_number
 from kipris.kipris_api import get_trademark_info
 
 # 여러 상표명칭을 검색하여 모든 결과를 하나의 리스트에 모은 후 json 으로 저장
-async def search_and_save_all_results(trademark_names, similarity_code, vienna_code, num_of_rows = 5, only_null_vienna_search=False):
+async def search_and_save_all_results(trademark_names, similarity_code, vienna_code, num_of_rows = 5, only_null_vienna_search=False,
+                                      exclude_application_number=None, exclude_registration_number=None, application_date=None):
     
     if not trademark_names:
         all_results = get_trademark_info(None, similarity_code, vienna_code, num_of_rows)
@@ -35,11 +36,29 @@ async def search_and_save_all_results(trademark_names, similarity_code, vienna_c
         if application_number in application_numbers_seen:
             continue
 
+        ############### 테스트를 위한 예외처리 ######################
+
+        # 등록 번호와 출원번호에 따른 필터링 (예외처리)
+        if exclude_application_number and item.get('applicationNumber') == exclude_application_number:
+            continue
+        if exclude_registration_number and item.get('registrationNumber') == exclude_registration_number:
+            continue
+
+        # application_date를 기준으로 출원일 이후 데이터만 필터링
+        if application_date and item.get('applicationDate'):
+            if int(item['applicationDate']) > int(application_date): # 날짜 비교
+                continue
+
+        #######################################################    
+
+        # 필요한 데이터만 필터링
         filtered_item = {
             'title': item.get('title'),
-            'classification_code' : item.get('classificationCode'),
             'similar_image_url' : item.get('bigDrawing'),
             'application_number' : application_number,
+            'application_date' : item.get('applicationDate'),
+            'registration_number' : item.get('registrationNumber'),
+            'classification_code' : item.get('classificationCode'),
             'vienna_code': item.get('viennaCode')
         }
         filtered_results.append(filtered_item)

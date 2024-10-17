@@ -7,9 +7,10 @@ import a_similarity_code.execute as similarity_code
 
 
 
+
 router = APIRouter(
-    prefix="/find",
-    tags=["Similarity Code & Vienna Code"]
+    prefix="/individual",
+    tags=["Similarity Code & SimilarWords & KIPRIS"]
 )
 
 class FindViennaCode(BaseModel):
@@ -19,42 +20,42 @@ class FindViennaCode(BaseModel):
 class FindSimilarityCode(BaseModel):
     user_input: str
 
-@router.post('/vienna_code', 
-             name="비엔나 코드 찾는 Assistant",
-             description="""
-# 비엔나 코드 Assistant
-```
-이미지의 도형 모양을 파악 후, 비엔나 코드관련 문서를 검색하여 비엔나코드를 찾아주는 OPEN AI Assistant.
-```
-### 현재 업로드된 테스트 비엔나 코드
+# @router.post('/vienna_code', 
+#              name="비엔나 코드 찾는 Assistant",
+#              description="""
+# # 비엔나 코드 Assistant
+# ```
+# 이미지의 도형 모양을 파악 후, 비엔나 코드관련 문서를 검색하여 비엔나코드를 찾아주는 OPEN AI Assistant.
+# ```
+# ### 현재 업로드된 테스트 비엔나 코드
 
-- 01 : 천체, 자연현상, 지도 
-    - 0101** : 별, 해성
-    - 0103** : 태양 
-    - 0105** : 지구,지구본, 행성
+# - 01 : 천체, 자연현상, 지도 
+#     - 0101** : 별, 해성
+#     - 0103** : 태양 
+#     - 0105** : 지구,지구본, 행성
 
-### 요 청 
-- brand_image_url: 해당상표의 이미지
+# ### 요 청 
+# - brand_image_url: 해당상표의 이미지
 
-### 응 답 
-- 해당 이미지의 코드로 추정되는 비엔나 코드를 추천하는 Assistant의 메세지 (Json 파싱 필요) 
+# ### 응 답 
+# - 해당 이미지의 코드로 추정되는 비엔나 코드를 추천하는 Assistant의 메세지 (Json 파싱 필요) 
 
-### 참고 사항
-- 현존하는 데이터에 한해서는 검색 결과가 잘나오지만 
-- 아직 비엔나코드의 모든 데이터가 들어와 있지 않은 상황이기때문에 명확한 답을 준다 표현하기 어렵습니다. 
+# ### 참고 사항
+# - 현존하는 데이터에 한해서는 검색 결과가 잘나오지만 
+# - 아직 비엔나코드의 모든 데이터가 들어와 있지 않은 상황이기때문에 명확한 답을 준다 표현하기 어렵습니다. 
 
-            """ 
-            )
-async def find_vienna_code(request: FindViennaCode):
-    start_time = time.time()
+#             """ 
+#             )
+# async def find_vienna_code(request: FindViennaCode):
+#     start_time = time.time()
     
-    messages = await vienna_ex.process_vienna_code(request.brand_image_url)
+#     messages = await vienna_ex.process_vienna_code(request.brand_image_url)
     
-    end_time = time.time()
-    total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time)%60:.2f}초"
-    print(total_duration)
+#     end_time = time.time()
+#     total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time)%60:.2f}초"
+#     print(total_duration)
 
-    return {"messages": messages, "ducation": total_duration}
+#     return {"messages": messages, "ducation": total_duration}
 
 
 
