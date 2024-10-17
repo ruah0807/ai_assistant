@@ -3,7 +3,7 @@ import c_similar_img.mes_img as opinion
 import common
 
 
-async def handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format, expect_json=False):
+async def handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format_type, expect_json=False):
     """ 개별 결과처리 함수"""
     try:
         # result가 딕셔너리인지 Pydantic 모델인지에 따라 다른 방식으로 처리
@@ -57,7 +57,7 @@ async def handle_single_result(result, idx, request, brand_image_path, all_respo
         두 이미지를 비교하여 유사도를 분석하여 법적 자문을 주세요.
         """
 
-        if format == "report":
+        if format_type == "report":
             thread, run = await report.similarity_create_thread_and_run(user_message, image_pair, image_url_pair)
         else:
             thread, run = await opinion.create_thread_and_run(user_message, image_pair, image_url_pair)

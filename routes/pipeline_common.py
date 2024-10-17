@@ -6,11 +6,11 @@ import create_names, file_handler
 import kipris.kipris_control as kipris_control
 
 
-async def similarity_pipeline(brand_name, brand_image_url, similarity_code, vienna_code, num_of_rows, only_null_vienna_search, filter, format):
+async def similarity_pipeline(brand_name, description, brand_image_url, similarity_code, vienna_code, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):
     # Step 1 : brand유사 상표명 검색
     if brand_name:
         print(f"\n'{brand_name}'에 대한 유사 상표명 검색 중...\n")
-        similar_words = create_names.generate_similar_barnd_names(brand_name)
+        similar_words = create_names.generate_similar_barnd_names(brand_name, description)
         if not similar_words:
             return{"error": "비슷한 단어를 찾을 수 없습니다."} 
         search_words = similar_words['words']
@@ -22,7 +22,8 @@ async def similarity_pipeline(brand_name, brand_image_url, similarity_code, vien
         similarity_code,
         vienna_code,
         num_of_rows,
-        only_null_vienna_search
+        only_null_vienna_search,
+        exclude_application_number, exclude_registration_number, application_date
     )
 
     # Step 3 : brand 이미지 다운로드
@@ -61,10 +62,7 @@ async def similarity_pipeline(brand_name, brand_image_url, similarity_code, vien
     all_responses = [] # similarity 결과를 위한 새로운 리스트
     tasks = []
     for idx, result in enumerate(filtered_results):
-        if format =="report":
-            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="report")
-        else :
-            task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format="opinion")
+        task = similarity.handle_single_result(result, idx, request, brand_image_path, all_responses, download_image_paths, format_type=format_type)
         tasks.append(task)
     # 비동기적으로 병렬 처리
     await asyncio.gather(*tasks)
