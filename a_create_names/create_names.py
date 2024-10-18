@@ -1,6 +1,5 @@
 import os
 import openai
-from init import api_key
 from datetime import datetime
 import time
 from dotenv import load_dotenv

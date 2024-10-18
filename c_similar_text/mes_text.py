@@ -1,7 +1,6 @@
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
-from create_names import generate_similar_barnd_names
 
 # Assistant Name: 상표 TEXT 유사도 평가 Assistant
 ass_id = 'asst_IbYT7EatQkmSnremkg5RuiC0'

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
-import create_names
+import a_create_names.create_names as create_names
 import kipris.kipris_control as kipris_control
 
 

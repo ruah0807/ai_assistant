@@ -2,8 +2,9 @@ import os,sys, time, asyncio
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import b_similar_posibility_image.execute as filter_similarity
 import c_brand_similarity.execute as similarity
-import create_names, file_handler
+import a_create_names.create_names as create_names
 import kipris.kipris_control as kipris_control
+import file_handler
 
 
 async def similarity_pipeline(brand_name, description, brand_image_url, similarity_code, vienna_code, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):

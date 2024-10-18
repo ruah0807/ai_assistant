@@ -5,7 +5,8 @@ from c_brand_discernment.mes import discernment_create_thread_and_run
 from c_brand_similarity.mes import similarity_create_thread_and_run
 from c_similar_img import mes_img
 from c_similar_text import mes_text
-import create_names, file_handler, common
+import a_create_names.create_names as create_names
+import file_handler, common
 import kipris.kipris_control as kipris_control
 
 
