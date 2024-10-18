@@ -41,7 +41,7 @@ class DiscernmentEvaluation(BaseModel):
 async def discernment_trademark(request: DiscernmentEvaluation):
 
     start_time = time.time()
-    brand_image_path = file_handler.download_image(request.brand_name)
+    brand_image_path = file_handler.download_image(request.brand_image_url)
     
     if not brand_image_path:
         raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
@@ -50,7 +50,7 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     # 스래드 생성
     thread, run = discernment.discernment_create_thread_and_run(
         f"""
-        업로드한 이미지 상표와 지정상품설명으로 상표의 주요부를 판단하여 상표 식별력을 평가해주세요 
+        업로드한 이미지 상표와 지정상품설명으로 상표의 '주요부'를 판단하여 상표 식별력을 평가해주세요 
         브랜드명 : {request.brand_name}
         지정상품설명 : {request.asign_product_description}
         """, 

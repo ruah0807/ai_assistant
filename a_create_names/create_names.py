@@ -13,13 +13,18 @@ def generate_similar_barnd_names(brand_name, asign_product_description):
 상표명 '{brand_name}'과(와) 관련된 외관, 발음, 관념적 유사성을 기반으로 검색어를 생성하세요. 다음 조건과 지정상품 '{asign_product_description}'를 고려하세요:
 
 0. **언어 조건**:
-    - '{brand_name}'이 한글일 경우, 영어 음역 및 번역을 생성하세요.
-    - '{brand_name}'이 영어일 경우, 한글 음역 및 번역을 생성하세요.
+    - '{brand_name}'이 한글일 경우, 음 그대로 영어로 변환 / 뜻 그대로 영어로 변환하여 검색어를 생성하세요.
+    - '{brand_name}'이 영어일 경우,  발음 그대로 한글로 변환 / 뜻 그대로 한글로 변환하여 검색어를 생성하세요.
 
-1. **지정상품과 관련된 일반 명사 제거**:
+
+1. **지정상품과 관련된 주요부 판별 및 일반 명사 제거**:
     - 지정상품 '{asign_product_description}'과 밀접하게 연관된 일반 명사나 산업 관련 단어를 제외하고 상표명의 고유한 부분을 추출하여 검색어를 생성하세요.
-    - 예시 1: 29류 식품류에서 'CALIFIA FARMS' → 'CALIFIA' (FARMS는 식품 및 농업과 관련된 단어이므로 제외)
-    - 예시 2: 35류 여행 서비스에서 'HAPPITRAVEL' → 'HAPPI' (TRAVEL은 여행과 관련된 단어이므로 제외)
+    - 여러 단어들의 합인 경우, 주요부만 떼어내서 검색어를 생성
+    - 예시 :
+        1. CALIFIA FARMS: “FARMS”는 농업과 관련된 일반 명사이므로, 고유한 부분은 CALIFIA입니다.
+	    2. HAPPITRAVEL: “TRAVEL”은 여행 산업과 관련된 일반 명사이므로, 고유한 부분은 HAPPI입니다.
+	    4. ZAMST HYBRID KNIT TECHNOLOGY: “TECHNOLOGY,” “HYBRID,” “KNIT”는 모두 일반 명사이므로, 고유한 부분은 ZAMST입니다.
+	    5. Apple: “Apple”은 과일과 관련된 일반 명사이지만, “핸드폰”과 같은 지정상품에 적용될 때는 고유한 부분이 됩니다.
 
 2. **단어 줄이기**:
     - 마지막 음절을 제외한 축약형 검색어를 생성하세요.
@@ -33,14 +38,22 @@ def generate_similar_barnd_names(brand_name, asign_product_description):
     - 'on', 'in', 'Co', 'Corp', 'Ltd' 등과 같은 일반적 단어나 '{asign_product_description}'와 관련된 단어는 검색어에서 제외하세요.
     
 5. **유사성 예시 활용**:
-    - "INTERCEPTOR" ≒ "인터셉트", "REVILLON" ≒ "REVLON"과 같은 유사성 예시를 참고하여 발음, 외관, 관념적 유사성을 고려한 검색어를 생성하세요.
-    
+    - 아래와 같은 유사성 예시를 참고하여 발음, 외관, 관념적 유사성을 고려한 검색어를 생성하세요.
+    - 호칭이 유사한 표장 예시 
+        INTERCEPTOR ≒ 인터셉트 / REVILLON ≒ REVLON / LYSOTAN ≒ 로소탄(LOSOTAN) / 
+        千年 ≒ 天然 / TVC ≒ TBC / 마르샤 ≒ 마르셀 / EVOL ≒ EPOL / TOBY ≒ TOPY /
+        DANYL ≒ DAONIL / Leeman ≒ Riman / PAPASHELIN ≒ PAPAPHYLLIN /
+        CHROMATRON ≒ CHROMATONE / SAFUNEN ≒ SAFUNENSO / ADEFLON ≒ ADOPRON
+            
+    - 호칭이 유사하지 아니한 표장 예시 
+        Solar ≠ polar / TBC ≠ CBC / 삼정 ≠ 미쯔이, MITSUI, みつい / 송하 ≠ 마쓰시다
+
 6. **JSON 형식으로 출력**:
     - 중복 없이 생성된 모든 검색어를 `words` 리스트에 포함하세요. 첫 번째 검색어는 항상 '{brand_name}'이어야 합니다.
 
 출력 예시:
 {{
-  "description_word": "추측되는_일반명사",
+  "description_word": "'추측되는 일반명사' or '일반명사 없음'",
   "words": [
     "{brand_name}",
     "번역된_단어",
