@@ -25,7 +25,7 @@ class SimilarityEvaluationRequest(BaseModel):
     
     
 
-@router.post("/comepare_brands", name="상표 보고서 작성 전 이미지 유사 데이터 필터링", 
+@router.post("/comepare-brands", name="상표 보고서 작성 전 이미지 유사 데이터 필터링", 
              description="""
 # 상표 보고서 작성 전 이미지를 기준으로 한 데이터 필터링
 ```

@@ -59,7 +59,7 @@ class FindSimilarityCode(BaseModel):
 
 
 
-@router.post('/similarity_code', 
+@router.post('/similarity-code', 
              name="유사군 코드 찾는 Assistant",
              description="""
 # 유사군 코드 Assistant
