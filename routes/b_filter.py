@@ -8,7 +8,7 @@ import kipris.kipris_control as kipris_control
 
 router = APIRouter(
     prefix="/assistant",
-    tags=["Comepare Brands"]
+    tags=["중간 필터"]
 )
 
 class LabeledKiprisItems(BaseModel):
@@ -25,7 +25,7 @@ class SimilarityEvaluationRequest(BaseModel):
     
     
 
-@router.post("/comepare-brands", name="상표 보고서 작성 전 이미지 유사 데이터 필터링", 
+@router.post("/comepare-brands", name="상표 보고서 작성 전 이미지 유사 데이터 필터링(kipris 검색결과가 너무 많을경우 사용)", 
              description="""
 # 상표 보고서 작성 전 이미지를 기준으로 한 데이터 필터링
 ```

@@ -9,12 +9,13 @@ import file_handler, common
 
 router = APIRouter(
     prefix="/assistant",
-    tags=["Assistant"]
+    tags=["식별력 평가"]
 )
 
 class DiscernmentEvaluation(BaseModel):
     brand_name: str 
     brand_image_url: str
+    asign_product_description : str
     
     
 @router.post('/discernment', name="식별력 평가 Assistant",
@@ -30,6 +31,7 @@ class DiscernmentEvaluation(BaseModel):
 ### 요 청 
 - **brand_name**: 등록대상 상표명 
 - **brand_image_url**: 등록대상상표이미지 url
+- **asign_product_description**: 지정상품의 주요부 판단을 위한 인풋
 
 ### 응 답 
 - 보통명칭여부, 성질표시 상표, 관용상표, 간단하고 흔히 있는 표장에 따른 식별력 설명 후 종합의견.
@@ -37,11 +39,9 @@ class DiscernmentEvaluation(BaseModel):
 """
              )
 async def discernment_trademark(request: DiscernmentEvaluation):
+
     start_time = time.time()
-    brand_name = request.brand_name
-    brand_image_url = request.brand_image_url
-    
-    brand_image_path = file_handler.download_image(brand_image_url)
+    brand_image_path = file_handler.download_image(request.brand_name)
     
     if not brand_image_path:
         raise HTTPException(status_code=400, detail="이미지 다운로드 실패")
@@ -50,10 +50,12 @@ async def discernment_trademark(request: DiscernmentEvaluation):
     # 스래드 생성
     thread, run = discernment.discernment_create_thread_and_run(
         f"""
-        업로드한 이미지 상표 '{brand_name}'의 상표 식별력을 평가해주세요.
+        업로드한 이미지 상표와 지정상품설명으로 상표의 주요부를 판단하여 상표 식별력을 평가해주세요 
+        브랜드명 : {request.brand_name}
+        지정상품설명 : {request.asign_product_description}
         """, 
         image_path=brand_image_path, 
-        image_url= brand_image_url
+        image_url= request.brand_image_url
         )
 
     messages = await common.handle_run_response(run,thread, expect_json=False)

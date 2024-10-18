@@ -10,7 +10,7 @@ import kipris.kipris_control as kipris_control
 
 router = APIRouter(
     prefix="/assistant",
-    tags=["Assistant"]
+    tags=["유사 의견서 및 보고서"]
 )
 
 class LabeledKiprisItems(BaseModel):

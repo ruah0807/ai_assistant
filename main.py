@@ -4,7 +4,7 @@ app = FastAPI()
 
 routers = []
 
-from routes import a_find_similar_vienna_code, a_individual, b_filter, c_opinion, c_report, pipeline_similarity
+from routes import a_find_similar_vienna_code, a_individual, b_filter, c_opinion, c_report, c_discerment, pipeline_similarity
 
 #라우터 추가
 # app.include_router(pipeline.router)
@@ -13,6 +13,7 @@ app.include_router(a_individual.router)
 app.include_router(b_filter.router)
 app.include_router(c_report.router)
 app.include_router(c_opinion.router)
+app.include_router(c_discerment.router)
 app.include_router(pipeline_similarity.router)
 
 @app.get("/")

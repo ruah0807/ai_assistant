@@ -23,7 +23,7 @@ app = APIRouter()
 # 라우터 설정
 router = APIRouter(
     prefix="/pipeline",  # 엔드포인트 앞에 붙을 공통 URL
-    tags=["Similarity Pipeline"]
+    tags=["유사도 전체 파이프라인"]
 )
 
 
