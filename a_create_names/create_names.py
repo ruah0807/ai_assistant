@@ -8,16 +8,16 @@ load_dotenv()
 
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
-def generate_similar_barnd_names(brand_name, description):
+def generate_similar_barnd_names(brand_name, asign_product_description):
     prompt = f"""
-상표명 '{brand_name}'과(와) 관련된 외관, 발음, 관념적 유사성을 기반으로 검색어를 생성하세요. 다음 조건과 지정상품 '{description}'를 고려하세요:
+상표명 '{brand_name}'과(와) 관련된 외관, 발음, 관념적 유사성을 기반으로 검색어를 생성하세요. 다음 조건과 지정상품 '{asign_product_description}'를 고려하세요:
 
 0. **언어 조건**:
     - '{brand_name}'이 한글일 경우, 영어 음역 및 번역을 생성하세요.
     - '{brand_name}'이 영어일 경우, 한글 음역 및 번역을 생성하세요.
 
 1. **지정상품과 관련된 일반 명사 제거**:
-    - 지정상품 '{description}'과 밀접하게 연관된 일반 명사나 산업 관련 단어를 제외하고 상표명의 고유한 부분을 추출하여 검색어를 생성하세요.
+    - 지정상품 '{asign_product_description}'과 밀접하게 연관된 일반 명사나 산업 관련 단어를 제외하고 상표명의 고유한 부분을 추출하여 검색어를 생성하세요.
     - 예시 1: 29류 식품류에서 'CALIFIA FARMS' → 'CALIFIA' (FARMS는 식품 및 농업과 관련된 단어이므로 제외)
     - 예시 2: 35류 여행 서비스에서 'HAPPITRAVEL' → 'HAPPI' (TRAVEL은 여행과 관련된 단어이므로 제외)
 
@@ -30,7 +30,7 @@ def generate_similar_barnd_names(brand_name, description):
     - 예: 'adidas' → 'adida'
 
 4. **지정상품과 관련된 일반적 단어 제거**:
-    - 'on', 'in', 'Co', 'Corp', 'Ltd' 등과 같은 일반적 단어나 '{description}'와 관련된 단어는 검색어에서 제외하세요.
+    - 'on', 'in', 'Co', 'Corp', 'Ltd' 등과 같은 일반적 단어나 '{asign_product_description}'와 관련된 단어는 검색어에서 제외하세요.
     
 5. **유사성 예시 활용**:
     - "INTERCEPTOR" ≒ "인터셉트", "REVILLON" ≒ "REVLON"과 같은 유사성 예시를 참고하여 발음, 외관, 관념적 유사성을 고려한 검색어를 생성하세요.
@@ -55,7 +55,7 @@ def generate_similar_barnd_names(brand_name, description):
 **중요 사항**:
 - 특정 인명이나 건물명은 포함하지 마세요.
 - 한 글자 단어는 생성하지 마세요. 모든 단어는 최소 두 글자 이상이어야 합니다.
-- 지정상품 '{description}'과 관련된 일반 명사를 제외하는 것에 집중하세요.
+- 지정상품 '{asign_product_description}'과 관련된 일반 명사를 제외하는 것에 집중하세요.
 """
     start_time = time.time()
     response = openai.chat.completions.create(
