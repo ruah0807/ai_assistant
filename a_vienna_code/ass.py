@@ -16,7 +16,7 @@ instructions = '''
 
 # Vectorstore Name: 비엔나 코드 도형 설명, Vectorstore ID: vs_GLsv3ZIoftOquzLkdgIkm9GU
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_GLsv3ZIoftOquzLkdgIkm9GU'
+    vector_store_id= 'vs_29PdeQVTdKwG6KaxiwgygMDo'
 )
 
 ### 어시스턴트 업데이트
@@ -42,7 +42,7 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-## 백터스토어 생성및 파일 임베딩 업로드 ####
+# # 백터스토어 생성및 파일 임베딩 업로드 ####
 # vector_store = client.beta.vector_stores.create(
 #     name = '비엔나 코드 도형 설명',
 # )
@@ -77,18 +77,18 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # # vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_QtSniSyyBiMQ8P8AJYONaBJq'
+#     vector_store_id='vs_GLsv3ZIoftOquzLkdgIkm9GU'
 # )
 
 
 ###############################################################
 
 
-# 벡터스토어 리스트 검색 ###
-# vector_store_list = client.beta.vector_stores.list()
+### 벡터스토어 리스트 검색 ###
+vector_store_list = client.beta.vector_stores.list()
 
-# for vectorstore in vector_store_list:
-#     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
+for vectorstore in vector_store_list:
+    print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
 
 

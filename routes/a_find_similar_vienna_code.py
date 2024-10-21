@@ -50,7 +50,7 @@ async def find_vienna_code(request: FindViennaCode):
     total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time)%60:.2f}초"
     print(total_duration)
 
-    return {"messages": messages, "ducation": total_duration}
+    return {"results":messages, "total_duration": total_duration}
 
 
 
@@ -78,10 +78,10 @@ async def find_vienna_code(request: FindViennaCode):
 async def find_similarity_code(request: FindSimilarityCode):
     start_time = time.time()
    
-    messages = await similarity_code.similarity_code_finding_logic(request.user_input)
+    messages= await similarity_code.similarity_code_finding_logic(request.user_input)
 
     end_time = time.time()
     total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time) %60:.2f}초"
     print(total_duration)
 
-    return {"messages": messages, "ducation": total_duration}
+    return {"results": messages, "total_duration": total_duration}

@@ -71,6 +71,7 @@ def extract_json_from_text(text):
         # JSON 형식의 부분만 추출
         if start != -1 and end != -1:
             json_str = text[start:end]  # 중괄호 안의 내용만 추출
+            print(f"추출된 JSON 문자열: {json_str}")  # 디버깅용 출력
             return json.loads(json_str)  # JSON 파싱 시도
         else:
             print("JSON 형식의 데이터를 찾을 수 없습니다.")
@@ -78,6 +79,47 @@ def extract_json_from_text(text):
     except json.JSONDecodeError as e:
         print(f"JSON 파싱 실패: {e}")
         return None
+    
+
+def print_json_from_code (response):
+    parsed_results = []    
+    for res in response.data:
+        for content in res.content:
+            if content.type =='text':
+                try:
+                    print(f"{content.text.value}\n")
+                    parsed_json = extract_json_from_text(content.text.value.strip())
+                    if not parsed_json:  # 만약 문자열이 비어 있으면 건너뜀
+                        print("비어 있는 메시지 발견, 건너뜀.")
+                        continue
+                    
+                    results = parsed_json.get("results")
+                    
+                    if isinstance(results, list):
+                        for item in results:
+                            if item.get("shape"):
+                                parsed_results.append({
+                                    "shape": item.get("shape"),
+                                    "reason": item.get("reason")
+                                })
+                        return parsed_results
+                    elif isinstance(results, dict):
+                        similarity_list = results.get("similarity", []) 
+                        for item in similarity_list:    
+                            parsed_results.append({
+                                "niceNum":item.get("niceNum"),
+                                "similarity_code":item.get("similarity_code"),
+                                "info":item.get("info")
+                            })
+                        total_reason = results.get("total_reason")
+                        total_results = {"similarity": parsed_results, "total_reason":total_reason}
+                        return total_results
+                    print(f"parsed_results : {parsed_results}")
+                   
+                except Exception as e:
+                    print(f"예상치 못한 오류 발생: {e} - {content.text.value}")
+                    return None
+                
 
 
 # 실행 완료까지 대기하는 함수
@@ -95,6 +137,18 @@ async def wait_on_run(run, thread, timeout=500):
 
 
 
+
+async def handle_run_response_for_code(run, thread):
+    try:
+        run = await wait_on_run(run, thread)
+        response = client.beta.threads.messages.list(thread_id=thread.id)
+        messages= print_json_from_code(response)
+        return messages
+    except Exception as e :
+        print(f"Error while handling run response: {e}")
+        return None
+
+
 # assistant의 실행 결과를 기다리고, 결과 메시지를 처리하는 함수
 async def handle_run_response(run, thread, expect_json=True):
     try:
@@ -102,6 +156,7 @@ async def handle_run_response(run, thread, expect_json=True):
         run = await wait_on_run(run, thread)
         # 응답 받아오기
         response = client.beta.threads.messages.list(thread_id=thread.id)
+
         
         # 응답 메시지를 json형식으로 파싱할경우와 일반답변을 얻을경우 조건문
         if expect_json:

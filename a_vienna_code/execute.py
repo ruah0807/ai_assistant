@@ -15,13 +15,13 @@ async def process_vienna_code(brand_image_url: str):
     # 스래드 생성
     thread, run = mes.create_thread_and_run(
         f"""
-        업로드한 이미지의 도형 모양을 파악후 [vienna.md]문서에서 해당하는 '도형설명'을  찾아 여러개 나열해주세요.
+        업로드한 이미지의 모양을 파악후 [vienna.md]문서에서 해당하는 '### 도형설명'의 해당부분을 찾아 여러개 나열해주세요.
         """, 
         image_path=brand_image_path, 
         image_url= brand_image_url
         )
 
-    messages = await common.handle_run_response(run,thread, expect_json=False)
+    messages = await common.handle_run_response_for_code(run,thread)
 
     file_handler.delete_downloaded_images(brand_image_path)
 

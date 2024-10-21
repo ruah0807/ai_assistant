@@ -35,19 +35,21 @@ def run_with_tools(ass_id, thread):
         4. 'NICE'분류 기준으로 해당 리스트를 작성하세요. 
         5. similarity_code는 ','가 아닌 '|' 로 구분합니다.
 
-        ---
+        응답 형식(json): 
 
-        [ Response Format ]
-
-        - niceNum: (분류),
-        - similarity_code: (유사군코드),
-        - info: (포함되는 상품 및 서비스 설명)
-        
-        ...
-        
-        - (통합)이유 : (코드반환 이유 설명)
-
-        ---
+        {{
+            "results":{
+                "similarity": [
+                    { 
+                        "niceNum": (분류),
+                        "similarity_code: (유사군코드),
+                        "info": (포함되는 상품 및 서비스 설명)
+                    },
+                    ...
+                ],
+                "total_reason": (통합적인 이유 설명)
+            }
+        }}
 
         [Warning]
         - '유사군코드'는 여러개 일수 있습니다. 리스트로 나열하세요.
