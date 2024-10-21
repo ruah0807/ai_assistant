@@ -142,6 +142,7 @@ async def handle_run_response_for_code(run, thread):
     try:
         run = await wait_on_run(run, thread)
         response = client.beta.threads.messages.list(thread_id=thread.id)
+        print(f"API 응답 : {response}")
         messages= print_json_from_code(response)
         return messages
     except Exception as e :

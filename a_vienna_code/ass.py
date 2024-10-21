@@ -14,9 +14,9 @@ instructions = '''
 사용자가 업로드하는 이미지의 도형을 분석하고, 해당되는 '도형 설명'을 문서에서 그대로 가져오세요. 
 '''
 
-# Vectorstore Name: 비엔나 코드 도형 설명, Vectorstore ID: vs_GLsv3ZIoftOquzLkdgIkm9GU
+# Vectorstore Name: 비엔나 코드 도형 설명, Vectorstore ID: vs_apE7367DjWeVFeFB9w1Gqom1
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_29PdeQVTdKwG6KaxiwgygMDo'
+    vector_store_id= 'vs_apE7367DjWeVFeFB9w1Gqom1'
 )
 
 ### 어시스턴트 업데이트
@@ -77,7 +77,7 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # # vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_GLsv3ZIoftOquzLkdgIkm9GU'
+#     vector_store_id='vs_29PdeQVTdKwG6KaxiwgygMDo'
 # )
 
 
@@ -85,10 +85,10 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 
 ### 벡터스토어 리스트 검색 ###
-vector_store_list = client.beta.vector_stores.list()
+# vector_store_list = client.beta.vector_stores.list()
 
-for vectorstore in vector_store_list:
-    print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
+# for vectorstore in vector_store_list:
+#     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
 
 

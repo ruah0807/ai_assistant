@@ -27,30 +27,29 @@ class FindSimilarityCode(BaseModel):
 ```
 이미지의 도형 모양을 파악하는 AI Assistant.
 ```
-
-
 ### 요 청 
-- brand_image_url: 해당상표의 이미지
-
+- brand_image_url: 해당상표의 이미지 URL
 ### 응 답 
-- 해당 이미지의 도형으로 추정되는 도형 설명을 찾아 응답. (Json 파싱 필요) 
-
+- 해당 이미지의 도형으로 추정되는 도형 설명을 찾아 응답. 
 ### 참고 사항
-- 현존하는 데이터에 한해서는 검색 결과가 잘나오지만 
-- 아직 비엔나코드의 모든 데이터가 들어와 있지 않은 상황이기때문에 명확한 답을 준다 표현하기 어렵습니다. 
-
+- 비엔나코드 자체를 찾는것은 현재 존재하는 문서로서는 불가능합니다.
+- 반환된 "shape"의 value값으로 [KIPRIS웹사이트](http://www.kipris.or.kr/kdtj/code1000a.do?method=search&recvField=)에서 직접 비엔나코드를 찾습니다.
             """ 
             )
 async def find_vienna_code(request: FindViennaCode):
-    start_time = time.time()
-    
-    messages = await vienna_ex.process_vienna_code(request.brand_image_url)
-    
-    end_time = time.time()
-    total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time)%60:.2f}초"
-    print(total_duration)
+    try:
+        start_time = time.time()
+        
+        messages = await vienna_ex.process_vienna_code(request.brand_image_url)
+        
+        end_time = time.time()
+        total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time)%60:.2f}초"
+        print(total_duration)
 
-    return {"results":messages, "total_duration": total_duration}
+        return {"results":messages, "total_duration": total_duration}
+    except Exception as e:
+            print(f"오류 발생: {str(e)}")
+            raise HTTPException(status_code=500, detail="서버에서 처리 중 오류가 발생했습니다.")
 
 
 
