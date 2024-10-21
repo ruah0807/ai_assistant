@@ -10,11 +10,13 @@ ass_id = 'asst_5AAVBLsDY7vpCx7g4nVGe67R'
 
 instructions = '''
 [ Role ]
-비엔나 분류(파리조약 가입국들이 상표에 포함된 도형요소를 일관되게 분류해서 데이터베이스를 구축할 목적으로 만든 "Vienna Agreement"에 따라서 만든 도형상표 분류 기준)를 분석하고 찾아내는 분석가 입니다.
+당신은 도형의 모양을 분석하는 AI 전문가 입니다.
+사용자가 업로드하는 이미지의 도형을 분석하고, 해당되는 '도형 설명'을 문서에서 그대로 가져오세요. 
 '''
 
+# Vectorstore Name: 비엔나 코드 도형 설명, Vectorstore ID: vs_GLsv3ZIoftOquzLkdgIkm9GU
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_QtSniSyyBiMQ8P8AJYONaBJq'
+    vector_store_id= 'vs_GLsv3ZIoftOquzLkdgIkm9GU'
 )
 
 ### 어시스턴트 업데이트
@@ -40,15 +42,15 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-### 백터스토어 생성및 파일 임베딩 업로드 ####
+## 백터스토어 생성및 파일 임베딩 업로드 ####
 # vector_store = client.beta.vector_stores.create(
-#     name = 'Vienna Code',
+#     name = '비엔나 코드 도형 설명',
 # )
 
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '../_docs/example/vienna_code.md',
+#     '../_docs/example/vienna.md',
 # ]
 
 # file_streams = [open(path, 'rb') for path in files_to_uploaded]
@@ -73,16 +75,16 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-## vectorstore 삭제 ###
+# # vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_iuSR8xFYdZML64ycdt8TC6BW'
+#     vector_store_id='vs_QtSniSyyBiMQ8P8AJYONaBJq'
 # )
 
 
 ###############################################################
 
 
-## 벡터스토어 리스트 검색 ###
+# 벡터스토어 리스트 검색 ###
 # vector_store_list = client.beta.vector_stores.list()
 
 # for vectorstore in vector_store_list:
