@@ -51,6 +51,11 @@ def generate_similar_barnd_names(brand_name, asign_product_description):
 6. **JSON 형식으로 출력**:
     - 중복 없이 생성된 모든 검색어를 `words` 리스트에 포함하세요. 첫 번째 검색어는 항상 '{brand_name}'이어야 합니다.
 
+7. ** 일반명사를 제외한 단어 분리 **
+    - 예시 : '상상베리 미술 ' -> '상상', '베리', '상상베리' 등
+    - 예시 : '시민언론시선' -> '시민', '언론', '시선', '시민언론', '언론시선'
+
+
 출력 예시:
 {{
   "description_word": "'추측되는 일반명사' or '일반명사 없음'",
@@ -66,6 +71,7 @@ def generate_similar_barnd_names(brand_name, asign_product_description):
 }}
 
 **중요 사항**:
+- 유사 단어를 최대 20개까지 만들어주세요 
 - 특정 인명이나 건물명은 포함하지 마세요.
 - 한 글자 단어는 생성하지 마세요. 모든 단어는 최소 두 글자 이상이어야 합니다.
 - 지정상품 '{asign_product_description}'과 관련된 일반 명사를 제외하는 것에 집중하세요.
