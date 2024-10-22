@@ -71,7 +71,6 @@ def extract_json_from_text(text):
         # JSON 형식의 부분만 추출
         if start != -1 and end != -1:
             json_str = text[start:end]  # 중괄호 안의 내용만 추출
-            print(f"추출된 JSON 문자열: {json_str}")  # 디버깅용 출력
             return json.loads(json_str)  # JSON 파싱 시도
         else:
             print("JSON 형식의 데이터를 찾을 수 없습니다.")

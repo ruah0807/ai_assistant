@@ -23,13 +23,10 @@ async def process_vienna_code(brand_image_url: str):
     
     messages = await common.handle_run_response_for_code(run,thread)
 
-    print(f"messages : {messages}")
-
     if isinstance(messages, list):
         combined_vienna_code = "|".join(
             item['vienna_code'] for item in messages if 'vienna_code' in item
         ) 
-        print(f"\nCombined Vienna Code : {combined_vienna_code}\n")
         messages = {
             'combined_vienna_code': combined_vienna_code,
             'messages': messages
