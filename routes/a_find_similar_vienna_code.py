@@ -29,11 +29,8 @@ class FindSimilarityCode(BaseModel):
 ### 요 청 
 - brand_image_url: 해당상표의 이미지 URL
 ### 응 답 
-- 해당 이미지의 도형으로 추정되는 도형 설명을 찾아 응답. 
-### 참고 사항
-- 비엔나코드 자체를 찾는것은 현재 존재하는 문서로서는 불가능합니다.
-- 반환된 "shape"의 value값으로 [KIPRIS웹사이트](http://www.kipris.or.kr/kdtj/code1000a.do?method=search&recvField=)에서 직접 비엔나코드를 찾습니다.
-            """ 
+- 해당 이미지의 도형으로 추정되는 비엔나코드를 찾아 응답. 
+""" 
             )
 async def find_vienna_code(request: FindViennaCode):
     try:

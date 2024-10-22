@@ -35,7 +35,7 @@ def run_with_tools(ass_id, thread):
         tools=  [{'type': 'file_search'}],
         instructions= """
         [ Context ]
-        Please tell me which category in the vienna_code_eu.pdf file this image corresponds to. 
+        Please let me know which category in the vienna_code_eu.pdf file this image corresponds to. 
         Categories are composed of three numbers with two periods in between (e.g., 2.1.15). 
         If the image belongs to multiple categories, return all of them. 
         If there is no exact match, either return no result or find the closest category. 
@@ -49,8 +49,8 @@ def run_with_tools(ass_id, thread):
 	    •	Apply the same rule to the last number after the second period.
 
         For example:
-        •	2.1 becomes 0201,
-        •	24.15 becomes 2415,
+        •	1.2.1 becomes 010201,
+        •	24.15.1 becomes 241501,
         •	14.7.7 becomes 140707.
             
         If the category has multiple parts, return the converted code for each.

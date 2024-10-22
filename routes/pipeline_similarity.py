@@ -29,15 +29,15 @@ router = APIRouter(
 
 @router.post("/opinion", name="의견서 작성 전체 파이프라인", description="""
 
-### 의견서 작성 파이프라인 로직        
-1단계 : 비슷한 상표명 생성
-2단계 : 유사코드 생성
-3단계 : 비엔나 코드 생성
-4단계 : 키프리스 검색
-4.5단계 : 필터링 ( 제외가능 )
-5단계 : 의견서 작성
+## 의견서 작성 파이프라인 로직        
+1단계 : 비슷한 상표명 생성\n
+2단계 : 유사코드 생성\n
+3단계 : 비엔나 코드 생성\n
+4단계 : 키프리스 검색\n
+4.5단계 : 필터링 ( 제외가능 )\n
+5단계 : 의견서 작성\n
 
-### 요청 
+## 요청 
 - **brand_name**: "등록하고자하는 상표이름" 
 - **brand_description**: "LLM의 주요부 판별을 위한 브랜드 설명"
 - **request_similarity_code**: "유사코드 생성을 위한 request"
@@ -49,6 +49,10 @@ router = APIRouter(
 - **exclude_application_number**: "제외할 출원 번호"
 - **exclude_registration_number**: "제외할 등록 번호"
 - **application_date**:  "원하는 날짜 이전의 출원 등록 상표들만 도출"
+             
+
+## 참고사항                  
+- only_null_vienna_search 을 true로 변경할 경우 : 비엔나코드를 생성하지 않음과 동시에 비엔나 코드가 null 값이 것들만 반환하여 의견서를 작성합니다. - 텍스트로만 이루어진 상표일경우 true로 변경
 """)
 async def similarity_opinion_api(request: CombinedSearchRequest):
     try:
@@ -78,15 +82,15 @@ async def similarity_opinion_api(request: CombinedSearchRequest):
 
 @router.post("/report", name="유사도 보고서 작성 전체 파이프라인", description="""
              
-### 유사 보고서 작성 파이프라인 로직        
-1단계 : 비슷한 상표명 생성
-2단계 : 유사코드 생성
-3단계 : 비엔나 코드 생성
-4단계 : 키프리스 검색
-4.5단계 : 필터링 ( 제외가능 )
-5단계 : 보고서 작성
+## 유사 보고서 작성 파이프라인 로직        
+1단계 : 비슷한 상표명 생성\n
+2단계 : 유사코드 생성\n
+3단계 : 비엔나 코드 생성\n
+4단계 : 키프리스 검색\n
+4.5단계 : 필터링 ( 제외가능 )\n
+5단계 : 보고서 작성\n
 
-### 요청 
+## 요청 
 - **brand_name**: "등록하고자하는 상표이름" 
 - **brand_description**: "LLM의 주요부 판별을 위한 브랜드 설명"
 - **request_similarity_code**: "유사코드 생성을 위한 request"
@@ -98,6 +102,9 @@ async def similarity_opinion_api(request: CombinedSearchRequest):
 - **exclude_application_number**: "제외할 출원 번호"
 - **exclude_registration_number**: "제외할 등록 번호"
 - **application_date**:  "원하는 날짜 이전의 출원 등록 상표들만 도출"
+
+## 참고사항                  
+- only_null_vienna_search 을 true로 변경할 경우 : 비엔나코드를 생성하지 않음과 동시에 비엔나 코드가 null 값이 것들만 평가하여 보고서를 작성합니다. - 텍스트로만 이루어진 상표일경우 true로 변경
 """)
 async def similarity_report_api(request: CombinedSearchRequest):
     try:

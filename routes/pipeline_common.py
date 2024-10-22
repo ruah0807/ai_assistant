@@ -27,13 +27,18 @@ async def similarity_pipeline(brand_name, description, request_similarity_code, 
     similarity_code = similarity_code_data.get('combined_similarity_code', None)
     print(f"\n생성된 유사코드 : {similarity_code}\n")
 
-    # Step 2 : brand_image_url로 vienna_code 생성
-    vienna_code_data = await vienna.process_vienna_code(brand_image_url)
-    vienna_code = vienna_code_data.get('combined_vienna_code', None)
-    print(f"\n생성된 비엔나 코드 : {vienna_code}\n")
+
+    # Step 3 : brand_image_url로 vienna_code 생성
+    if only_null_vienna_search:
+        vienna_code= None
+        print("\n비엔나코드를 생성하지 않고 vienna_code가 null 값인 것만 반환\n")
+    else:
+        vienna_code_data = await vienna.process_vienna_code(brand_image_url)
+        vienna_code = vienna_code_data.get('combined_vienna_code', None)
+        print(f"\n생성된 비엔나 코드 : {vienna_code}\n")
 
 
-    # Step 3 : 유사상표명 KIPRIS 검색 수행
+    # Step 4 : 유사상표명 KIPRIS 검색 수행
     kipris_result = await kipris_control.search_and_save_all_results(
         search_words,
         similarity_code,
@@ -45,22 +50,21 @@ async def similarity_pipeline(brand_name, description, request_similarity_code, 
     if not kipris_result:
             raise ValueError("KIPRIS 데이터가 검색되지 않았습니다. 검색 조건을 다시 확인해주세요.")
 
-    # Step 4 : brand 이미지 다운로드
+    # Step 5 : brand 이미지 다운로드
     brand_image_path = file_handler.download_image(brand_image_url)
     if not brand_image_path:
         return {"detail" :"이미지 파일 다운로드 실패"}
     print(f"\n브랜드 이미지 경로: {brand_image_path}\n")
 
-    # Step 4 : Kipris 데이터 이미지 다운로드 및 경로 추가
+    # Step 5 : Kipris 데이터 이미지 다운로드 및 경로 추가
     result_data = await kipris_control.download_and_add_image_path(kipris_result)
     print(f"\n총 데이터 갯수 : {len(result_data)}\n")
-
 
     request = {'brand_name': brand_name,'brand_image_url': brand_image_url}
 
     download_image_paths = [brand_image_path]
 
-    # Step 5 : filter가 True라면 kipris검색 데이터 유사 데이터 찾기 필터링 실행( 검색어가 많을 경우 )
+    # Step 5.5 : filter가 True라면 kipris검색 데이터 유사 데이터 찾기 필터링 실행( 검색어가 많을 경우 )
     if filter:
         all_responses = []
         tasks = []
@@ -92,6 +96,8 @@ async def similarity_pipeline(brand_name, description, request_similarity_code, 
         "brand_name": brand_name,
         "brand_image_url": brand_image_url,
         "brand_image_path": brand_image_path,
+        "estimated_similarity_code": similarity_code,
+        "estimated_vienna_code": vienna_code,
         "kipris_data": all_responses, 
         }
 
