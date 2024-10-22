@@ -19,7 +19,7 @@ class FindViennaCode(BaseModel):
 class FindSimilarityCode(BaseModel):
     request_similarity_code: str
 
-@router.post('/vienna_code', 
+@router.post('/vienna-code', 
              name="비엔나 코드 찾는 Assistant",
              description="""
 # 비엔나 코드 Assistant
@@ -69,7 +69,7 @@ async def find_vienna_code(request: FindViennaCode):
 - 해당 메세지의 유사군 코드로 추정되는 분류목록과 유사군코드를 응답하는 Assistant의 메세지 
 
 ### 참고 사항
-- 키워드 검색 방향으로 전환해야할 가능성이 있습니다.
+- 반환 형식이 정해져있기때문에, 반드시 상품의 '류'와 '유사코드'를 함께 물어보아야 해당 json형식으로 반환합니다.
 """
              )
 async def find_similarity_code(request: FindSimilarityCode):
