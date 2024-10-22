@@ -20,13 +20,22 @@ async def process_vienna_code(brand_image_url: str):
         image_path=brand_image_path, 
         image_url= brand_image_url
         )
-
+    
     messages = await common.handle_run_response_for_code(run,thread)
+
+    print(f"messages : {messages}")
+
+    if isinstance(messages, list):
+        combined_vienna_code = "|".join(
+            item['vienna_code'] for item in messages if 'vienna_code' in item
+        ) 
+        print(f"\nCombined Vienna Code : {combined_vienna_code}\n")
+        messages = {
+            'combined_vienna_code': combined_vienna_code,
+            'messages': messages
+        }
 
     file_handler.delete_downloaded_images(brand_image_path)
 
     return messages
 
-# """
-#         업로드한 이미지의 모양을 파악후 [vienna.md]문서에서 해당하는 '### 도형설명'의 해당부분을 찾아 여러개 나열해주세요.
-#         """

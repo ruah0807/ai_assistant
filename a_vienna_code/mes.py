@@ -35,8 +35,13 @@ def run_with_tools(ass_id, thread):
         tools=  [{'type': 'file_search'}],
         instructions= """
         [ Context ]
-        Please tell me which category in the vienna_code_eu.pdf file this image corresponds to. Categories are composed of three numbers with two periods in between (e.g., 2.1.15). If the image belongs to multiple categories, return all of them. If there is no exact match, either return no result or find the closest category. Don’t create new categories that aren’t in the file, and don’t use categories that have a red strikethrough.
-
+        Please tell me which category in the vienna_code_eu.pdf file this image corresponds to. 
+        Categories are composed of three numbers with two periods in between (e.g., 2.1.15). 
+        If the image belongs to multiple categories, return all of them. 
+        If there is no exact match, either return no result or find the closest category. 
+        Don’t create new categories that aren’t in the file, and don’t use categories that have a red strikethrough.
+        Return up to 10 similar categories if they seem relevant.
+        
         After finding the category, convert it into a code using the following rules:
 
         •	If the number before the period is single-digit, add a 0; if it’s double-digit, leave it as is.
@@ -61,7 +66,10 @@ def run_with_tools(ass_id, thread):
                    }
             ] 
         }} 
-        ```       
+        ```
+
+        Warning:
+        - Should give it from the document.       
         """
     )
     return run

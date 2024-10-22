@@ -14,7 +14,6 @@ router = APIRouter(
 )
 
 class FindViennaCode(BaseModel):
-    # brand_name: str 
     brand_image_url: str
 
 class FindSimilarityCode(BaseModel):
