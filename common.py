@@ -97,9 +97,10 @@ def print_json_from_code (response):
                     
                     if isinstance(results, list):
                         for item in results:
-                            if item.get("shape"):
+                            if item.get("vienna_code"):
                                 parsed_results.append({
-                                    "shape": item.get("shape"),
+                                    "vienna_code": item.get("vienna_code"),
+                                    "description": item.get("description"),
                                     "reason": item.get("reason")
                                 })
                         return parsed_results
