@@ -18,7 +18,7 @@ class FindViennaCode(BaseModel):
     brand_image_url: str
 
 class FindSimilarityCode(BaseModel):
-    user_input: str
+    request_similarity_code: str
 
 @router.post('/vienna_code', 
              name="비엔나 코드 찾는 Assistant",
@@ -65,7 +65,7 @@ async def find_vienna_code(request: FindViennaCode):
 - trademark_class.md
 
 ### 요 청 
-- user_input: 유저 메세지
+- request_similarity_code: 유사코드 추측을 위한 메세지
 
 ### 응 답 
 - 해당 메세지의 유사군 코드로 추정되는 분류목록과 유사군코드를 응답하는 Assistant의 메세지 
@@ -77,7 +77,7 @@ async def find_vienna_code(request: FindViennaCode):
 async def find_similarity_code(request: FindSimilarityCode):
     start_time = time.time()
    
-    messages= await similarity_code.similarity_code_finding_logic(request.user_input)
+    messages= await similarity_code.similarity_code_finding_logic(request.request_similarity_code)
 
     end_time = time.time()
     total_duration = f"전체 처리 시간: {int((end_time - start_time) // 60)}분 {(end_time - start_time) %60:.2f}초"

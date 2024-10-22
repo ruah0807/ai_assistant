@@ -7,7 +7,7 @@ class CombinedSearchRequest(BaseModel):
     brand_name: str
     brand_description: str 
     brand_image_url: str
-    similarity_code: Optional[str] = None
+    request_similarity_code: Optional[str] = None
     vienna_code: Optional[str] = None
     num_of_rows: int = 5
     only_null_vienna_search: bool = False
@@ -31,7 +31,7 @@ router = APIRouter(
 - **brand_name**: "등록하고자하는 상표이름" 
 - **brand_description**: "LLM의 주요부 판별을 위한 브랜드 설명"
 - **brand_image_url**: "준비되어있는 상표 이미지 URL"
-- **similarity_code**: "유사코드"
+- **request_similarity_code**: "유사코드 생성을 위한 request"
 - **vienna_code**: "비엔나코드"
 - **num_of_rows**: (**int** : 5) 각 검색어당 받고자하는 결과 (0~?개) - 검색어가 몇개인가에 따라 달라집니다.
 - **only_null_vienna_search**: (**bool**: false OR true) 비엔나코드가 null값인 것만 받고자 할때는 true (기본값 false)
@@ -45,7 +45,7 @@ async def similarity_opinion_api(request: CombinedSearchRequest):
         messages= await p_common.similarity_pipeline(request.brand_name, 
                                             request.brand_description,
                                             request.brand_image_url, 
-                                            request.similarity_code,
+                                            request.request_similarity_code,
                                             request.vienna_code,
                                             request.num_of_rows,
                                             request.only_null_vienna_search,
@@ -66,7 +66,7 @@ async def similarity_opinion_api(request: CombinedSearchRequest):
 - **brand_name**: "등록하고자하는 상표이름" 
 - **brand_description**: "LLM의 주요부 판별을 위한 브랜드 설명"
 - **brand_image_url**: "준비되어있는 상표 이미지 URL"
-- **similarity_code**: "유사코드"
+- **request_similarity_code**: "유사코드 생성을 위한 request"
 - **vienna_code**: "비엔나코드"
 - **num_of_rows**: (**int** : 5) 각 검색어당 받고자하는 결과 (0~?개) - 검색어가 몇개인가에 따라 달라집니다.
 - **only_null_vienna_search**: (**bool**: false OR true) 비엔나코드가 null값인 것만 받고자 할때는 true (기본값 false)
@@ -80,7 +80,7 @@ async def similarity_report_api(request: CombinedSearchRequest):
         messages= await p_common.similarity_pipeline(request.brand_name, 
                                             request.brand_description,
                                             request.brand_image_url, 
-                                            request.similarity_code,
+                                            request.request_similarity_code,
                                             request.vienna_code,
                                             request.num_of_rows,
                                             request.only_null_vienna_search,

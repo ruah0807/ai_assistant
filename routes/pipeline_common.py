@@ -5,9 +5,11 @@ import c_brand_similarity.execute as similarity
 import a_create_names.create_names as create_names
 import kipris.kipris_control as kipris_control
 import file_handler
+import a_similarity_code.execute as similar_code
 
 
-async def similarity_pipeline(brand_name, description, brand_image_url, similarity_code, vienna_code, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):
+async def similarity_pipeline(brand_name, description, brand_image_url, request_similarity_code, vienna_code, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):
+    
     # Step 1 : brand유사 상표명 검색
     if brand_name:
         print(f"\n'{brand_name}'에 대한 유사 상표명 검색 중...\n")
@@ -17,6 +19,12 @@ async def similarity_pipeline(brand_name, description, brand_image_url, similari
         search_words = similar_words['words']
     else : 
         search_words = [""]
+
+
+    # Step 2 : request_similarity_code 로 similarity_code 생성
+    similarity_code_data = await similar_code.similarity_code_finding_logic(request_similarity_code)
+    similarity_code = similarity_code_data.get('combined_similarity_code', None)
+    print(f"\n생성된 유사코드 : {similarity_code}\n")
     # Step 2 : 유사상표명 KIPRIS 검색 수행
     kipris_result = await kipris_control.search_and_save_all_results(
         search_words,
