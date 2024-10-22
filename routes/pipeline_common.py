@@ -6,9 +6,10 @@ import a_create_names.create_names as create_names
 import kipris.kipris_control as kipris_control
 import file_handler
 import a_similarity_code.execute as similar_code
+import a_vienna_code.execute as vienna
 
 
-async def similarity_pipeline(brand_name, description, request_similarity_code, brand_image_url, vienna_code, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):
+async def similarity_pipeline(brand_name, description, request_similarity_code, brand_image_url, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):
     
     # Step 1 : brand유사 상표명 검색
     if brand_name:
@@ -25,6 +26,12 @@ async def similarity_pipeline(brand_name, description, request_similarity_code, 
     similarity_code_data = await similar_code.similarity_code_finding_logic(request_similarity_code)
     similarity_code = similarity_code_data.get('combined_similarity_code', None)
     print(f"\n생성된 유사코드 : {similarity_code}\n")
+
+    # Step 2 : brand_image_url로 vienna_code 생성
+    vienna_code_data = await vienna.process_vienna_code(brand_image_url)
+    vienna_code = vienna_code_data.get('combined_vienna_code', None)
+    print(f"\n생성된 비엔나 코드 : {vienna_code}\n")
+
 
     # Step 3 : 유사상표명 KIPRIS 검색 수행
     kipris_result = await kipris_control.search_and_save_all_results(
