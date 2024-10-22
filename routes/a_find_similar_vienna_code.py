@@ -62,7 +62,9 @@ async def find_vienna_code(request: FindViennaCode):
 ```
 
 ### 현재 업로드된 문서
-- trademark_class.md
+- trademark_class.md : 해당문서에서 분류를 찾습니다.
+- trademark_item.md : class에서 찾은 분류로 유사한 유사군을 찾습니다.
+
 
 ### 요 청 
 - request_similarity_code: 유사코드 추측을 위한 메세지

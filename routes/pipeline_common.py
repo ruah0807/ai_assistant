@@ -8,7 +8,7 @@ import file_handler
 import a_similarity_code.execute as similar_code
 
 
-async def similarity_pipeline(brand_name, description, brand_image_url, request_similarity_code, vienna_code, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):
+async def similarity_pipeline(brand_name, description, request_similarity_code, brand_image_url, vienna_code, num_of_rows, only_null_vienna_search, filter, exclude_application_number, exclude_registration_number, application_date, format_type):
     
     # Step 1 : brand유사 상표명 검색
     if brand_name:
@@ -25,7 +25,8 @@ async def similarity_pipeline(brand_name, description, brand_image_url, request_
     similarity_code_data = await similar_code.similarity_code_finding_logic(request_similarity_code)
     similarity_code = similarity_code_data.get('combined_similarity_code', None)
     print(f"\n생성된 유사코드 : {similarity_code}\n")
-    # Step 2 : 유사상표명 KIPRIS 검색 수행
+
+    # Step 3 : 유사상표명 KIPRIS 검색 수행
     kipris_result = await kipris_control.search_and_save_all_results(
         search_words,
         similarity_code,
@@ -34,8 +35,10 @@ async def similarity_pipeline(brand_name, description, brand_image_url, request_
         only_null_vienna_search,
         exclude_application_number, exclude_registration_number, application_date
     )
+    if not kipris_result:
+            raise ValueError("KIPRIS 데이터가 검색되지 않았습니다. 검색 조건을 다시 확인해주세요.")
 
-    # Step 3 : brand 이미지 다운로드
+    # Step 4 : brand 이미지 다운로드
     brand_image_path = file_handler.download_image(brand_image_url)
     if not brand_image_path:
         return {"detail" :"이미지 파일 다운로드 실패"}
