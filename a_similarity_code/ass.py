@@ -13,11 +13,12 @@ instructions = """
 당신은 similarityCode를 분석하는 전문가 입니다. 문서를 기반으로하여 해당 유사코드를 추측하고 답변하세요.
 """
 
+
+#  [유사코드 분류 Class & Item] - vs_LRRHixxBgmFyZqsz51MecMX1
+#  [유사코드 분류 Only Class] - vs_LoDxLsZDuMJmwcCAS40bOHIX
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_n45uaYmRy4Em5BxJA6AFDZFr'
+    vector_store_id= 'vs_LRRHixxBgmFyZqsz51MecMX1'
 )
-# # [ Similarity Code Batch Ver.] - vs_0dJoKkouQ6Qa7HbczRnwC1VG
-# # [ Similarity Code ] -  vs_72qRAe3yFTBvAP1XP305J9e0
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
@@ -41,13 +42,13 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # ## 백터스토어 생성및 파일 임베딩 업로드 ####
 # vector_store = client.beta.vector_stores.create(
-#     name = 'Similarity Code Document',
+#     name = '유사코드 분류 Only Class',
 # )
 
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/similarity_code/trademark_class.md"
+#     "/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/similarity_code/trademark_class_item.md",
 # ]
 
 # file_streams = [open(path, 'rb') for path in files_to_uploaded]
@@ -61,9 +62,9 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 ###############################################################
 
-# ### vectorstore 삭제 ###
+# ## vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_eKgl1FIZqLcqCYSBaa8UlZiJ'
+#     vector_store_id='vs_n45uaYmRy4Em5BxJA6AFDZFr'
 # )
 
 
@@ -80,12 +81,14 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-# # 벡터스토어 리스트 검색 ###
+# ### 벡터스토어 리스트 검색 ###
 # vector_store_list = client.beta.vector_stores.list()
 
 # for vectorstore in vector_store_list:
 #     print(f"Vectorstore Name: {vectorstore.name}, Vectorstore ID: {vectorstore.id}")
 
+
+###############################################################
 
 # # 백터스토어 아이디 안 파일 리스트 ####
 # vector_store_files = client.beta.vector_stores.retrieve(

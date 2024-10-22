@@ -30,8 +30,8 @@ def run_with_tools(ass_id, thread):
        
         [ instructions ]
         1. 사용자가 업로드한 이미지를 분석합니다.
-        2. 사용자의 브랜드 설명에 대응하는 '지정상품(국문)' or '지정상품(영문)'에서 찾습니다.
-        3. 찾은 '지정상품'에 해당하는 행의 '유사군코드'와 '분류' 번호를 반환하세요.
+        2. 문서 trademark_class.md 파일에서 사용자의 브랜드 설명에 가장 어울리는 '류'를 찾습니다.(여러개일 수 있습니다.)
+        3. 문서 trademark_item.md 파일에서 해당 류에 포함되는 상품 및 서비스를 참조하여, 각 trademark_class.md파일에서 찾은 '류'에 가장 어울리는 유사군을 각각 찾습니다. 비슷한 유사군이 없으면 그나마 가장 비슷한 유사군을 제시합니다.(여러개 일 수 있습니다.)
         4. 'NICE'분류 기준으로 해당 리스트를 작성하세요. 
         5. similarity_code는 ','가 아닌 '|' 로 구분합니다.
 
@@ -68,4 +68,5 @@ def create_thread_and_run(user_input):
     submit_message_with_image(thread, user_input)
     run = run_with_tools(ass_id, thread)
     return thread, run
+
 
