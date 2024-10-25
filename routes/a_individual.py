@@ -71,12 +71,15 @@ async def get_similar_words(brand_name: str, asign_product_description: str):
 - **vienna_code** : 비엔나코드("" 가능)
 - **num_of_rows** : 각 상표명마다 받고 싶은 검색 수(기본값: 5) 
 - **only_null_vienna_search** : 텍스트 위주의 상표명(예: mindshare, 시민언론시선) 일때, 비엔나코드가 null 값인 것만 검색하고 싶다면 true로 변경합니다.(기본값: false)
-### 테스트를 위한 요청 
-- **exclude_application_number** : 제외하고 싶은 출원번호 (str)
-- **exclude_registration_number** : 제외하고 싶은 등록번호 (str)
-- **application_date** : 원하는 날짜 이전에 등록된 상표들만 출력 (str) 
+
+### 테스트를 위한 요 청 
+- **exclude_application_number** : 제외하고 싶은 출원번호 "하이픈 제외하고 입력" (str)
+- **exclude_registration_number** : 제외하고 싶은 등록번호 "하이픈 제외하고 입력" (str)
+- **application_date** : 원하는 날짜 이전에 등록된 상표들만 출력 "숫자 8자리 입력"(str) 
+
 ### 응 답 
 - 검색된 키프리스의 응답을 **title, classification_code, similar_image_url, application_number, vienna_code** 로 필터링되어 LIST로 반환됩니다.
+
 ### 참고 사항
 - 유사코드를 제외한 각 검색은 상표명, 비엔나코드는 빈값이 검색가능합니다.
 - only_null_vienna_search : true - 텍스트위주의 상표일경우 vienna_code가 null 값인것만 선택적으로 받을수 있습니다.

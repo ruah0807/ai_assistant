@@ -62,14 +62,15 @@ def run_with_tools(ass_id, thread):
                 {
                 "vienna_code" : (shoud be 6 number of digit / could be several codes.)
                 "description" :(Description to the right of the Vienna Code - English and translate Korean(영어원문과 번역된 한국어))
-                "reason" : (reason for choicing)
+                "reason" : (reason for choicing in Korean)
                    }
             ] 
         }} 
         ```
 
         Warning:
-        - Should give it from the document.       
+        - Response should show up from the document.  
+        - You should only give it json format.     
         """
     )
     return run
