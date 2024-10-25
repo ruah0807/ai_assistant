@@ -34,43 +34,57 @@ def run_with_tools(ass_id, thread):
         assistant_id=ass_id,
         tools=  [{'type': 'file_search'}],
         instructions= """
-        [ Context ]
-        Please let me know which category in the vienna_code_eu.pdf file this image corresponds to. 
-        Categories are composed of three numbers with two periods in between (e.g., 2.1.15). 
-        If the image belongs to multiple categories, return all of them. 
-        If there is no exact match, either return no result or find the closest category. 
-        Don’t create new categories that aren’t in the file, and don’t use categories that have a red strikethrough.
-        Return up to 10 similar categories if they seem relevant.
+        ### Context
+        Please provide the category that corresponds to this image in the vienna_code_eu.pdf file.
+        The category consists of 3 to 6 digits with two periods in between (e.g., 2.1.15).
+        If the image corresponds to multiple categorys, return all of them in JSON format.
+        If there is no exact match, either return no result or find the closest category.
+        Do not create new categorys not present in the file, and do not use descriptions that have a red strikethrough.
         
-        After finding the category, convert it into a code using the following rules:
+        #### Prompt Example for Image Analysis Including Abstract Shapes and Specific Objects/People:
+        “Analyze the abstract shapes and specific objects or people in the image according to the following criteria:
 
-        •	If the number before the period is single-digit, add a 0; if it’s double-digit, leave it as is.
-	    •	Remove the periods, and if the number after the period is single-digit, add a 0; if it’s double-digit, leave it as is.
-	    •	Apply the same rule to the last number after the second period.
+            •	Geometric features (e.g., circular, triangular, rectangular shapes)
+            •	Pattern repetition: Whether there is any recurring pattern in the shapes
+            •	Symmetry or irregularity: Whether the shapes are symmetrical or have irregular characteristics
+            •	Color variations and gradients: Analyze changes in color, including shading and gradient effects
+            •	Presence of specific objects or people: Identify whether the image contains identifiable objects or people such as a woman, man, child, palette, brush, or any other recognizable items (e.g., a woman dancing, someone painting, etc.)
+            •	Action or motion: If people are depicted, determine whether they are engaged in any action (e.g., dancing, painting, playing an instrument) and describe the activity.
 
-        For example:
-        •	1.2.1 becomes 010201,
-        •	24.15.1 becomes 241501,
-        •	14.7.7 becomes 140707.
+        For each shape, object, or person, apply these criteria and provide as detailed a classification and description as possible.”
+
+
+        ### Instructions 
+            •	Use the number before the description to determine the Vienna Code.
+            •	Vienna code and description must be on one line.
+            •	The red text with a line in the middle does not apply.
+            •	Example 1: “1.1.12  Stars with uneven points” 
+                    → "vienna_code": "1.1.12", "description" : "Stars with uneven points, 점이 고르지 않은 별"
+            •	Example 2: “20.1.5 Paint brushes” 
+                    → "vienna_code": "20.1.5", "description" : "Paint brushes, 그림용 붓"
+            •	Example : “20.7.2 Books, magazines, newspapers” 
+                    → "vienna_code": "20.7.2", "description" : "Books, magazines, newspapers, 책, 잡지, 신문"
             
-        If the category has multiple parts, return the converted code for each.
 
-        Response Format : 
+                    
+        If the category consists of multiple parts, provide the converted code for each in the response format below.
+
+        ### Response Format: 
         ```json
         {{
             results: [
                 {
-                "vienna_code" : (shoud be 6 number of digit / could be several codes.)
-                "description" :(Description to the right of the Vienna Code - English and translate Korean(영어원문과 번역된 한국어))
-                "reason" : (reason for choicing in Korean)
-                   }
+                    "vienna_code": (3 to 6-digit code(with period) / could be multiple codes),
+                    "description": (Description to the right of the Vienna Code - both in English and translated into Korean (영어원문과 번역된 한국어)),
+                    "reason": (reason for the choice in Korean)
+                }
             ] 
-        }} 
+        }}
         ```
-
-        Warning:
-        - Response should show up from the document.  
-        - You should only give it json format.     
+        ### Warning
+        - You must find the result from the documents. If it doesn't have you couldn't make it yourself.
+        - Give them results more than 4 as Json format and vienna code must have 2 periods.
+        - Vienna code should be with 2 period with 3~6 digits.
         """
     )
     return run
@@ -129,3 +143,16 @@ def create_thread_and_run(user_input, image_path, image_url):
 #         }} 
 #         ```       
 #         """
+
+
+
+        # #### After identifying the category, convert it into a code using the following rules:
+
+        # •	If the number before the period is single-digit, add a 0; if it’s double-digit, leave it as is.
+        # •	Remove the periods, and if the number after the period is single-digit, add a 0; if it’s double-digit, leave it as is.
+        # •	Apply the same rule to the last number after the second period.
+
+        # #### For example:
+        # •	1.2.1 becomes 010201.
+        # •	24.15.1 becomes 241501.
+        # •	14.7.7 becomes 140707.
