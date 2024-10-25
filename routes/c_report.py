@@ -42,7 +42,7 @@ class SimilarityEvaluationRequest(BaseModel):
 ### 요 청 
 - **brand_name** : 등록 상표명
 - **brand_image_url** : 등록상표이미지 URL
-- **kipris_data** : 키프리스 데이터
+- **kipris_data** : "/individual/search-kipris"에서 검색된 키프리스 데이터를 복사해서 붙여 넣습니다.
 
 - (**brand_image_path** : 전처리 필터를 이용했다면 경로 포함)
 - (**kipris_data.similar_image_path** : 전처리 필터를 이용했다면 경로 포함)
