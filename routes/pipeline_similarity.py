@@ -46,9 +46,9 @@ router = APIRouter(
 - **only_null_vienna_search**: (**bool**: false OR true) 비엔나코드가 null값인 것만 받고자 할때는 true (기본값 false)
 - **filter**: (**bool**: false OR true) 검색결과가 너무 많다 판달될경우 쓰일 중간 필터
 ---
-- **exclude_application_number**: "제외할 출원 번호"
-- **exclude_registration_number**: "제외할 등록 번호"
-- **application_date**:  "원하는 날짜 이전의 출원 등록 상표들만 도출"
+- **exclude_application_number** : 제외하고 싶은 출원번호 "하이픈 제외하고 입력" (str)
+- **exclude_registration_number** : 제외하고 싶은 등록번호 "하이픈 제외하고 입력" (str)
+- **application_date** : 원하는 날짜 이전에 등록된 상표들만 출력 "숫자 8자리 입력"(str) 
              
 
 ## 참고사항                  
@@ -99,9 +99,9 @@ async def similarity_opinion_api(request: CombinedSearchRequest):
 - **only_null_vienna_search**: (**bool**: false OR true) 비엔나코드가 null값인 것만 받고자 할때는 true (기본값 false)
 - **filter**: (**bool**: false OR true) 검색결과가 너무 많다 판달될경우 쓰일 중간 필터
 ---
-- **exclude_application_number**: "제외할 출원 번호"
-- **exclude_registration_number**: "제외할 등록 번호"
-- **application_date**:  "원하는 날짜 이전의 출원 등록 상표들만 도출"
+- **exclude_application_number** : 제외하고 싶은 출원번호 "하이픈 제외하고 입력" (str)
+- **exclude_registration_number** : 제외하고 싶은 등록번호 "하이픈 제외하고 입력" (str)
+- **application_date** : 원하는 날짜 이전에 등록된 상표들만 출력 "숫자 8자리 입력"(str) 
 
 ## 참고사항                  
 - only_null_vienna_search 을 true로 변경할 경우 : 비엔나코드를 생성하지 않음과 동시에 비엔나 코드가 null 값이 것들만 평가하여 보고서를 작성합니다. - 텍스트로만 이루어진 상표일경우 true로 변경
