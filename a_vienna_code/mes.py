@@ -42,6 +42,19 @@ def run_with_tools(ass_id, thread):
         If there's no exact match, find the closest category. 
         Don't create new categories that aren't in the vienna_code_eu.pdf file. 
         Don't use categories that have a red strikethrough. 
+
+        Prompt Example for Image Analysis Including Abstract Shapes and Specific Objects/People:
+        “Analyze the abstract shapes and specific objects or people in the image according to the following criteria:
+
+            •	Geometric features (e.g., circular, triangular, rectangular shapes)
+            •	Pattern repetition: Whether there is any recurring pattern in the shapes
+            •	Symmetry or irregularity: Whether the shapes are symmetrical or have irregular characteristics
+            •	Color variations and gradients: Analyze changes in color, including shading and gradient effects
+            •	Presence of specific objects or people: Identify whether the image contains identifiable objects or people such as a woman, man, child, palette, brush, or any other recognizable items (e.g., a woman dancing, someone painting, etc.)
+            •	Action or motion: If people are depicted, determine whether they are engaged in any action (e.g., dancing, painting, playing an instrument) and describe the activity.
+
+        For each shape, object, or person, apply these criteria and provide as detailed a classification and description as possible.”
+
         
         Response Format :
         {{
