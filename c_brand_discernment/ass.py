@@ -12,7 +12,7 @@ from init import client
 
 
 # assistant id를 별도의 변수에 담음
-ass_id = 'asst_mD9MAguey0mzXs0wKEJmG4lV'
+ASSISTANT_ID = 'asst_mD9MAguey0mzXs0wKEJmG4lV'
 
 instructions = '''
 # Role
@@ -29,7 +29,7 @@ vector_store = client.beta.vector_stores.update(
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
-    assistant_id= ass_id,
+    assistant_id= ASSISTANT_ID,
     name= '상표 식별력 평가 AI',
     instructions = instructions,
     model ='gpt-4o',
@@ -38,7 +38,7 @@ assistant = client.beta.assistants.update(
     temperature=0,
 )
 
-assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+assistant_info = client.beta.assistants.retrieve(assistant_id=ASSISTANT_ID)
 print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # print(client.beta.vector_stores.list())

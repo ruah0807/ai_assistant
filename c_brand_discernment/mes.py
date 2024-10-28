@@ -2,7 +2,7 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
-ass_id = 'asst_mD9MAguey0mzXs0wKEJmG4lV'
+ASSISTANT_ID = 'asst_mD9MAguey0mzXs0wKEJmG4lV'
 
 def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
@@ -27,11 +27,11 @@ def submit_message_with_image(thread, user_message, image_path, image_url):
 
     
 
-def run_with_tools(ass_id, thread):
+def run_with_tools(ASSISTANT_ID, thread):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id=ass_id,
+        assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
 당신은 상표의 주요부와 지정상품과의 관계를 기반으로 상표의 식별력을 분석하는 임무를 맡고 있습니다. 목표는 상표가 등록될 수 있을 만큼 식별력이 충분한지 여부를 다음 기준에 따라 평가하는 것입니다.
@@ -96,7 +96,7 @@ def discernment_create_thread_and_run(user_input, image_path, image_url):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
     submit_message_with_image(thread, user_input, image_path, image_url)
-    run = run_with_tools(ass_id, thread)
+    run = run_with_tools(ASSISTANT_ID, thread)
     
     return thread, run
 

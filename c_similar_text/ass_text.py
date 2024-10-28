@@ -7,7 +7,7 @@ from init import client
 load_dotenv()
 
 # Assistant Name: 상표 TEXT 유사도 평가 Assistant
-ass_id = 'asst_IbYT7EatQkmSnremkg5RuiC0'
+ASSISTANT_ID = 'asst_IbYT7EatQkmSnremkg5RuiC0'
 
 
 default_tools = [
@@ -44,7 +44,7 @@ vector_store = client.beta.vector_stores.update(
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
-    assistant_id= ass_id,
+    assistant_id= ASSISTANT_ID,
     name='상표 TEXT 유사도 평가 Assistant',
     instructions = instructions,
     tools = default_tools,
@@ -54,7 +54,7 @@ assistant = client.beta.assistants.update(
     
 )
 
-assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+assistant_info = client.beta.assistants.retrieve(assistant_id=ASSISTANT_ID)
 print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 

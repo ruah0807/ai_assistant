@@ -2,7 +2,7 @@ import os, sys, asyncio, concurrent.futures
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
-ass_id = 'asst_W8YP62HfQPvHsKFavgndRJ1T'
+ASSISTANT_ID = 'asst_W8YP62HfQPvHsKFavgndRJ1T'
 
 
 def submit_message_with_image(thread, user_message):
@@ -17,11 +17,11 @@ def submit_message_with_image(thread, user_message):
     print(f"thread_id : {thread.id}")
 
 
-def run_with_tools(ass_id, thread):
+def run_with_tools(ASSISTANT_ID, thread):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id=ass_id,
+        assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
         [ Context ]
@@ -66,7 +66,7 @@ def run_with_tools(ass_id, thread):
 def create_thread_and_run(user_input):
     thread = client.beta.threads.create()
     submit_message_with_image(thread, user_input)
-    run = run_with_tools(ass_id, thread)
+    run = run_with_tools(ASSISTANT_ID, thread)
     return thread, run
 
 

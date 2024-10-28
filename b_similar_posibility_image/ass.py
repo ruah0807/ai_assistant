@@ -8,7 +8,7 @@ from init import client
 
 load_dotenv()
 
-ass_id = 'asst_JQfJwI5N6CdoPMqQyAtTUptv'
+ASSISTANT_ID = 'asst_JQfJwI5N6CdoPMqQyAtTUptv'
 
 
 instructions = """
@@ -18,7 +18,7 @@ instructions = """
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
-    assistant_id= ass_id,
+    assistant_id= ASSISTANT_ID,
     name= '유사 상표 IMAGE Filtering Assistant',
     instructions = instructions,
     tools =  [{'type': 'file_search'}],
@@ -26,7 +26,7 @@ assistant = client.beta.assistants.update(
     temperature=0,
 )
 
-assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+assistant_info = client.beta.assistants.retrieve(assistant_id=ASSISTANT_ID)
 print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 

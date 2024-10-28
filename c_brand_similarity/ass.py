@@ -6,7 +6,7 @@ from init import client
 
 load_dotenv()
 
-# ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
+# ASSISTANT_ID = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 
 
 
@@ -44,7 +44,7 @@ load_dotenv()
 
 # ### 어시스턴트 업데이트
 # assistant = client.beta.assistants.update(
-#     assistant_id= ass_id,
+#     assistant_id= ASSISTANT_ID,
 #     name= '상표 IMAGE 유사도 평가 Assistant with Tools',
 #     instructions = instructions,
 #     model ='gpt-4o',
@@ -53,7 +53,7 @@ load_dotenv()
 #     temperature=0,
 # )
 
-# assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+# assistant_info = client.beta.assistants.retrieve(assistant_id=ASSISTANT_ID)
 # print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 

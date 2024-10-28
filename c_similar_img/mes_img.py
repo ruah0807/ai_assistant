@@ -2,7 +2,7 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
-ass_id = 'asst_FY8Yfek8H3CrJKSLX2OyWFB1'
+ASSISTANT_ID = 'asst_FY8Yfek8H3CrJKSLX2OyWFB1'
 
 async def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
@@ -27,11 +27,11 @@ async def submit_message_with_image(thread, user_message, image_path, image_url)
     print(f"이미지 업로드 완료 . thread_id : {thread.id}")
     
     
-async def run_with_tools(ass_id, thread):
+async def run_with_tools(ASSISTANT_ID, thread):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id=ass_id,
+        assistant_id=ASSISTANT_ID,
         tools=[{'type':'file_search'}],
         instructions= """
             모든 텍스틀간의 검토가 끝난 후 
@@ -52,7 +52,7 @@ async def run_with_tools(ass_id, thread):
             - 종합의견 : [제시한(이미지 유사도 평가 방법)에 따라 각 이미지들을 비교하며 유사성을 1000자 이내로 설명하세요]
         """
     )
-    print(f'assistant_id : {ass_id}, thread_id : {thread.id}, run_id : {run.id}')
+    print(f'assistant_id : {ASSISTANT_ID}, thread_id : {thread.id}, run_id : {run.id}')
 
     return run
 
@@ -62,7 +62,7 @@ async def create_thread_and_run(user_input, image_path, image_url):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
     await submit_message_with_image(thread, user_input, image_path, image_url)
-    run = await run_with_tools(ass_id, thread)
+    run = await run_with_tools(ASSISTANT_ID, thread)
     
     return thread, run
 

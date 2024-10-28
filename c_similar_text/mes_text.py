@@ -3,9 +3,9 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
 # Assistant Name: 상표 TEXT 유사도 평가 Assistant
-ass_id = 'asst_IbYT7EatQkmSnremkg5RuiC0'
+ASSISTANT_ID = 'asst_IbYT7EatQkmSnremkg5RuiC0'
 
-async def submit_message(ass_id, thread, user_message):
+async def submit_message(ASSISTANT_ID, thread, user_message):
 
     content = [{'type': 'text', 'text': user_message}]
 
@@ -19,7 +19,7 @@ async def submit_message(ass_id, thread, user_message):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id=ass_id,
+        assistant_id=ASSISTANT_ID,
         instructions= """
             모든 텍스틀간의 검토가 끝난 후 
             반드시 문서를 참고하여 출처와 함께 종합의견을 내세요. 
@@ -37,7 +37,7 @@ async def submit_message(ass_id, thread, user_message):
                 
         """
     )
-    print(f'assistant_id : {ass_id}')
+    print(f'assistant_id : {ASSISTANT_ID}')
     print(f'thread_id : {thread.id}')
     print(f'run_id : {run.id}')
 
@@ -49,7 +49,7 @@ async def submit_message(ass_id, thread, user_message):
 async def create_thread_and_run(user_input):
     # 사용자 입력을 받아 새로운 스래드를 생성하고, Assistant 에게 메시지를 제출
     thread= client.beta.threads.create()
-    run = await submit_message(ass_id, thread, user_input)
+    run = await submit_message(ASSISTANT_ID, thread, user_input)
     return thread, run
 
 
@@ -58,7 +58,7 @@ async def create_thread_and_run(user_input):
 
 # def send_message_in_same_thread(thread, user_message):
 #     # 메시지 전송
-#     run = submit_message(ass_id, thread, user_message)
+#     run = submit_message(ASSISTANT_ID, thread, user_message)
 #     return run
 
 

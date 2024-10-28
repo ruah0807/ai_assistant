@@ -8,7 +8,7 @@ from init import client
 
 load_dotenv()
 
-ass_id = 'asst_9K4qGkDlEdDMQly5n08IQ6KD'
+ASSISTANT_ID = 'asst_9K4qGkDlEdDMQly5n08IQ6KD'
 
 instructions = """
    당신은 사용자가 등록하려는 '등록대상상표'의 상표명을 비교하여 유사성이 있는 상표를 찾아내는 전문가입니다.
@@ -16,7 +16,7 @@ instructions = """
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
-    assistant_id= ass_id,
+    assistant_id= ASSISTANT_ID,
     name= '유사 상표 TEXT Filtering Assistant',
     instructions = instructions,
     # tools =  [{'type': 'file_search'}],
@@ -24,7 +24,7 @@ assistant = client.beta.assistants.update(
     temperature=0,
 )
 
-assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+assistant_info = client.beta.assistants.retrieve(assistant_id=ASSISTANT_ID)
 print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 

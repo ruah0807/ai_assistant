@@ -2,7 +2,7 @@ import os, sys, asyncio, concurrent.futures
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
-ass_id = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
+ASSISTANT_ID = 'asst_t6EJ7fG2GebmCD7PNg3o8M5d'
 
 async def submit_message_with_image(thread, user_message, image_path, image_url):
     content = [{'type': 'text', 'text': user_message}]
@@ -42,11 +42,11 @@ def upload_image(local_image_path, original_image_url):
         return None, original_image_url   
     
 
-async def run_with_tools(ass_id, thread):
+async def run_with_tools(ASSISTANT_ID, thread):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id=ass_id,
+        assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
         유사도 평가 방법에 대한 정보는 다음과 같은 기준을 적용할 수 있습니다:
@@ -83,7 +83,7 @@ async def run_with_tools(ass_id, thread):
 async def similarity_create_thread_and_run(user_input, image_paths, image_urls):
     thread = await asyncio.to_thread(client.beta.threads.create)
     await submit_message_with_image(thread, user_input, image_paths, image_urls)
-    run = await run_with_tools(ass_id, thread)
+    run = await run_with_tools(ASSISTANT_ID, thread)
     return thread, run
 
 

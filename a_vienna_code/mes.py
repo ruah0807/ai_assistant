@@ -2,7 +2,7 @@ import os, sys, asyncio, concurrent.futures
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from init import client
 
-ass_id = 'asst_5AAVBLsDY7vpCx7g4nVGe67R'
+ASSISTANT_ID = 'asst_5AAVBLsDY7vpCx7g4nVGe67R'
 
 
 def submit_message_with_image(thread, user_message, image_path, image_url):
@@ -27,11 +27,11 @@ def submit_message_with_image(thread, user_message, image_path, image_url):
     print(f"이미지 업로드 완료 . thread_id : {thread.id}")
 
 
-def run_with_tools(ass_id, thread):
+def run_with_tools(ASSISTANT_ID, thread):
 
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id=ass_id,
+        assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
         Please tell me which category in the vienna_code_eu.pdf file this image corresponds. 
@@ -76,7 +76,7 @@ def run_with_tools(ass_id, thread):
 def create_thread_and_run(user_input, image_path, image_url):
     thread = client.beta.threads.create()
     submit_message_with_image(thread, user_input, image_path, image_url)
-    run = run_with_tools(ass_id, thread)
+    run = run_with_tools(ASSISTANT_ID, thread)
     return thread, run
 
 # """

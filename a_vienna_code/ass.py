@@ -6,7 +6,7 @@ from init import client
 
 load_dotenv()
 
-ass_id = 'asst_5AAVBLsDY7vpCx7g4nVGe67R'
+ASSISTANT_ID = 'asst_5AAVBLsDY7vpCx7g4nVGe67R'
 
 instructions = '''
 [ Role ]
@@ -21,7 +21,7 @@ vector_store = client.beta.vector_stores.update(
 
 ### 어시스턴트 업데이트
 assistant = client.beta.assistants.update(
-    assistant_id= ass_id,
+    assistant_id= ASSISTANT_ID,
     name= '비엔나코드 추측 전문가',
     instructions = instructions,
     model ='gpt-4o',
@@ -31,7 +31,7 @@ assistant = client.beta.assistants.update(
     top_p= 0.9
 )
 
-assistant_info = client.beta.assistants.retrieve(assistant_id=ass_id)
+assistant_info = client.beta.assistants.retrieve(assistant_id=ASSISTANT_ID)
 print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 
