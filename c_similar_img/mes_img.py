@@ -34,7 +34,7 @@ async def run_with_tools(ASSISTANT_ID, thread):
         assistant_id=ASSISTANT_ID,
         tools=[{'type':'file_search'}],
         instructions= """
-            모든 텍스틀간의 검토가 끝난 후 
+            모든 검토가 끝난 후 
             반드시 문서에 있는 예시를 참고하여 상세한 종합의견을 내세요. 
 
             응답 형식 :     
