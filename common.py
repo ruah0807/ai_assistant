@@ -103,6 +103,12 @@ def print_json_from_code (response):
                                     "reason": item.get("reason")
                                 })
                         return parsed_results
+                    elif isinstance(results, dict)and "refused" in results:
+                        parsed_results.append({
+                            "refused": results.get("refused"),
+                            "reason": results.get("reason"),
+                        })
+                        return parsed_results
                     elif isinstance(results, dict):
                         similarity_list = results.get("similarity", []) 
                         for item in similarity_list:    
