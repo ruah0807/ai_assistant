@@ -34,36 +34,46 @@ def run_with_tools(ASSISTANT_ID, thread):
         assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
-        Please tell me which category in the vienna_code_eu.pdf file this image corresponds. 
-        The answer should be follow the 'Response Format' below in json style.
+        1.	Code Matching Identification: Identify the corresponding Code in the Vienna Classification based on the image. Each Code consists of 6 digits, as follows:
+            •	The first two digits represent the major classification.
+            •	The next two digits represent the sub-classification.
+            •	The last two digits represent the minor classification.
+            •	Codes that are not 6 digits long are for reference only and should be excluded.
+
+        2.	Classification Hierarchy:
+            •	The major classification includes the sub-classification, and the sub-classification includes the minor classification. Progressively narrow down the Code by following this hierarchy.
+            •	Start by identifying the major classification that most closely resembles the image, then move to the closest sub-classification within it, and finally, the closest minor classification within the sub-classification.
+
+        3.	Code Identification Process:
+            •	Identify any objects or text within the image, and link them to the corresponding Code.
+            •	If the text contains a specific item (e.g., “일타르타르트” containing the term “tart”), locate the Code related to that item (e.g., if “tart” matches, find the related Code, such as 080116).
+            •	If the object is integrated with other images or text, locate the Code that includes the object.
+            •	If content in the English column matches the image exactly, return only that corresponding 6-digit Code.
+
+        4.	Stylized Text Check:
+            •	If the image contains stylized text, refer to the Codes ranging from 270901 to 270926 for a possible match.
+
+        5.	Return Guidelines:
+            •	Ensure the response is always in JSON format.
+            •	Return only existing 6-digit Codes.
+            •	If multiple Codes apply, follow the classification hierarchy to return the closest matching Code step-by-step.
+            •	If there is no exact match, find the Code that corresponds to the closest matching English entry.
+            •	Do not create new Codes that are not present in the Vienna Code document.
+
+        Note: Responses must be provided in JSON format only, ensuring clarity and consistency in response structure.
+
+        These instructions ensure the Code selection process is clear, precise, and that results are consistently returned in the required JSON format.
         
-        Categories are composed of three numbers with two periods in between, like 2.1.15. 
-        It's possible for one image to belong to multiple categories. 
-        If there's no exact match, find the closest category. 
-        Don't create new categories that aren't in the vienna_code_eu.pdf file. 
-        Don't use categories that have a red strikethrough. 
+        ### Response Format(JSON) :
 
-        Prompt Example for Image Analysis Including Abstract Shapes and Specific Objects/People:
-        “Analyze the abstract shapes and specific objects or people in the image according to the following criteria:
-
-            •	Geometric features (e.g., circular, triangular, rectangular shapes)
-            •	Pattern repetition: Whether there is any recurring pattern in the shapes
-            •	Symmetry or irregularity: Whether the shapes are symmetrical or have irregular characteristics
-            •	Color variations and gradients: Analyze changes in color, including shading and gradient effects
-            •	Presence of specific objects or people: Identify whether the image contains identifiable objects or people such as a woman, man, child, palette, brush, or any other recognizable items (e.g., a woman dancing, someone painting, etc.)
-            •	Action or motion: If people are depicted, determine whether they are engaged in any action (e.g., dancing, painting, playing an instrument) and describe the activity.
-
-        For each shape, object, or person, apply these criteria and provide as detailed a classification and description as possible.”
-
-        
-        Response Format :
         {{
             results: [
                 {
-                    "vienna_code": (3 to 6-digit code(with period) / could be multiple codes),
-                    "description": (Description to the right of the Vienna Code - both in English and translated into Korean (영어원문과 번역된 한국어)),
+                    "vienna_code": (6-digit code / could be multiple codes),
+                    "description": (Description to the right of the Vienna Code in the document),
                     "reason": (reason for the choice in Korean)
-                }
+                },
+                ... // if it's more codes, it should be added.
             ] 
         }}
 
