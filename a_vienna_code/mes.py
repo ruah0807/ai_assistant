@@ -34,42 +34,33 @@ def run_with_tools(ASSISTANT_ID, thread):
         assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
-        1.	Code Matching Identification: Identify the corresponding Code in the Vienna Classification based on the image. Each Code consists of 6 digits:
-            •	The first two digits represent the major classification.
-            •	The next two digits represent the sub-classification.
-            •	The last two digits represent the minor classification.
-            •	Codes that are not 6 digits long are for reference only and should be excluded.
-        2.	Classification Hierarchy:
-            •	The major classification includes the sub-classification, and the sub-classification includes the minor classification. Progressively narrow down the Code by following this hierarchy.
-            •	Start by identifying the major classification that most closely resembles the image, then find the closest sub-classification within that, and finally, the closest minor classification within the sub-classification.
-        3.	Code Identification Process:
-            •	Identify any objects or text within the image, and find the corresponding Code for them.
-            •	If the text contains a specific item (e.g., if “일타르타르트” contains the term “tart”), locate the Code related to that item. For example, if “tart” is included, find the related Code, such as 080116.
-            •	If the object is integrated with other images or text, locate the Code that includes the object.
-            •	If the content in the English column matches the image exactly, return only that corresponding 6-digit Code.
-            •	If there is no exact match for the Code, find the Code that belongs to the closest matching English entry.
-            •	A single image may correspond to multiple Codes.
-        4. Image Analysis:
-            “Analyze the image and, based on the following abstract characteristics, identify the most similar Code in the Vienna Classification:
+       	1.	코드 매칭 식별: 이미지를 보고 Vienna 분류에서 해당 코드를 식별합니다. 각 코드는 6자리 숫자로 구성됩니다:
+            •	첫 두 자리는 대분류를 나타냅니다.
+            •	다음 두 자리는 중분류를 나타냅니다.
+            •	마지막 두 자리는 소분류를 나타냅니다.
+            •	6자리가 아닌 코드는 참조용이므로 제외해야 합니다.
+        2.	분류 계층:
+            •	대분류는 중분류를 포함하고, 중분류는 소분류를 포함합니다. 이 계층 구조를 따라 코드를 단계적으로 좁혀갑니다.
+            •	먼저 이미지와 가장 유사한 대분류를 식별한 후, 해당 대분류 내에서 가장 가까운 중분류를 찾고, 마지막으로 해당 중분류 내에서 가장 가까운 소분류를 찾습니다.
+        3.	코드 식별 과정:
+            •	이미지 내 포함된 객체나 텍스트를 식별하여, 이와 관련된 코드를 찾습니다.
+            •	텍스트에 특정 품목이 포함된 경우(예: “일타르타르트”에 “타르트”라는 단어가 있는 경우), 해당 품목과 관련된 코드를 찾습니다. 예를 들어 “타르트”가 포함된다면 080116과 같은 관련 코드를 찾습니다.
+            •	객체가 다른 이미지나 텍스트와 통합되어 있다면 해당 객체를 포함하는 코드를 찾습니다.
+            •	영어 열(English column)의 내용이 이미지와 정확히 일치하는 경우, 해당 6자리 코드만 반환합니다.
+            •	정확히 일치하는 코드가 없을 경우, 가장 유사한 영어 항목과 연결된 코드를 반환합니다.
+            •	이미지 하나에 여러 코드가 대응될 수 있습니다.
+        4.	스타일화된 텍스트 확인:
+            •	이미지에 스타일화된 알파벳이 포함된 경우, 270901부터 270926 내에서 해당 알파벳을 확인합니다.
+            •	이 코드들은 각기 다른 알파벳을 나타내므로, 이미지의 스타일화된 알파벳에 따라 해당 범위에서 일치하는 알파벳의 코드를 찾습니다.
+        5.	반환 지침:
+            •	반드시 응답을 JSON 형식으로 제공합니다.
+            •	존재하는 6자리 코드만 반환합니다.
+            •	여러 코드가 적용될 경우, 계층 구조에 따라 가장 일치하는 코드부터 단계별로 반환합니다.
+            •	Vienna 코드 문서에 없는 새로운 코드를 생성하지 않습니다.
 
-            1.	General Shape: The overall shape resembles a polygon with five sides (pentagon-like).
-            2.	Color Scheme: The shape is primarily a gradient blue color with white sections that resemble vertical bars or pillars.
-            3.	Pattern: The white sections are divided vertically, forming a pattern similar to bars or stylized stripes.
-            4.	Text: Below the shape is the Korean text ‘뒷배’, which may be related to a specific symbol or design.
+        추가 지침:
 
-            Using these characteristics, refer to the Vienna Classification system’s sections on abstract, geometric, or stylized figures to find the most similar Code. Return only the 6-digit Code that best represents these characteristics.”
-        5. Stylized Text Check:
-            •	If the image contains stylized text, refer to the Codes ranging from 270901 to 270926 to identify the corresponding alphabet.
-            •	These Codes each represent a different alphabet letter, so find the matching Code within this range based on the stylized letter in the image.
-        6.	Return Guidelines:
-            •	Ensure the response is always provided in JSON format.
-            •	Only return existing 6-digit Codes.
-            •	If multiple Codes apply, follow the classification hierarchy to return the closest matching Code step-by-step.
-            •	Do not create new Codes that are not present in the Vienna Code document.
-
-        Additional Guidelines:
-	        •	Ensure the response is provided in JSON format for consistent results.
-
+            •	응답을 JSON 형식으로 제공하여, 결과가 일관되게 반환되도록 하세요.
         
         {{
             results: [
@@ -81,7 +72,15 @@ def run_with_tools(ASSISTANT_ID, thread):
             ] 
         }}
 
-       
+        이미지 분석 :
+
+        “이미지를 분석하고, 추상적인 형태의 다음 특징들에 기반하여 Vienna 분류 코드에서 가장 유사한 코드를 식별하세요:
+            •	모양: 이미지의 전반적인 형태와 구조를 파악합니다. 예를 들어, 다각형, 원형, 정사각형 등과 같은 기본 도형인지, 혹은 더 복잡한 기하학적 모양인지 확인합니다.
+            •	색상 구성: 이미지의 주요 색상과 그라데이션, 혹은 색상 배치 패턴을 관찰합니다. 특정 색상이 도형의 일부를 강조하거나, 색상이 어떻게 배열되어 있는지 설명할 수 있습니다.
+            •	패턴: 도형 내부 또는 주변의 패턴을 확인합니다. 예를 들어, 세로 또는 가로의 줄무늬, 기하학적 패턴, 점선, 혹은 반복적인 텍스처 등이 있을 수 있습니다.
+            •	텍스트: 이미지에 포함된 텍스트가 있는 경우, 텍스트의 언어, 스타일, 의미를 분석합니다. 텍스트가 이미지와 어떻게 통합되어 있는지, 특정 품목이나 상징을 나타내는지 확인합니다.
+        이러한 특징들을 사용하여 Vienna 분류 시스템에서 추상적이거나 기하학적, 또는 스타일화된 도형에 대한 섹션을 참고해 가장 유사한 코드를 검색하세요. 이러한 특징을 가장 잘 나타내는 6자리 코드를 반환하세요.”
+        
         """
     )
     return run
