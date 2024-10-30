@@ -94,6 +94,7 @@ def print_json_from_code (response):
                     
                     results = parsed_json.get("results")
                     
+                    # 비엔나 코드 json 파싱
                     if isinstance(results, list):
                         for item in results:
                             if item.get("vienna_code"):
@@ -103,12 +104,14 @@ def print_json_from_code (response):
                                     "reason": item.get("reason")
                                 })
                         return parsed_results
+                    # 거절 사유 판별 json 파싱
                     elif isinstance(results, dict)and "refused" in results:
-                        parsed_results.append({
+                        parsed_results.append({ 
                             "refused": results.get("refused"),
                             "reason": results.get("reason"),
                         })
                         return parsed_results
+                    # 유사코드 json 파싱
                     elif isinstance(results, dict):
                         similarity_list = results.get("similarity", []) 
                         for item in similarity_list:    
