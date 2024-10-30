@@ -34,38 +34,54 @@ def run_with_tools(ASSISTANT_ID, thread):
         assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
-        lease identify which Code in the vienna_code_kr.md file corresponds to this image. You should return them in JSON style.
-        The Code consists of 6 digits: the first 2 represent the major classification, the next 2 represent the sub-classification, and the last 2 represent the minor classification. 
-        Codes that are not 6 digits long are for reference only. 
-        The major classification includes the sub-classification, and the sub-classification includes the minor classification, so please refer to that. 
-        Find all major classifications, and start by looking for the one that is most similar to the image. 
-        Then, within that major classification, find the sub-classification that is most similar to the image, and finally, within that sub-classification, find the minor classification that is most similar to the image. If there are multiple classifications, find them step by step. 
+        1.	Code Matching Identification: Identify the corresponding Code in the Vienna Classification based on the image. Each Code consists of 6 digits:
+            •	The first two digits represent the major classification.
+            •	The next two digits represent the sub-classification.
+            •	The last two digits represent the minor classification.
+            •	Codes that are not 6 digits long are for reference only and should be excluded.
+        2.	Classification Hierarchy:
+            •	The major classification includes the sub-classification, and the sub-classification includes the minor classification. Progressively narrow down the Code by following this hierarchy.
+            •	Start by identifying the major classification that most closely resembles the image, then find the closest sub-classification within that, and finally, the closest minor classification within the sub-classification.
+        3.	Code Identification Process:
+            •	Identify any objects or text within the image, and find the corresponding Code for them.
+            •	If the text contains a specific item (e.g., if “일타르타르트” contains the term “tart”), locate the Code related to that item. For example, if “tart” is included, find the related Code, such as 080116.
+            •	If the object is integrated with other images or text, locate the Code that includes the object.
+            •	If the content in the English column matches the image exactly, return only that corresponding 6-digit Code.
+            •	If there is no exact match for the Code, find the Code that belongs to the closest matching English entry.
+            •	A single image may correspond to multiple Codes.
+        4. Image Analysis:
+            “Analyze the image and, based on the following abstract characteristics, identify the most similar Code in the Vienna Classification:
 
-        Additionally, establish a relationship between the text and the objects in the image; if there is a Code that includes that object, return that Code. 
-            - For example, if there is text that says 일타르타르트 along with an object similar to pie, this would correspond to tart, so you would search for tart and return the corresponding Code, such as 080116.
+            1.	General Shape: The overall shape resembles a polygon with five sides (pentagon-like).
+            2.	Color Scheme: The shape is primarily a gradient blue color with white sections that resemble vertical bars or pillars.
+            3.	Pattern: The white sections are divided vertically, forming a pattern similar to bars or stylized stripes.
+            4.	Text: Below the shape is the Korean text ‘뒷배’, which may be related to a specific symbol or design.
 
-        If the object is integrated with other images or text, find the Code that includes that object. 
-        If the content in the English column matches the image, return the corresponding 6-digit Code only. 
-        A single image may correspond to multiple Codes. If there is no exact match for the Code, find the Code that belongs to the closest matching English entry. 
-        Do not create new Codes that are not present in the vienna_code_kr.md file. 
-        
-        If the letters in the image are stylized, look for other codes as well, but make sure to refer to codes from 270901 to 270926. Return only 6-digit Codes.
-            •	If the letters in the image are stylized, check the 270901 to 270926 range, where each code corresponds to a specific alphabet letter.
-	        •	Since these codes each represent a different letter, look for the matching code within this range based on the stylized letter in the image.
-        These instructions ensure the Code selection process is clear, precise, and that results are consistently returned in the required JSON format below.
-        
-        ### Response Format(JSON) :
+            Using these characteristics, refer to the Vienna Classification system’s sections on abstract, geometric, or stylized figures to find the most similar Code. Return only the 6-digit Code that best represents these characteristics.”
+        5. Stylized Text Check:
+            •	If the image contains stylized text, refer to the Codes ranging from 270901 to 270926 to identify the corresponding alphabet.
+            •	These Codes each represent a different alphabet letter, so find the matching Code within this range based on the stylized letter in the image.
+        6.	Return Guidelines:
+            •	Ensure the response is always provided in JSON format.
+            •	Only return existing 6-digit Codes.
+            •	If multiple Codes apply, follow the classification hierarchy to return the closest matching Code step-by-step.
+            •	Do not create new Codes that are not present in the Vienna Code document.
+
+        Additional Guidelines:
+	        •	Ensure the response is provided in JSON format for consistent results.
+
         
         {{
             results: [
                 {
                     "vienna_code": (6-digit code / could be multiple codes),
-                    "description": (Description to the right of the Vienna Code - both in English and Korean (영어 & 한국어)),
+                    "description": (Description to the right of the Vienna Code - both in English and Korean from document (영어 & 한국어)),
                     "reason": (reason for the choice in Korean)
                 }
             ] 
         }}
-        
+
+       
         """
     )
     return run

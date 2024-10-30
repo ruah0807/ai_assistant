@@ -12,10 +12,10 @@ instructions = '''
 당신은 도형의 모양을 분석하는 AI 전문가 입니다.
 사용자가 업로드하는 이미지의 도형과 형태 등을 분석하고, 해당되는 비엔나코드를 가져오세요. 
 '''
-# Vectorstore Name: 비엔나 코드 KR(한글)- MD File, Vectorstore ID: vs_bJCUGJD8VcRBuBwEQkEORKDa
+# Vectorstore Name: 비엔나 코드 KR(한글)-new, Vectorstore ID: vs_lQVlV4Q9kgMsRRwj5qCXh7dC
 # Vectorstore Name: 비엔나 코드 도형 설명, Vectorstore ID: vs_apE7367DjWeVFeFB9w1Gqom1
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_bJCUGJD8VcRBuBwEQkEORKDa'
+    vector_store_id= 'vs_lQVlV4Q9kgMsRRwj5qCXh7dC'
 )
 
 ### 어시스턴트 업데이트
@@ -43,7 +43,7 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # ### 백터스토어 생성및 파일 임베딩 업로드 ####
 # vector_store = client.beta.vector_stores.create(
-#     name = '비엔나 코드 KR(한글)- MD File',
+#     name = '비엔나 코드 KR(한글)-new',
 # )
 
 
@@ -61,26 +61,26 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 
 
-###############################################################
+# ###############################################################
 
 
-### 어시스턴트 리스트 검색 ####
-# print(client.beta.assistants.list())
+# ### 어시스턴트 리스트 검색 ####
+# # print(client.beta.assistants.list())
 
-# for assistant in assistant_list:
-#     print(f"[Assistant Name]: {assistant.name}, [Assistant ID] : {assistant.id}")
+# # for assistant in assistant_list:
+# #     print(f"[Assistant Name]: {assistant.name}, [Assistant ID] : {assistant.id}")
 
 
-###############################################################
+# ###############################################################
 
 
 # # vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_mUkyR1i7YQOTe0xnPj9kQq5V'
+#     vector_store_id='vs_bJCUGJD8VcRBuBwEQkEORKDa'
 # )
 
 
-###############################################################
+# ##############################################################
 
 
 # ## 벡터스토어 리스트 검색 ###
