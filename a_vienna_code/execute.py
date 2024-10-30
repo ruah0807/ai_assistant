@@ -14,7 +14,7 @@ async def process_vienna_code(brand_image_url: str):
     #스레드 생성 및 메시지 제출
     thread, run = mes.create_thread_and_run(
         f"""
-        업로드한 이미지의 모양을 파악후 해당하는 비엔나코드를 찾아 여러개 나열해주세요.
+        업로드한 이미지의 모양을 파악후 해당하는 비엔나코드를 찾아 JSON 형태로 나열해주세요.
         """, 
         image_path=brand_image_path, 
         image_url= brand_image_url
