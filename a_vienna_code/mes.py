@@ -34,49 +34,38 @@ def run_with_tools(ASSISTANT_ID, thread):
         assistant_id=ASSISTANT_ID,
         tools=  [{'type': 'file_search'}],
         instructions= """
-        1.	Code Matching Identification: Identify the corresponding Code in the Vienna Classification based on the image. Each Code consists of 6 digits, as follows:
-            •	The first two digits represent the major classification.
-            •	The next two digits represent the sub-classification.
-            •	The last two digits represent the minor classification.
-            •	Codes that are not 6 digits long are for reference only and should be excluded.
+        lease identify which Code in the vienna_code_kr.md file corresponds to this image. You should return them in JSON style.
+        The Code consists of 6 digits: the first 2 represent the major classification, the next 2 represent the sub-classification, and the last 2 represent the minor classification. 
+        Codes that are not 6 digits long are for reference only. 
+        The major classification includes the sub-classification, and the sub-classification includes the minor classification, so please refer to that. 
+        Find all major classifications, and start by looking for the one that is most similar to the image. 
+        Then, within that major classification, find the sub-classification that is most similar to the image, and finally, within that sub-classification, find the minor classification that is most similar to the image. If there are multiple classifications, find them step by step. 
 
-        2.	Classification Hierarchy:
-            •	The major classification includes the sub-classification, and the sub-classification includes the minor classification. Progressively narrow down the Code by following this hierarchy.
-            •	Start by identifying the major classification that most closely resembles the image, then move to the closest sub-classification within it, and finally, the closest minor classification within the sub-classification.
+        Additionally, establish a relationship between the text and the objects in the image; if there is a Code that includes that object, return that Code. 
+            - For example, if there is text that says 일타르타르트 along with an object similar to pie, this would correspond to tart, so you would search for tart and return the corresponding Code, such as 080116.
 
-        3.	Code Identification Process:
-            •	Identify any objects or text within the image, and link them to the corresponding Code.
-            •	If the text contains a specific item (e.g., “일타르타르트” containing the term “tart”), locate the Code related to that item (e.g., if “tart” matches, find the related Code, such as 080116).
-            •	If the object is integrated with other images or text, locate the Code that includes the object.
-            •	If content in the English column matches the image exactly, return only that corresponding 6-digit Code.
-
-        4.	Stylized Text Check:
-            •	If the image contains stylized text, refer to the Codes ranging from 270901 to 270926 for a possible match.
-
-        5.	Return Guidelines:
-            •	Ensure the response is always in JSON format.
-            •	Return only existing 6-digit Codes.
-            •	If multiple Codes apply, follow the classification hierarchy to return the closest matching Code step-by-step.
-            •	If there is no exact match, find the Code that corresponds to the closest matching English entry.
-            •	Do not create new Codes that are not present in the Vienna Code document.
-
-        Note: Responses must be provided in JSON format only, ensuring clarity and consistency in response structure.
-
-        These instructions ensure the Code selection process is clear, precise, and that results are consistently returned in the required JSON format.
+        If the object is integrated with other images or text, find the Code that includes that object. 
+        If the content in the English column matches the image, return the corresponding 6-digit Code only. 
+        A single image may correspond to multiple Codes. If there is no exact match for the Code, find the Code that belongs to the closest matching English entry. 
+        Do not create new Codes that are not present in the vienna_code_kr.md file. 
+        
+        If the letters in the image are stylized, look for other codes as well, but make sure to refer to codes from 270901 to 270926. Return only 6-digit Codes.
+            •	If the letters in the image are stylized, check the 270901 to 270926 range, where each code corresponds to a specific alphabet letter.
+	        •	Since these codes each represent a different letter, look for the matching code within this range based on the stylized letter in the image.
+        These instructions ensure the Code selection process is clear, precise, and that results are consistently returned in the required JSON format below.
         
         ### Response Format(JSON) :
-
+        
         {{
             results: [
                 {
                     "vienna_code": (6-digit code / could be multiple codes),
-                    "description": (Description to the right of the Vienna Code in the document),
+                    "description": (Description to the right of the Vienna Code - both in English and Korean (영어 & 한국어)),
                     "reason": (reason for the choice in Korean)
-                },
-                ... // if it's more codes, it should be added.
+                }
             ] 
         }}
-
+        
         """
     )
     return run
@@ -139,14 +128,16 @@ def create_thread_and_run(user_input, image_path, image_url):
 
 
 """
-### Context
-        Please provide the category that corresponds to this image in the vienna_code_eu.pdf file.
-        The category consists of 3 to 6 digits with two periods in between (e.g., 2.1.15).
-        If the image corresponds to multiple categorys, return all of them in JSON format.
-        If there is no exact match, either return no result or find the closest category.
-        Do not create new categorys not present in the file, and do not use descriptions that have a red strikethrough.
+Please tell me which category in the vienna_code_eu.pdf file this image corresponds. 
+        The answer should be follow the 'Response Format' below in json style.
         
-        #### Prompt Example for Image Analysis Including Abstract Shapes and Specific Objects/People:
+        Categories are composed of three numbers with two periods in between, like 2.1.15. 
+        It's possible for one image to belong to multiple categories. 
+        If there's no exact match, find the closest category. 
+        Don't create new categories that aren't in the vienna_code_eu.pdf file. 
+        Don't use categories that have a red strikethrough. 
+
+        Prompt Example for Image Analysis Including Abstract Shapes and Specific Objects/People:
         “Analyze the abstract shapes and specific objects or people in the image according to the following criteria:
 
             •	Geometric features (e.g., circular, triangular, rectangular shapes)
@@ -159,23 +150,11 @@ def create_thread_and_run(user_input, image_path, image_url):
         For each shape, object, or person, apply these criteria and provide as detailed a classification and description as possible.”
 
 
-        ### Instructions 
-            •	Use the number before the description to determine the Vienna Code.
-            •	Vienna code and description must be on one line.
-            •	The red text with a line in the middle does not apply.
-            •	Example 1: “1.1.12  Stars with uneven points” 
-                    → "vienna_code": "1.1.12", "description" : "Stars with uneven points, 점이 고르지 않은 별"
-            •	Example 2: “20.1.5 Paint brushes” 
-                    → "vienna_code": "20.1.5", "description" : "Paint brushes, 그림용 붓"
-            •	Example : “20.7.2 Books, magazines, newspapers” 
-                    → "vienna_code": "20.7.2", "description" : "Books, magazines, newspapers, 책, 잡지, 신문"
-            
 
-                    
-        If the category consists of multiple parts, provide the converted code for each in the response format below.
+        
 
-        ### Response Format: 
-        ```json
+        
+        Response Format :
         {{
             results: [
                 {
@@ -185,27 +164,5 @@ def create_thread_and_run(user_input, image_path, image_url):
                 }
             ] 
         }}
-        ```
-        ### Warning
-        - You must find the result from the documents. If it doesn't have you couldn't make it yourself.
-        - Give them results more than 4 as Json format and vienna code must have 2 periods.
-        - Vienna code should be with 2 period with 3~6 digits.
-
-"""
-
-"""
-After finding the category, convert it to a code. 
-        
-        The conversion method is simple: 
-        If the number before the period is single-digit, add a 0; if it's double-digit, leave it as is. For example, 5 becomes 05, 21 stays 21. 
-        Then remove the periods, and if the numbers after the periods are single-digit, add a 0; if they're double-digit, leave them as is. 
-            For instance, 2.1 becomes 0201, and 24.15 becomes 2415. 
-        Do the same for the last number in the category. 
-        That is, remove the second period, and if the last number is single-digit, add a 0; if it's double-digit, leave it as is. 
-        
-        For example, 
-            if the category is 14.7.7, the code becomes 140707. 
-            If the category is 3.1.25, the code becomes 030125. 
-        Return the converted code. If there are multiple categories, return multiple codes.
 
 """

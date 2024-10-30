@@ -9,14 +9,13 @@ load_dotenv()
 ASSISTANT_ID = 'asst_5AAVBLsDY7vpCx7g4nVGe67R'
 
 instructions = '''
-[ Role ]
 당신은 도형의 모양을 분석하는 AI 전문가 입니다.
 사용자가 업로드하는 이미지의 도형과 형태 등을 분석하고, 해당되는 비엔나코드를 가져오세요. 
 '''
-# Vectorstore Name: 비엔나 코드 KR(한글), Vectorstore ID: vs_mUkyR1i7YQOTe0xnPj9kQq5V
+# Vectorstore Name: 비엔나 코드 KR(한글)- MD File, Vectorstore ID: vs_bJCUGJD8VcRBuBwEQkEORKDa
 # Vectorstore Name: 비엔나 코드 도형 설명, Vectorstore ID: vs_apE7367DjWeVFeFB9w1Gqom1
 vector_store = client.beta.vector_stores.update(
-    vector_store_id= 'vs_mUkyR1i7YQOTe0xnPj9kQq5V'
+    vector_store_id= 'vs_bJCUGJD8VcRBuBwEQkEORKDa'
 )
 
 ### 어시스턴트 업데이트
@@ -42,15 +41,15 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 ###############################################################
 
 
-#### 백터스토어 생성및 파일 임베딩 업로드 ####
+# ### 백터스토어 생성및 파일 임베딩 업로드 ####
 # vector_store = client.beta.vector_stores.create(
-#     name = '비엔나 코드 KR(한글)',
+#     name = '비엔나 코드 KR(한글)- MD File',
 # )
 
 
 # # #업로드할 파일들의 경로를 지정
 # files_to_uploaded = [
-#     '/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/vienna/vienna_code_kr.docx',
+#     '/Users/ainomis_dev/Desktop/ainomis/ai_assistant/_docs/vienna/vienna_code_kr.md',
 # ]
 
 # file_streams = [open(path, 'rb') for path in files_to_uploaded]
@@ -77,11 +76,11 @@ print(f"[현재 어시스턴트 정보]\n{assistant_info}")
 
 # # vectorstore 삭제 ###
 # vector_store = client.beta.vector_stores.delete(
-#     vector_store_id='vs_wUa7hWfXPZKH03jEMOcYpm2S'
+#     vector_store_id='vs_mUkyR1i7YQOTe0xnPj9kQq5V'
 # )
 
 
-# ###############################################################
+###############################################################
 
 
 # ## 벡터스토어 리스트 검색 ###
