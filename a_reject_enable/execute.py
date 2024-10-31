@@ -14,9 +14,9 @@ async def estimate_reject_or_enable(brand_image_url: str):
     #스레드 생성 및 메시지 제출
     thread, run = mes.create_thread_and_run(
         f"""
-        업로드한 이미지의 모양을 파악후 거절 사유가 있는지 없는 지를 판단하고, 법적 근거로 자문을 주세요.
+        업로드한 이미지를 분석 후 상표심사기준에 따른 거절 사유가 있는지 없는 지를 판단해주세요.
         """, 
-        image_path=brand_image_path, 
+        image_path=brand_image_path,  
         image_url= brand_image_url
         )
     

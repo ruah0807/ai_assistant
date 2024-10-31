@@ -94,8 +94,16 @@ def print_json_from_code (response):
                     
                     results = parsed_json.get("results")
                     
+                    # 거절 사유 판별 json 파싱
+                    if isinstance(results, dict)and "refused" in results:
+                        result =  {
+                            "refused": results.get("refused"),
+                            "reference": results.get("reference"),
+                            "reason": results.get("reason"),
+                        }
+                        return result
                     # 비엔나 코드 json 파싱
-                    if isinstance(results, list):
+                    elif isinstance(results, list):
                         for item in results:
                             if item.get("vienna_code"):
                                 parsed_results.append({
@@ -103,13 +111,6 @@ def print_json_from_code (response):
                                     "description": item.get("description"),
                                     "reason": item.get("reason")
                                 })
-                        return parsed_results
-                    # 거절 사유 판별 json 파싱
-                    elif isinstance(results, dict)and "refused" in results:
-                        parsed_results.append({ 
-                            "refused": results.get("refused"),
-                            "reason": results.get("reason"),
-                        })
                         return parsed_results
                     # 유사코드 json 파싱
                     elif isinstance(results, dict):
@@ -128,7 +129,6 @@ def print_json_from_code (response):
                 except Exception as e:
                     print(f"예상치 못한 오류 발생: {e} - {content.text.value}")
                     return None
-                
 
 
 # 실행 완료까지 대기하는 함수

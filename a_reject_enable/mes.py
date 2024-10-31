@@ -35,27 +35,39 @@ def run_with_tools(ASSISTANT_ID, thread):
         tools=  [{'type': 'file_search'}],
         instructions= """
         [ Context ]
-        해당 "상표심사기준202405.pdf"의 거절사유가 되는지 아닌지를 판단합니다.
+        사용자는 해당 상표(이미지)를 등록하기 위해 법원 의견서를 재출하기 이전에
+        해당 상표가 "상표심사기준202405.pdf" 기준 중에서 거절사유가 될만한 것이 있는지를 미리 판단 합니다.
        
         [ instructions ]
         1. 사용자가 요청한 상표의 이미지를 분석합니다.
-        2. 문서 내의 거절 혹은 그렇지 않은 사유를 검색합니다.
-        3. Json 형식으로 응답합니다.
-        
+        2. 분석한 이미지에 거절될만한 사유가 있을지를 분석합니다.
+        3. 거절 혹은 그렇지 않은 사유를 검색합니다.
+        4. 아래 Json 형식으로 응답합니다.
+            - "refused" : Boolean 
+                - 등록이 거절될 가능성이 판단될 경우 : true
+                - 등록이 가능하다 판단될 경우: false
+            - "reference" : String
+                - "상표법 제 ?조 ?항 ?호"
+            - "reason" : String 
+                - 문서 내에서 구체적인 내용과 출처를 찾아 제공합니다.
+                예1 ) "refused"가 'true'일 경우 ->  "(등록 불가 판단 이유)"
+                예2 ) "refused"가 'false'일 경우 -> "(등록 가능하다 판단 이유)"
+
         응답 형식(json): 
 
         {{
             "results":{
                 "refused": (bool : true or false),
-                "reason" : "(reason from the document in Korean)"
+                "reference": (찾은 해당 상표 조항)
+                "reason" : "(이유 - 한국어로 작성합니다.)"
             }
         }}
 
-        [Warning]
-        - "refused"는 Boolean 타입으로 true 혹은 false만 반환합니다.
-            - 거절 가능성이 판단될경우 : true
-            - 거절되지 않을 가능성이 판단될 경우 : false
-        - "reason"은 문서 내에서 구체적인 내용과 출처를 찾아 제공합니다.
+        [ Warning ]
+        - 당신의 지식과 문서에서 존재하는 상표는 거절 사유로 판단하세요.
+        - 식별력은 판단하지 마세요.
+        - 상표가 존재 할수도 있다는 애매한 판단보다는, 확실히 존재하는 상표만을 거절 사유로 판단하세요.
+        - 반드시 한국어로 응답하고, json 포멧 안에서만 대답하세요.
         """
     )
     return run
@@ -63,6 +75,7 @@ def run_with_tools(ASSISTANT_ID, thread):
 
 # 새로운 스레드 생성 및 메시지 제출
 def create_thread_and_run(user_input, image_path, image_url):
+    print("1")
     thread = client.beta.threads.create()
     submit_message_with_image(thread, user_input, image_path, image_url)
     run = run_with_tools(ASSISTANT_ID, thread)
